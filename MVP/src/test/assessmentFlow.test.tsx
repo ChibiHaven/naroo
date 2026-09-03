@@ -12,7 +12,7 @@ async function completeThreeStepForm(
 ) {
   await user.click(
     screen.getByRole('button', {
-      name: /get farm guidance|รับคำแนะนำสำหรับฟาร์ม/i,
+      name: /get farm guidance|รับคำแนะนำสำหรับนา/i,
     }),
   )
 
@@ -20,9 +20,9 @@ async function completeThreeStepForm(
     screen.getByRole('combobox', { name: /district|อำเภอ/i }),
     'selaphum',
   )
-  await user.click(screen.getByRole('radio', { name: /lowland paddy|นาข้าวที่ลุ่ม/i }))
+  await user.click(screen.getByRole('radio', { name: /lowland paddy|นาที่ลุ่ม/i }))
   await user.click(screen.getByRole('radio', { name: /^rice$|^ข้าว$/i }))
-  await user.click(screen.getByRole('button', { name: /continue|ดำเนินการต่อ/i }))
+  await user.click(screen.getByRole('button', { name: /continue|ต่อไป/i }))
 
   await user.selectOptions(
     screen.getByRole('combobox', { name: /plant mung bean|ปลูกถั่วเขียว/i }),
@@ -30,19 +30,19 @@ async function completeThreeStepForm(
   )
   await user.click(
     screen.getByRole('radio', {
-      name: /residual soil moisture|ความชื้นดินเหลือ/i,
+      name: /residual soil moisture|ความชื้นดินหลังเกี่ยวข้าว/i,
     }),
   )
-  await user.click(screen.getByRole('radio', { name: /^good$|^ดี$/i }))
-  await user.click(screen.getByRole('button', { name: /continue|ดำเนินการต่อ/i }))
+  await user.click(screen.getByRole('radio', { name: /^good$|ระบายน้ำดี/i }))
+  await user.click(screen.getByRole('button', { name: /continue|ต่อไป/i }))
 
-  fireEvent.change(screen.getByLabelText(/how large|ขนาดเท่าใด/i), {
+  fireEvent.change(screen.getByLabelText(/how large|พื้นที่กี่ไร่/i), {
     target: { value: '5' },
   })
-  await user.click(screen.getByRole('radio', { name: /^yes$|^ทราบ$/i }))
+  await user.click(screen.getByRole('radio', { name: /^yes$|^รู้$/i }))
   await user.click(
     screen.getByRole('radio', {
-      name: /learn whether mung bean|ถั่วเขียวอาจเหมาะ/i,
+      name: /learn whether mung bean|ถั่วเขียวเหมาะกับแปลง/i,
     }),
   )
 }
@@ -59,16 +59,16 @@ describe('revised assessment journey', () => {
     render(<App />)
 
     await completeThreeStepForm(user)
-    expect(screen.getByText(/your farm summary|สรุปข้อมูลฟาร์ม/i)).toBeInTheDocument()
+    expect(screen.getByText(/your farm summary|สรุปข้อมูลนา/i)).toBeInTheDocument()
 
     await user.click(
-      screen.getByRole('button', { name: /get my guidance|รับคำแนะนำของฉัน/i }),
+      screen.getByRole('button', { name: /get my guidance|ดูคำแนะนำ/i }),
     )
 
     expect(
       await screen.findByText('PROTOTYPE GUIDANCE — NOT LIVE AGRICULTURAL ADVICE'),
     ).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /mung bean|ถั่วเขียว/i })).toBeInTheDocument()
+    expect(screen.getByText(/^Mung bean$|^ถั่วเขียว$/i)).toBeInTheDocument()
     expect(screen.getByText('Suitable')).toBeInTheDocument()
   })
 
@@ -79,13 +79,13 @@ describe('revised assessment journey', () => {
     await completeThreeStepForm(user)
     await user.click(screen.getByRole('link', { name: /edit|แก้ไข/i }))
     expect(
-      await screen.findByText(/where is your farm|ฟาร์มของคุณอยู่ที่ไหน/i),
+      await screen.findByText(/where is your farm|นาของคุณอยู่ที่ไหน/i),
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /continue|ดำเนินการต่อ/i }))
-    await user.click(screen.getByRole('button', { name: /continue|ดำเนินการต่อ/i }))
+    await user.click(screen.getByRole('button', { name: /continue|ต่อไป/i }))
+    await user.click(screen.getByRole('button', { name: /continue|ต่อไป/i }))
     await user.click(
-      screen.getByRole('button', { name: /get my guidance|รับคำแนะนำของฉัน/i }),
+      screen.getByRole('button', { name: /get my guidance|ดูคำแนะนำ/i }),
     )
     expect(
       await screen.findByText('PROTOTYPE GUIDANCE — NOT LIVE AGRICULTURAL ADVICE'),
@@ -98,7 +98,7 @@ describe('revised assessment journey', () => {
     )
     expect(
       await screen.findByRole('button', {
-        name: /get farm guidance|รับคำแนะนำสำหรับฟาร์ม/i,
+        name: /get farm guidance|รับคำแนะนำสำหรับนา/i,
       }),
     ).toBeInTheDocument()
     expect(sessionStorage.getItem(ASSESSMENT_STORAGE_KEY)).toBeTruthy()
@@ -112,7 +112,7 @@ describe('revised assessment journey', () => {
     await user.click(screen.getByRole('button', { name: 'ไทย' }))
     expect(sessionStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('th')
     expect(
-      await screen.findByRole('heading', { name: /ตัดสินใจปลูกพืช/i }),
+      await screen.findByRole('heading', { name: /ช่วยตัดสินใจปลูกพืช/i }),
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'English' }))
@@ -129,7 +129,7 @@ describe('revised assessment journey', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: /get farm guidance|รับคำแนะนำสำหรับฟาร์ม/i,
+        name: /get farm guidance|รับคำแนะนำสำหรับนา/i,
       }),
     )
     await user.selectOptions(
@@ -143,7 +143,7 @@ describe('revised assessment journey', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: /get farm guidance|รับคำแนะนำสำหรับฟาร์ม/i,
+        name: /get farm guidance|รับคำแนะนำสำหรับนา/i,
       }),
     )
 
@@ -162,7 +162,7 @@ describe('revised assessment journey', () => {
     window.location.hash = '#/assessment/step-3'
     render(<App />)
     expect(
-      await screen.findByText(/where is your farm|ฟาร์มของคุณอยู่ที่ไหน/i),
+      await screen.findByText(/where is your farm|นาของคุณอยู่ที่ไหน/i),
     ).toBeInTheDocument()
   })
 })

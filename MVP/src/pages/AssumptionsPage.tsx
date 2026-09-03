@@ -53,7 +53,9 @@ export function AssumptionsPage() {
             >
               <p className="text-sm font-bold text-status-borderline-text">
                 {translate(assumption.labelKey)}
-                {assumption.provisional ? ' (provisional)' : ''}
+                {assumption.provisional
+                  ? ` (${translate('provisional_label')})`
+                  : ''}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-status-borderline-text/80">
                 {translate(assumption.detailKey)}

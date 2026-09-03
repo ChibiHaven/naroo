@@ -23,7 +23,7 @@ export const SUPPORT_CONTACTS: SupportContactMethod[] = [
     descriptionEn:
       'Get help with your farm-specific situation from a local agricultural professional.',
     descriptionTh:
-      'ขอความช่วยเหลือเกี่ยวกับสถานการณ์เฉพาะของฟาร์มจากเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
+      'ขอคำแนะนำเฉพาะของนาคุณจากเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
     connected: false,
   },
   {

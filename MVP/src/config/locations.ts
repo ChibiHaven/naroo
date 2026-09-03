@@ -52,7 +52,7 @@ export const COVERAGE_NOTE_EN =
   'This prototype currently supports farm location selection for Roi Et Province only. District options are provided for demonstration and do not imply verified soil or weather coverage for every amphoe.'
 
 export const COVERAGE_NOTE_TH =
-  'ต้นแบบนี้รองรับการเลือกตำแหน่งฟาร์มเฉพาะจังหวัดร้อยเอ็ดเท่านั้น รายชื่ออำเภอใช้สำหรับการสาธิต และไม่ได้หมายความว่ามีข้อมูลดินหรือสภาพอากาศที่ยืนยันแล้วครบทุกอำเภอ'
+  'ระบบนี้ใช้เลือกที่ตั้งนาได้เฉพาะจังหวัดร้อยเอ็ด รายชื่ออำเภอใช้สำหรับสาธิต และไม่ได้หมายความว่ามีข้อมูลดินหรืออากาศที่ยืนยันแล้วครบทุกอำเภอ'
 
 export function getProvince(provinceId: string): ProvinceOption | undefined {
   return SUPPORTED_PROVINCES.find((province) => province.id === provinceId)

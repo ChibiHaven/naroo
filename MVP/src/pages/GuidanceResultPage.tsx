@@ -17,13 +17,16 @@ import { useAssessment } from '@/context/AssessmentContext'
 import { statusLabelKey } from '@/types/liveGuidance'
 import type { GuidanceClassification } from '@/types/assessment'
 import {
-  cleanDisplayedText,
   displayRuleLabel,
-  fallbackHeadline,
   formatLocalizedDateTime,
-  headlineForDisplay,
   whyStatusItems,
 } from '@/utils/displayLabels'
+import {
+  plantingMonthValue,
+  resultHeadline,
+  structuredSummaryLines,
+  suggestedNextSteps,
+} from '@/utils/structuredGuidanceDisplay'
 
 function statusBg(status: GuidanceClassification) {
   switch (status) {
@@ -81,32 +84,35 @@ function GuidanceResultContent() {
   const { response } = result
   const classification = response.classification
   const statusKey = statusLabelKey(classification)
-  const cleanedHeadline = headlineForDisplay(
-    response.aiExplanation.headline,
-    language,
-    classification,
-    input.district,
-    input.province,
+  const headline = resultHeadline(language, response, input)
+  const summaryLines = structuredSummaryLines(language, response, input)
+  const plantingMonth = plantingMonthValue(
+    response.input,
+    input.plantingMonth,
   )
-  const cleanedSummary = cleanDisplayedText(
-    response.aiExplanation.summary,
+  const { steps: nextSteps, usedAi: usedAiSteps } = suggestedNextSteps(
     language,
+    response,
+    plantingMonth,
   )
-  const cleanedNextSteps = response.aiExplanation.nextSteps
-    .map((step) => cleanDisplayedText(step, language))
-    .filter((step) => step.length > 0)
   const whyItems = whyStatusItems(
     language,
     classification,
     response.decisionTrace.rules,
     result.borderlineReasons,
     response.decisionTrace.matchedRuleId,
-  )
+    typeof response.input.previousCrop === 'string'
+      ? response.input.previousCrop
+      : input.previousCrop,
+  ).filter((item) => item.trim().length > 0)
   const weatherAvailable =
     response.weather.mode === 'available' && response.weather.days.length > 0
   const notableRules = response.decisionTrace.rules.filter(
-    (rule) => rule.result !== 'pass',
+    (rule) => rule.result !== 'pass' && rule.id.trim().length > 0,
   )
+  const limitationItems = result.staticLimitationKeys
+    .map((key) => translate(key))
+    .filter((item) => item.trim().length > 0)
 
   return (
     <div className="flex min-h-full flex-col">
@@ -133,13 +139,7 @@ function GuidanceResultContent() {
                 {translate('crop_mung_bean')}
               </p>
               <h2 className="mt-3 text-lg font-bold text-brand-text">
-                {cleanedHeadline ||
-                  fallbackHeadline(
-                    language,
-                    classification,
-                    input.district,
-                    input.province,
-                  )}
+                {headline}
               </h2>
             </div>
           </div>
@@ -152,58 +152,71 @@ function GuidanceResultContent() {
             />
           </div>
 
-          <p className="px-5 pb-5 text-sm leading-relaxed text-brand-text">
-            {cleanedSummary}
-          </p>
+          <dl className="space-y-2 px-5 pb-5 text-sm leading-relaxed text-brand-text">
+            {summaryLines.map((line) => (
+              <div key={`${line.label}-${line.value}`}>
+                <dt className="font-semibold text-brand-muted">{line.label}</dt>
+                <dd>{line.value}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
-
-        {cleanedNextSteps.length > 0 ? (
-          <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
-            <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-              <ListChecks className="h-5 w-5 text-brand-primary" aria-hidden="true" />
-              {translate('next_steps')}
-            </h2>
-            <ul className="space-y-2">
-              {cleanedNextSteps.map((step, index) => (
-                <li
-                  key={`${index}-${step}`}
-                  className="text-sm leading-relaxed text-brand-text"
-                >
-                  • {step}
-                </li>
-              ))}
-            </ul>
-            {response.aiExplanation.generated ? (
-              <p className="mt-3 text-xs text-brand-muted">
-                {translate('ai_explanation_note')}
-              </p>
-            ) : null}
-          </section>
-        ) : null}
 
         <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
           <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-            {classification === 'suitable' ? (
-              <CheckCircle2 className="h-5 w-5 text-brand-success" aria-hidden="true" />
-            ) : (
-              <AlertTriangle className="h-5 w-5 text-brand-warning" aria-hidden="true" />
-            )}
-            {classification === 'borderline'
-              ? translate('risks_concerns')
-              : translate('why_status')}
+            <ListChecks className="h-5 w-5 text-brand-primary" aria-hidden="true" />
+            {translate('next_steps')}
           </h2>
-          <ul className="space-y-2">
-            {whyItems.map((item) => (
-              <li key={item} className="flex gap-2 text-sm leading-relaxed">
-                <CheckCircle2
-                  className="mt-0.5 h-4 w-4 shrink-0 text-brand-success"
-                  aria-hidden="true"
-                />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+          {nextSteps.length > 0 ? (
+            <ul className="list-disc space-y-2 pl-5">
+              {nextSteps
+                .map((step) => step.trim())
+                .filter((step) => step.length > 0 && !/^[-*•·.—–]+$/.test(step))
+                .map((step, index) => (
+                  <li
+                    key={`${index}-${step}`}
+                    className="text-sm leading-relaxed text-brand-text"
+                  >
+                    {step}
+                  </li>
+                ))}
+            </ul>
+          ) : null}
+          {response.aiExplanation.generated && usedAiSteps ? (
+            <p className="mt-3 text-xs text-brand-muted">
+              {translate('ai_explanation_note')}
+            </p>
+          ) : null}
         </section>
+
+        {whyItems.length > 0 ? (
+          <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
+            <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
+              {classification === 'suitable' ? (
+                <CheckCircle2 className="h-5 w-5 text-brand-success" aria-hidden="true" />
+              ) : (
+                <AlertTriangle className="h-5 w-5 text-brand-warning" aria-hidden="true" />
+              )}
+              {classification === 'borderline'
+                ? translate('risks_concerns')
+                : translate('why_status')}
+            </h2>
+            <ul className="space-y-2">
+              {whyItems
+                .map((item) => item.trim())
+                .filter((item) => item.length > 0)
+                .map((item) => (
+                  <li key={item} className="flex gap-2 text-sm leading-relaxed">
+                    <CheckCircle2
+                      className="mt-0.5 h-4 w-4 shrink-0 text-brand-success"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        ) : null}
 
         <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
           <h2 className="mb-2 text-base font-bold">
@@ -273,21 +286,33 @@ function GuidanceResultContent() {
                   {translate('technical_details')}
                 </p>
                 <ul className="mt-1 space-y-1">
-                  {notableRules.map((rule) => (
-                    <li key={rule.id}>
-                      {displayRuleLabel(rule.id, language, rule.description)}
-                      {rule.id ? ` (${rule.id})` : ''}
-                    </li>
-                  ))}
+                  {notableRules.map((rule) => {
+                    const label = displayRuleLabel(rule.id, language).trim()
+                    const technicalId = rule.id.trim()
+                    const text = technicalId
+                      ? `${label} (${technicalId})`
+                      : label
+                    if (!text) {
+                      return null
+                    }
+                    return <li key={rule.id}>{text}</li>
+                  })}
                 </ul>
               </div>
             ) : null}
-            <p>{translate('static_reference_note')}</p>
-            <ul className="space-y-1">
-              {result.staticLimitationKeys.map((key) => (
-                <li key={key}>• {translate(key)}</li>
-              ))}
-            </ul>
+            {limitationItems.length > 0 ? (
+              <>
+                <p>{translate('static_reference_note')}</p>
+                <ul className="list-disc space-y-1 pl-5">
+                  {limitationItems
+                    .map((item) => item.trim())
+                    .filter((item) => item.length > 0)
+                    .map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                </ul>
+              </>
+            ) : null}
           </div>
         </details>
 

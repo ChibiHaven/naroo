@@ -16,6 +16,10 @@ describe('display labels', () => {
     expect(displayDistrictName('phon_thong', 'th')).toBe('โพนทอง')
     expect(displayDistrictName('phon_thong', 'en')).toBe('Phon Thong')
     expect(displayDistrictName('selaphum', 'en')).toBe('Selaphum')
+    expect(displayDistrictName('pho_chai', 'th')).toBe('โพธิ์ชัย')
+    expect(displayDistrictName('nong_phok', 'th')).toBe('หนองพอก')
+    expect(displayDistrictName('pathum_rat', 'th')).toBe('ปทุมรัตต์')
+    expect(displayDistrictName('pathum_rat', 'en')).toBe('Pathum Rat')
   })
 
   it('localizes planting months by name', () => {
@@ -76,6 +80,44 @@ describe('display labels', () => {
     )
     expect(escalate.some((item) => /drainage|waterlog/i.test(item))).toBe(true)
     expect(escalate.join(' ')).not.toContain('R3_DRAINAGE_POOR')
+  })
+
+  it('shows missing information only when R2 escalates', () => {
+    const passing = whyStatusItems(
+      'en',
+      'escalate',
+      [
+        {
+          id: 'R2_CRITICAL_INFO',
+          description: 'Critical information is present',
+          result: 'pass',
+        },
+        {
+          id: 'R5_PLANTING_MONTH',
+          description: 'Planting month is borderline',
+          result: 'escalate',
+        },
+      ],
+      [],
+      'R5_PLANTING_MONTH',
+    )
+    expect(passing.join(' ')).not.toContain(t('en', 'missing_uncertain'))
+    expect(passing).toContain(t('en', 'rule_planting_month_outside'))
+
+    const missing = whyStatusItems(
+      'en',
+      'escalate',
+      [
+        {
+          id: 'R2_CRITICAL_INFO',
+          description: 'Critical information is missing',
+          result: 'escalate',
+        },
+      ],
+      [],
+      'R2_CRITICAL_INFO',
+    )
+    expect(missing).toContain(t('en', 'missing_uncertain'))
   })
 
   it('rewrites remaining Thai machine prose without changing English Borderline', () => {

@@ -1,6 +1,6 @@
 import { ArrowLeft, Menu, X } from 'lucide-react'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAssessment } from '@/context/AssessmentContext'
 
 interface AppHeaderProps {
@@ -17,6 +17,7 @@ export function AppHeader({
   variant = 'green',
 }: AppHeaderProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { translate, language, setLanguage, hasProgress, clearAll } =
     useAssessment()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -124,7 +125,10 @@ export function AppHeader({
                 if (outcome === 'cached' || outcome === 'needs-fetch') {
                   setMenuOpen(false)
                 }
-                if (outcome === 'needs-fetch') {
+                if (
+                  outcome === 'needs-fetch' &&
+                  location.pathname !== '/expert-support'
+                ) {
                   navigate('/analyzing')
                 }
               }}
@@ -146,7 +150,10 @@ export function AppHeader({
                 if (outcome === 'cached' || outcome === 'needs-fetch') {
                   setMenuOpen(false)
                 }
-                if (outcome === 'needs-fetch') {
+                if (
+                  outcome === 'needs-fetch' &&
+                  location.pathname !== '/expert-support'
+                ) {
                   navigate('/analyzing')
                 }
               }}

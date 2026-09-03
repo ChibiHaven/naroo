@@ -58,6 +58,7 @@ const CLASSIFICATION_KEYS: Record<string, string> = {
 const CONCERN_KEYS: Record<string, string> = {
   field_type: 'concern_field_type',
   previous_crop: 'concern_previous_crop',
+  previous_mung_bean: 'concern_previous_mung_bean',
   planting_month_edge: 'concern_planting_month_edge',
   water_source_limited: 'concern_water_source_limited',
   drainage_moderate: 'concern_drainage_moderate',
@@ -76,7 +77,10 @@ const CONCERN_KEYS: Record<string, string> = {
 
 const RULE_CODE_KEYS: Record<string, string> = {
   ...CONCERN_KEYS,
-  R3_DRAINAGE_POOR: 'risk_waterlogging',
+  R5_PLANTING_MONTH: 'rule_planting_month_outside',
+  R5_PLANTING_MONTH_OUTSIDE: 'rule_planting_month_outside',
+  R3_DRAINAGE_POOR: 'rule_drainage_poor',
+  R2_CRITICAL_INFO: 'missing_uncertain',
   R1_FIELD_TYPE: 'concern_field_type',
   R2_PREVIOUS_CROP: 'concern_previous_crop',
   R4_PLANTING_MONTH_EDGE: 'concern_planting_month_edge',
@@ -89,17 +93,21 @@ const RULE_CODE_KEYS: Record<string, string> = {
   support_water: 'support_water',
   support_drainage: 'support_drainage',
   escalate_outside_scope: 'risk_outside_scope',
-  escalate_waterlogging: 'risk_waterlogging',
+  escalate_waterlogging: 'rule_drainage_poor',
   escalate_combined_water_risk: 'risk_limited_water',
-  escalate_outside_window: 'risk_outside_window',
+  escalate_outside_window: 'rule_planting_month_outside',
   escalate_missing_critical: 'missing_uncertain',
   borderline_field_type: 'concern_field_type',
   borderline_field_type_unsure: 'uncertain_field_type',
-  borderline_previous_legume: 'risk_previous_legume',
-  borderline_previous_crop: 'uncertain_previous_crop',
+  borderline_previous_legume: 'concern_previous_mung_bean',
+  borderline_previous_crop: 'concern_previous_crop',
+  previous_mung_bean: 'concern_previous_mung_bean',
+  previous_crop: 'concern_previous_crop',
   borderline_timing: 'concern_planting_month_edge',
   borderline_limited_water: 'concern_water_source_limited',
   borderline_drainage: 'concern_drainage_moderate',
+  drainage_moderate: 'concern_drainage_moderate',
+  planting_month_edge: 'concern_planting_month_edge',
   borderline_soil: 'concern_soil_knowledge',
 }
 
@@ -374,6 +382,25 @@ function phraseReplacements(language: LanguageCode): Array<[string, string]> {
     pairs.push([`'${code}'`, label])
   }
 
+  if (language === 'th') {
+    for (const province of SUPPORTED_PROVINCES) {
+      const thai = displayProvinceName(province.id, 'th')
+      pairs.push([province.nameEn, thai])
+      pairs.push([province.nameEn.replace(/\s+Province$/i, ''), thai])
+      for (const district of province.districts) {
+        pairs.push([district.nameEn, district.nameTh])
+      }
+    }
+    pairs.push(['Upland field', t('th', 'field_upland')])
+    pairs.push(['Upland', t('th', 'field_upland')])
+    pairs.push(['Lowland paddy', t('th', 'field_lowland')])
+    pairs.push(['Rainfed', t('th', 'water_rainfed')])
+    pairs.push(['Irrigated', t('th', 'water_irrigated')])
+    pairs.push(['Moderate drainage', t('th', 'display_drainage_moderate')])
+    pairs.push(['Good drainage', t('th', 'display_drainage_good')])
+    pairs.push(['Poor drainage', t('th', 'display_drainage_poor')])
+  }
+
   for (const item of codes) {
     pairs.push([item.code, item.label(language)])
   }
@@ -414,6 +441,10 @@ function applyThaiProseCleanup(text: string): string {
     ['Lowland Paddy', 'นาลุ่ม'],
     ['Lowland paddy', 'นาลุ่ม'],
     ['lowland paddy', 'นาลุ่ม'],
+    ['Upland field', 'ที่ดอน'],
+    ['Upland', 'ที่ดอน'],
+    ['Rainfed', 'อาศัยน้ำฝน'],
+    ['Irrigated', 'มีระบบชลประทาน'],
     ['borderline case', 'กรณีที่ควรตรวจสอบเพิ่มเติม'],
     ['Borderline case', 'กรณีที่ควรตรวจสอบเพิ่มเติม'],
     ['a borderline', 'กรณีที่ควรตรวจสอบเพิ่มเติม'],
@@ -431,7 +462,10 @@ function applyThaiProseCleanup(text: string): string {
 
   next = next.replace(/\bborderline\b/gi, 'ควรตรวจสอบเพิ่มเติม')
   next = next.replace(/\bsuitable\b/gi, 'น่าจะเหมาะสม')
-  next = next.replace(/\bescalate\b/gi, 'ควรปรึกษาเจ้าหน้าที่')
+  next = next.replace(/\bescalate\b/gi, 'ควรปรึกษาผู้เชี่ยวชาญ')
+  next = next.replace(/\bclassification\b/gi, 'ผลสถานะ')
+  next = next.replace(/\bedge\b/gi, 'ช่วงก้ำกึ่ง')
+  next = next.replace(/\bmoderate\b/gi, 'ปานกลาง')
   return next
 }
 
@@ -455,6 +489,35 @@ export function cleanDisplayedText(
   return omitUnsafeTokens(next)
 }
 
+export function sentenceForActiveCondition(
+  id: string,
+  language: LanguageCode,
+  previousCrop = '',
+): string | null {
+  if (id === 'R2_CRITICAL_INFO') {
+    return t(language, 'missing_uncertain')
+  }
+
+  if (
+    id === 'previous_crop' ||
+    id === 'borderline_previous_crop' ||
+    id === 'R2_PREVIOUS_CROP' ||
+    id === 'borderline_previous_legume' ||
+    id === 'previous_mung_bean'
+  ) {
+    if (previousCrop === 'mung_bean' || id === 'previous_mung_bean' || id === 'borderline_previous_legume') {
+      return t(language, 'concern_previous_mung_bean')
+    }
+    return t(language, 'concern_previous_crop')
+  }
+
+  const key = RULE_CODE_KEYS[id] ?? CONCERN_KEYS[id]
+  if (!key || key === 'missing_uncertain') {
+    return null
+  }
+  return translatedOrNull(language, key)
+}
+
 export function fallbackHeadline(
   language: LanguageCode,
   classification: 'suitable' | 'borderline' | 'escalate',
@@ -473,18 +536,55 @@ export function fallbackHeadline(
   })
 }
 
+export function structuredHeadline(
+  language: LanguageCode,
+  classification: 'suitable' | 'borderline' | 'escalate',
+  matchedRuleId: string | null,
+  districtId: string,
+  provinceId: string,
+): string {
+  if (classification === 'suitable') {
+    return fallbackHeadline(language, 'suitable', districtId, provinceId)
+  }
+  if (classification === 'borderline') {
+    return t(language, 'fallback_headline_borderline')
+  }
+
+  const matched = matchedRuleId ?? ''
+  if (
+    matched === 'R5_PLANTING_MONTH' ||
+    matched === 'R5_PLANTING_MONTH_OUTSIDE' ||
+    matched === 'escalate_outside_window'
+  ) {
+    return t(language, 'headline_escalate_planting_month')
+  }
+  if (matched === 'R3_DRAINAGE_POOR' || matched === 'escalate_waterlogging') {
+    return t(language, 'headline_escalate_drainage')
+  }
+  return fallbackHeadline(language, 'escalate', districtId, provinceId)
+}
+
 export function headlineForDisplay(
-  rawHeadline: string,
+  _rawHeadline: string,
   language: LanguageCode,
   classification: 'suitable' | 'borderline' | 'escalate',
   districtId: string,
   provinceId: string,
+  matchedRuleId: string | null = null,
 ): string {
-  const cleaned = cleanDisplayedText(rawHeadline, language)
-  if (cleaned.length >= 12) {
-    return cleaned
-  }
-  return fallbackHeadline(language, classification, districtId, provinceId)
+  return structuredHeadline(
+    language,
+    classification,
+    matchedRuleId,
+    districtId,
+    provinceId,
+  )
+}
+
+function isActiveRuleResult(
+  result: NarooRuleEvaluation['result'],
+): boolean {
+  return result === 'escalate' || result === 'borderline' || result === 'suitable'
 }
 
 export function whyStatusItems(
@@ -493,34 +593,51 @@ export function whyStatusItems(
   rules: NarooRuleEvaluation[],
   borderlineReasons: string[],
   matchedRuleId: string | null,
+  previousCrop = '',
 ): string[] {
   if (classification === 'suitable') {
     return [t(language, 'why_suitable')]
   }
 
-  if (classification === 'borderline') {
-    const reasons = borderlineReasons
-      .map((reason) => displayConcernLabel(reason, language))
-      .filter((item, index, all) => item && all.indexOf(item) === index)
-    return reasons.length > 0 ? reasons : [t(language, 'why_borderline_fallback')]
+  const items: string[] = []
+  const seen = new Set<string>()
+  const push = (value: string | null) => {
+    if (!value || seen.has(value)) {
+      return
+    }
+    seen.add(value)
+    items.push(value)
   }
 
-  const escalateLabels = rules
-    .filter((rule) => rule.result === 'escalate')
-    .map((rule) => displayRuleLabel(rule.id, language, rule.description))
+  const activeRules = rules.filter((rule) => isActiveRuleResult(rule.result))
+  for (const rule of activeRules) {
+    if (rule.id === 'R2_CRITICAL_INFO' && rule.result !== 'escalate') {
+      continue
+    }
+    push(sentenceForActiveCondition(rule.id, language, previousCrop))
+  }
 
-  if (matchedRuleId) {
-    escalateLabels.unshift(displayRuleLabel(matchedRuleId, language))
+  if (
+    matchedRuleId &&
+    !activeRules.some((rule) => rule.id === matchedRuleId)
+  ) {
+    if (matchedRuleId !== 'R2_CRITICAL_INFO') {
+      push(sentenceForActiveCondition(matchedRuleId, language, previousCrop))
+    }
   }
 
   for (const reason of borderlineReasons) {
-    escalateLabels.push(displayConcernLabel(reason, language))
+    push(sentenceForActiveCondition(reason, language, previousCrop))
   }
 
-  const unique = escalateLabels.filter(
-    (item, index, all) => item && all.indexOf(item) === index,
-  )
-  return unique.length > 0 ? unique : [t(language, 'why_escalate_fallback')]
+  if (items.length > 0) {
+    return items
+  }
+  return [
+    classification === 'borderline'
+      ? t(language, 'why_borderline_fallback')
+      : t(language, 'why_escalate_fallback'),
+  ]
 }
 
 export const OPEN_METEO_PAGE_URL = 'https://open-meteo.com/'

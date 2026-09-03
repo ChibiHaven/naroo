@@ -5,19 +5,136 @@ import { AppHeader } from '@/components/layout/AppHeader'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { useAssessment } from '@/context/AssessmentContext'
 import {
-  PHON_THONG_OFFICE,
-  ROI_ET_PROVINCIAL_OFFICE_URL,
+  ROI_ET_PROVINCIAL_OFFICE,
+  getDistrictSupportContact,
+  normalizeTelHref,
+  shouldShowProvincialFallback,
+  type DistrictSupportContact,
+  type ProvincialSupportContact,
 } from '@/config/supportContacts'
+
+const EXTERNAL_REL = 'noreferrer noopener'
+
+function officeName(
+  language: 'en' | 'th',
+  office: Pick<DistrictSupportContact, 'officeNameEn' | 'officeNameTh'>,
+): string {
+  return language === 'th' ? office.officeNameTh : office.officeNameEn
+}
+
+function officeAddress(
+  language: 'en' | 'th',
+  office: {
+    addressTh?: string
+    addressEn?: string
+  },
+): string | undefined {
+  if (language === 'th') {
+    return office.addressTh
+  }
+  return office.addressEn ?? office.addressTh
+}
+
+function OfficeCard({
+  title,
+  address,
+  phone,
+  email,
+  websiteUrl,
+  callLabel,
+  emailLabel,
+  websiteLabel,
+}: {
+  title: string
+  address?: string
+  phone?: string
+  email?: string
+  websiteUrl: string
+  callLabel: string
+  emailLabel: string
+  websiteLabel: string
+}) {
+  return (
+    <section className="mt-5 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-sm">
+      <div className="flex gap-4 p-4">
+        <img
+          src={`${import.meta.env.BASE_URL}agricultural-officer.png`}
+          alt=""
+          className="h-16 w-16 rounded-xl object-contain"
+        />
+        <div className="flex-1">
+          <h2 className="text-base font-bold">{title}</h2>
+          {address ? (
+            <p className="mt-2 text-sm leading-relaxed text-brand-text">{address}</p>
+          ) : null}
+          {phone ? (
+            <p className="mt-2 text-sm text-brand-muted">{phone}</p>
+          ) : null}
+          {email ? (
+            <p className="text-sm text-brand-muted">{email}</p>
+          ) : null}
+        </div>
+      </div>
+      <div className="space-y-2 border-t border-brand-border px-4 py-3">
+        {phone ? (
+          <a
+            className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
+            href={normalizeTelHref(phone)}
+          >
+            <Phone className="h-4 w-4" aria-hidden="true" />
+            {callLabel}
+          </a>
+        ) : null}
+        {email ? (
+          <a
+            className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
+            href={`mailto:${email}`}
+          >
+            <Mail className="h-4 w-4" aria-hidden="true" />
+            {emailLabel}
+          </a>
+        ) : null}
+        <a
+          className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
+          href={websiteUrl}
+          target="_blank"
+          rel={EXTERNAL_REL}
+        >
+          <Building2 className="h-4 w-4" aria-hidden="true" />
+          {websiteLabel}
+        </a>
+      </div>
+    </section>
+  )
+}
+
+function provincialCardProps(office: ProvincialSupportContact) {
+  return {
+    titleEn: office.officeNameEn,
+    titleTh: office.officeNameTh,
+    addressTh: office.addressTh,
+    addressEn: office.addressEn,
+    phone: office.phone,
+    email: office.email,
+    websiteUrl: office.websiteUrl,
+  }
+}
 
 export function ExpertSupportPage() {
   const navigate = useNavigate()
   const { translate, language, input, setCurrentStep } = useAssessment()
   const [acknowledged, setAcknowledged] = useState(false)
-  const isPhonThong = input.district === PHON_THONG_OFFICE.districtId
+  const districtContact = getDistrictSupportContact(input.district)
+  const showProvincial = shouldShowProvincialFallback(districtContact)
+  const provincial = provincialCardProps(ROI_ET_PROVINCIAL_OFFICE)
 
   useEffect(() => {
     setCurrentStep('expert')
   }, [setCurrentStep])
+
+  const callLabel = translate('call_office')
+  const emailLabel = translate('email_office')
+  const websiteLabel = translate('visit_official_website')
 
   return (
     <div className="flex min-h-full flex-col">
@@ -38,78 +155,35 @@ export function ExpertSupportPage() {
           {translate('expert_intro')}
         </p>
 
-        {isPhonThong ? (
-          <section className="mt-5 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-sm">
-            <div className="flex gap-4 p-4">
-              <img
-                src={`${import.meta.env.BASE_URL}agricultural-officer.png`}
-                alt=""
-                className="h-16 w-16 rounded-xl object-contain"
-              />
-              <div className="flex-1">
-                <h2 className="text-base font-bold">
-                  {language === 'th'
-                    ? PHON_THONG_OFFICE.nameTh
-                    : PHON_THONG_OFFICE.nameEn}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-brand-text">
-                  {language === 'th'
-                    ? PHON_THONG_OFFICE.addressTh
-                    : PHON_THONG_OFFICE.addressEn}
-                </p>
-                <p className="mt-2 text-sm text-brand-muted">
-                  {translate('call_office')}: {PHON_THONG_OFFICE.phoneDisplay}
-                </p>
-                <p className="text-sm text-brand-muted">
-                  {translate('email_office')}: {PHON_THONG_OFFICE.email}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2 border-t border-brand-border px-4 py-3">
-              <a
-                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
-                href={`tel:${PHON_THONG_OFFICE.phoneTel}`}
-              >
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                {translate('call_office')} {PHON_THONG_OFFICE.phoneDisplay}
-              </a>
-              <a
-                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
-                href={`mailto:${PHON_THONG_OFFICE.email}`}
-              >
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                {translate('email_office')}
-              </a>
-              <a
-                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
-                href={PHON_THONG_OFFICE.website}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Building2 className="h-4 w-4" aria-hidden="true" />
-                {translate('visit_official_website')}
-              </a>
-            </div>
-          </section>
-        ) : (
-          <section className="mt-5 rounded-[var(--radius-card)] border border-brand-border bg-white p-4 shadow-sm">
-            <h2 className="text-base font-bold">
-              {translate('expert_roi_et_general_title')}
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-              {translate('expert_roi_et_general_body')}
-            </p>
-            <a
-              className="touch-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
-              href={ROI_ET_PROVINCIAL_OFFICE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Building2 className="h-4 w-4" aria-hidden="true" />
-              {translate('visit_official_website')}
-            </a>
-          </section>
-        )}
+        {districtContact ? (
+          <OfficeCard
+            title={officeName(language, districtContact)}
+            address={officeAddress(language, districtContact)}
+            phone={districtContact.phone}
+            email={districtContact.email}
+            websiteUrl={districtContact.websiteUrl}
+            callLabel={callLabel}
+            emailLabel={emailLabel}
+            websiteLabel={websiteLabel}
+          />
+        ) : null}
+
+        {showProvincial ? (
+          <OfficeCard
+            title={language === 'th' ? provincial.titleTh : provincial.titleEn}
+            address={officeAddress(language, provincial)}
+            phone={provincial.phone}
+            email={provincial.email}
+            websiteUrl={provincial.websiteUrl}
+            callLabel={callLabel}
+            emailLabel={emailLabel}
+            websiteLabel={websiteLabel}
+          />
+        ) : null}
+
+        <p className="mt-5 text-sm leading-relaxed text-brand-muted">
+          {translate('contact_verify_notice')}
+        </p>
 
         <aside className="mt-6 rounded-[var(--radius-card)] border border-brand-border bg-brand-cream px-4 py-4 text-sm leading-relaxed text-brand-muted">
           {translate('safety_disclaimer')}

@@ -102,8 +102,8 @@ describe('live result presentation', () => {
     render(<App />)
 
     expect(
-      await screen.findByText(/preliminarily suitable|Phon Thong/i),
-    ).toBeInTheDocument()
+      await screen.findAllByText(/preliminarily suitable|Phon Thong/i),
+    ).not.toHaveLength(0)
     const visible = farmerFacingText()
     expect(visible).not.toMatch(/roi_et|phon_thong|lowland_paddy|learn_mung_bean|R3_DRAINAGE_POOR/)
     expect(visible).toContain(t('en', 'why_suitable'))
@@ -133,7 +133,7 @@ describe('live result presentation', () => {
       district: 'phon_thong',
     })
     render(<App />)
-    expect(await screen.findByText(/โพนทอง|ร้อยเอ็ด/)).toBeInTheDocument()
+    expect(await screen.findAllByText(/โพนทอง|ร้อยเอ็ด/)).not.toHaveLength(0)
     const visible = farmerFacingText()
     expect(visible).not.toMatch(/roi_et|phon_thong|lowland_paddy/)
     expect(visible).toContain(t('th', 'why_suitable'))
@@ -159,10 +159,9 @@ describe('live result presentation', () => {
       district: 'phon_thong',
     })
     render(<App />)
-    expect(await screen.findByText('ควรตรวจสอบเพิ่มเติม')).toBeInTheDocument()
+    expect((await screen.findAllByText('ควรตรวจสอบเพิ่มเติม')).length).toBeGreaterThan(0)
     const visible = farmerFacingText()
     expect(visible).toContain('นาลุ่ม')
-    expect(visible).toContain('ยังไม่มีข้อมูลดิน')
     expect(visible).toContain('ควรตรวจสอบเพิ่มเติม')
     expect(visible).not.toMatch(/borderline/i)
     expect(visible).not.toMatch(/lowland paddy/i)
@@ -209,7 +208,7 @@ describe('live result presentation', () => {
     })
     seedLiveResult(response)
     render(<App />)
-    expect(await screen.findByText('Borderline')).toBeInTheDocument()
+    expect((await screen.findAllByText('Further review recommended')).length).toBeGreaterThan(0)
     expect(
       screen.getAllByText(/near the edge of the prototype window/i).length,
     ).toBeGreaterThan(0)
@@ -245,7 +244,7 @@ describe('live result presentation', () => {
     })
     seedLiveResult(response)
     render(<App />)
-    expect(await screen.findByText('Escalate')).toBeInTheDocument()
+    expect((await screen.findAllByText('Expert review required')).length).toBeGreaterThan(0)
     expect(farmerFacingText()).toMatch(/drainage|waterlog/i)
     expect(farmerFacingText()).not.toContain('Usable water')
     expect(farmerFacingText()).not.toContain('R3_DRAINAGE_POOR')
@@ -284,17 +283,21 @@ describe('live result presentation', () => {
     expect(
       await screen.findByText(/Phon Thong District Agricultural Extension Office/),
     ).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /043-571-462/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: t('en', 'call_office') })).toHaveAttribute(
       'href',
       'tel:+6643571462',
     )
-    expect(screen.getByRole('link', { name: /email/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: t('en', 'email_office') })).toHaveAttribute(
       'href',
       'mailto:Phonthong.roi@doae.go.th',
     )
     expect(
-      screen.getByRole('link', { name: /visit official website/i }).getAttribute('href'),
-    ).toContain('phonthong-101')
+      screen.getByRole('link', { name: t('en', 'visit_official_website') }),
+    ).toHaveAttribute('href', 'https://roiet.doae.go.th/phonthong-101/')
+    expect(
+      screen.queryByText(/Roi Et Provincial Agricultural Extension Office/),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText(t('en', 'contact_not_connected'))).not.toBeInTheDocument()
   })
 
   it('does not show the Phon Thong contact for other districts', async () => {
@@ -305,13 +308,155 @@ describe('live result presentation', () => {
     window.location.hash = '#/expert-support'
     render(<App />)
     expect(
-      await screen.findByText(/Roi Et Provincial Agricultural Extension Office/),
+      await screen.findByText(/Selaphum District Agricultural Extension Office/),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Roi Et Provincial Agricultural Extension Office/),
     ).toBeInTheDocument()
     expect(screen.queryByText(/043-571-462/)).not.toBeInTheDocument()
     expect(screen.queryByText(/Phonthong.roi@doae.go.th/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: t('en', 'email_office') })).toHaveAttribute(
+      'href',
+      'mailto:roiet@doae.go.th',
+    )
+    const websites = screen.getAllByRole('link', {
+      name: t('en', 'visit_official_website'),
+    })
+    expect(websites[0]).toHaveAttribute(
+      'href',
+      'https://roiet.doae.go.th/selaphum-101/',
+    )
+    expect(websites[1]).toHaveAttribute('href', 'https://roiet.doae.go.th/')
+    expect(websites[0]).toHaveAttribute('target', '_blank')
+    expect(websites[0]).toHaveAttribute('rel', 'noreferrer noopener')
+  })
+
+  it('shows district-specific official pages for Pho Chai, Nong Phok, and Pathum Rat', async () => {
+    const cases = [
+      {
+        district: 'pho_chai' as const,
+        name: 'Pho Chai District Agricultural Extension Office',
+        href: 'https://roiet.doae.go.th/phochai-101/',
+        email: 'mailto:Phochai.roi@doae.go.th',
+      },
+      {
+        district: 'nong_phok' as const,
+        name: 'Nong Phok District Agricultural Extension Office',
+        href: 'https://roiet.doae.go.th/nongphok-101/',
+        email: 'mailto:nongphok.roi@doae.go.th',
+      },
+      {
+        district: 'pathum_rat' as const,
+        name: 'Pathum Rat District Agricultural Extension Office',
+        href: 'https://roiet.doae.go.th/pathumrat-101/',
+        email: 'mailto:pathumrat.roiet@doae.go.th',
+      },
+    ]
+
+    for (const example of cases) {
+      window.location.hash = '#/expert-support'
+      seedLiveResult(narooGuidanceResponse(), {
+        ...completeAssessmentInput('en'),
+        district: example.district,
+      })
+      const view = render(<App />)
+      expect(await screen.findByText(example.name)).toBeInTheDocument()
+      expect(
+        screen.getByRole('link', { name: t('en', 'visit_official_website') }),
+      ).toHaveAttribute('href', example.href)
+      expect(
+        screen.getByRole('link', { name: t('en', 'email_office') }),
+      ).toHaveAttribute('href', example.email)
+      expect(screen.queryByText(/Phon Thong District/)).not.toBeInTheDocument()
+      expect(farmerFacingText()).not.toContain(example.district)
+      expect(screen.queryByText(t('en', 'contact_not_connected'))).not.toBeInTheDocument()
+      view.unmount()
+    }
+  })
+
+  it('hides missing At Samat rows and shows the provincial fallback', async () => {
+    seedLiveResult(narooGuidanceResponse(), {
+      ...completeAssessmentInput('en'),
+      district: 'at_samat',
+    })
+    window.location.hash = '#/expert-support'
+    render(<App />)
     expect(
-      screen.getByRole('link', { name: /visit official website/i }),
+      await screen.findByText(/At Samat District Agricultural Extension Office/),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Roi Et Provincial Agricultural Extension Office/),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/043-512-913/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/mueang\.roi@doae\.go\.th/i)).not.toBeInTheDocument()
+    const websites = screen.getAllByRole('link', {
+      name: t('en', 'visit_official_website'),
+    })
+    expect(websites[0]).toHaveAttribute(
+      'href',
+      'https://roiet.doae.go.th/atsamat-101/',
+    )
+    expect(websites[1]).toHaveAttribute('href', 'https://roiet.doae.go.th/')
+    expect(screen.getAllByRole('link', { name: t('en', 'call_office') })).toHaveLength(1)
+    expect(screen.getByRole('link', { name: t('en', 'call_office') })).toHaveAttribute(
+      'href',
+      'tel:+6643569004',
+    )
+    expect(farmerFacingText()).not.toContain('at_samat')
+    expect(screen.queryByText(t('en', 'contact_not_connected'))).not.toBeInTheDocument()
+  })
+
+  it('falls back to the provincial office for an unknown district', async () => {
+    seedLiveResult(narooGuidanceResponse(), {
+      ...completeAssessmentInput('en'),
+      district: 'unknown_amphoe',
+    })
+    window.location.hash = '#/expert-support'
+    render(<App />)
+    expect(
+      await screen.findByText(/Roi Et Provincial Agricultural Extension Office/),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/District Agricultural Extension Office/)).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: t('en', 'visit_official_website') }),
     ).toHaveAttribute('href', 'https://roiet.doae.go.th/')
+    expect(farmerFacingText()).not.toContain('unknown_amphoe')
+    expect(screen.queryByText(t('en', 'contact_not_connected'))).not.toBeInTheDocument()
+  })
+
+  it('switches Local Support office names and buttons without calling n8n', async () => {
+    const user = userEvent.setup()
+    seedLiveResult(narooGuidanceResponse(), {
+      ...completeAssessmentInput('en'),
+      district: 'pho_chai',
+    })
+    window.location.hash = '#/expert-support'
+    render(<App />)
+    expect(
+      await screen.findByText(/Pho Chai District Agricultural Extension Office/),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: t('en', 'call_office') })).toBeInTheDocument()
+    expect(fetch).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: /open menu/i }))
+    await user.click(screen.getByRole('button', { name: 'ไทย' }))
+    expect(
+      await screen.findByText('สำนักงานเกษตรอำเภอโพธิ์ชัย'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'โทรติดต่อ' })).toHaveAttribute(
+      'href',
+      'tel:+6643567033',
+    )
+    expect(screen.getByRole('link', { name: 'ส่งอีเมล' })).toHaveAttribute(
+      'href',
+      'mailto:Phochai.roi@doae.go.th',
+    )
+    expect(screen.getByRole('link', { name: 'เปิดเว็บไซต์สำนักงาน' })).toHaveAttribute(
+      'href',
+      'https://roiet.doae.go.th/phochai-101/',
+    )
+    expect(screen.getByText(t('th', 'contact_verify_notice'))).toBeInTheDocument()
+    expect(fetch).not.toHaveBeenCalled()
   })
 
   it('caches bilingual results and does not refetch a stored language', async () => {
@@ -326,28 +471,28 @@ describe('live result presentation', () => {
 
     render(<App />)
     expect(
-      await screen.findByText('ถั่วเขียวอาจเหมาะสมหลังนาข้าว'),
+      await screen.findByText(/มีความเหมาะสมเบื้องต้นสำหรับถั่วเขียว/),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(1)
 
     await user.click(screen.getByRole('button', { name: /เปิดเมนู|open menu/i }))
     await user.click(screen.getByRole('button', { name: 'English' }))
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(2)
 
     await user.click(screen.getByRole('button', { name: /open menu/i }))
     await user.click(screen.getByRole('button', { name: 'ไทย' }))
     expect(
-      await screen.findByText('ถั่วเขียวอาจเหมาะสมหลังนาข้าว'),
+      await screen.findByText(/มีความเหมาะสมเบื้องต้นสำหรับถั่วเขียว/),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(2)
 
     await user.click(screen.getByRole('button', { name: /เปิดเมนู|open menu/i }))
     await user.click(screen.getByRole('button', { name: 'English' }))
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(2)
   })
@@ -362,7 +507,7 @@ describe('live result presentation', () => {
     )
     const view = render(<App />)
     expect(
-      await screen.findByText('ถั่วเขียวอาจเหมาะสมหลังนาข้าว'),
+      await screen.findByText(/มีความเหมาะสมเบื้องต้นสำหรับถั่วเขียว/),
     ).toBeInTheDocument()
     expect(fetch).not.toHaveBeenCalled()
 
@@ -370,7 +515,7 @@ describe('live result presentation', () => {
     window.location.hash = '#/guidance'
     render(<App />)
     expect(
-      await screen.findByText('ถั่วเขียวอาจเหมาะสมหลังนาข้าว'),
+      await screen.findByText(/มีความเหมาะสมเบื้องต้นสำหรับถั่วเขียว/),
     ).toBeInTheDocument()
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -389,7 +534,7 @@ describe('live result presentation', () => {
 
     render(<App />)
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /open menu/i }))
@@ -407,7 +552,7 @@ describe('live result presentation', () => {
     await user.click(screen.getByRole('button', { name: /open menu|เปิดเมนู/i }))
     await user.click(screen.getByRole('button', { name: 'English' }))
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(1)
   })
@@ -423,7 +568,7 @@ describe('live result presentation', () => {
     )
     render(<App />)
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
 
     await user.click(
@@ -450,5 +595,184 @@ describe('live result presentation', () => {
     expect(
       await screen.findByText(t('th', 'weather_forecast_timing_note')),
     ).toBeInTheDocument()
+  })
+
+  it('presents R5 September escalation from structured data, not AI prose', async () => {
+    const input = {
+      ...completeAssessmentInput('en'),
+      district: 'pathum_rat',
+      fieldType: 'upland' as const,
+      previousCrop: 'mung_bean' as const,
+      plantingMonth: 9,
+      waterSource: 'rainfed' as const,
+      drainageCondition: 'moderate' as const,
+      soilKnowledge: 'yes' as const,
+      soilType: 'ดินร่วน',
+    }
+    const response = narooGuidanceResponse({
+      language: 'en',
+      classification: 'escalate',
+      confidence: 'medium',
+      requiresExpertSupport: true,
+      borderlineReasons: ['previous_crop', 'drainage_moderate'],
+      decisionTrace: {
+        classification: 'escalate',
+        confidence: 'medium',
+        hardEscalate: true,
+        requiresExpertSupport: true,
+        matchedRuleId: 'R5_PLANTING_MONTH',
+        matchedRuleDescription: 'Planting month is borderline',
+        ruleIds: ['R2_CRITICAL_INFO', 'R5_PLANTING_MONTH'],
+        borderlineReasons: ['previous_crop', 'drainage_moderate'],
+        rules: [
+          {
+            id: 'R2_CRITICAL_INFO',
+            description: 'Critical information is present',
+            result: 'pass',
+          },
+          {
+            id: 'R5_PLANTING_MONTH',
+            description: 'Planting month is borderline',
+            result: 'escalate',
+          },
+          {
+            id: 'borderline_previous_legume',
+            description: 'Previous mung bean',
+            result: 'borderline',
+          },
+          {
+            id: 'drainage_moderate',
+            description: 'Moderate drainage',
+            result: 'borderline',
+          },
+        ],
+      },
+      input: {
+        province: 'roi_et',
+        district: 'pathum_rat',
+        fieldType: 'upland',
+        previousCrop: 'mung_bean',
+        plantingMonth: 9,
+        waterSource: 'rainfed',
+        drainageCondition: 'moderate',
+      },
+      aiExplanation: {
+        generated: true,
+        language: 'en',
+        headline: 'September is a borderline planting month',
+        summary: 'classification: escalate; province=Roi Et; fieldType=Lowland paddy',
+        nextSteps: [
+          'province=Roi Et; fieldType=Lowland paddy',
+          'Use this September forecast to plant in December',
+          'Walk the field and speak with an officer',
+        ],
+      },
+    })
+    seedLiveResult(response, input)
+    render(<App />)
+
+    expect((await screen.findAllByText('Expert review required')).length).toBeGreaterThan(0)
+    expect(
+      screen.getByText(t('en', 'headline_escalate_planting_month')),
+    ).toBeInTheDocument()
+    const visible = farmerFacingText()
+    expect(visible).not.toContain('September is a borderline')
+    expect(visible).not.toMatch(/is a borderline planting month/i)
+    expect(visible).not.toContain(t('en', 'missing_uncertain'))
+    expect(visible).toContain(t('en', 'rule_planting_month_outside'))
+    expect(visible).toContain(t('en', 'concern_previous_mung_bean'))
+    expect(visible).toContain(t('en', 'concern_drainage_moderate'))
+    expect(visible).toContain('ดินร่วน')
+    expect(visible).not.toContain('ดินร่วง')
+    expect(visible).not.toContain('province=')
+    expect(visible).not.toMatch(/September \(September\)/)
+    expect(visible).toContain('Walk the field and speak with an officer')
+    expect(visible).not.toContain('plant in December')
+    expect(visible).not.toContain('September is a borderline')
+    expect(document.body.textContent).not.toMatch(/\bsvg\b/i)
+    for (const item of document.querySelectorAll('main li')) {
+      expect(item.textContent?.trim()).not.toBe('')
+      expect(item.textContent?.trim()).not.toMatch(/^[-*•]$/)
+    }
+
+    const stored = peekStoredResponse(assessmentFingerprint(input), 'en')
+    expect(stored?.aiExplanation.headline).toContain('borderline')
+    expect(stored?.aiExplanation.summary).toContain('province=Roi Et')
+  })
+
+  it('uses a drainage-specific headline for R3 escalate', async () => {
+    seedLiveResult(
+      narooGuidanceResponse({
+        classification: 'escalate',
+        requiresExpertSupport: true,
+        decisionTrace: {
+          classification: 'escalate',
+          confidence: 'low',
+          hardEscalate: true,
+          requiresExpertSupport: true,
+          matchedRuleId: 'R3_DRAINAGE_POOR',
+          matchedRuleDescription: 'Poor drainage',
+          ruleIds: ['R3_DRAINAGE_POOR'],
+          borderlineReasons: [],
+          rules: [
+            {
+              id: 'R3_DRAINAGE_POOR',
+              description: 'Poor drainage',
+              result: 'escalate',
+            },
+          ],
+        },
+      }),
+    )
+    render(<App />)
+    expect(
+      await screen.findByText(t('en', 'headline_escalate_drainage')),
+    ).toBeInTheDocument()
+  })
+
+  it('keeps Thai farmer-facing text free of known English labels', async () => {
+    const input = {
+      ...completeAssessmentInput('th'),
+      district: 'nong_phok',
+      fieldType: 'upland' as const,
+      waterSource: 'rainfed' as const,
+      soilType: 'ดินร่วน',
+      soilKnowledge: 'yes' as const,
+    }
+    seedLiveResult(
+      narooGuidanceResponse({
+        language: 'th',
+        classification: 'borderline',
+        requiresExpertSupport: true,
+        input: {
+          province: 'roi_et',
+          district: 'nong_phok',
+          fieldType: 'upland',
+          previousCrop: 'rice',
+          plantingMonth: 11,
+          waterSource: 'rainfed',
+          drainageCondition: 'good',
+          soilKnowledge: 'yes',
+          soilType: 'ดินร่วน',
+        },
+        aiExplanation: {
+          generated: true,
+          language: 'th',
+          headline: 'Roi Et Nong Phok upland rainfed classification edge',
+          summary: 'Use Lowland paddy in Pathum Rat',
+          nextSteps: ['ตรวจแปลง'],
+        },
+      }),
+      input,
+    )
+    render(<App />)
+    expect((await screen.findAllByText('ควรตรวจสอบเพิ่มเติม')).length).toBeGreaterThan(0)
+    const visible = farmerFacingText()
+    expect(visible).toContain('หนองพอก')
+    expect(visible).toContain('ที่ดอน')
+    expect(visible).toContain('อาศัยน้ำฝน')
+    expect(visible).toContain('ดินร่วน')
+    expect(visible).not.toMatch(/Roi Et|Nong Phok|Pathum Rat|Upland|Rainfed|classification/i)
+    expect(visible).not.toContain(t('th', 'missing_uncertain'))
   })
 })

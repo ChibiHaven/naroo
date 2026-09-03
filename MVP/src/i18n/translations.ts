@@ -46,7 +46,7 @@ const en: TranslationMap = {
     'This prototype supports Roi Et Province only. It does not claim nationwide agricultural coverage.',
   field_type_question: 'What type of field is this?',
   field_lowland: 'Lowland paddy',
-  field_upland: 'Upland field',
+  field_upland: 'Upland',
   field_other: 'Other',
   field_unsure: "I'm not sure",
   previous_crop_question: 'What did you grow most recently?',
@@ -128,7 +128,7 @@ const en: TranslationMap = {
   static_reference_note:
     'The following items are static prototype reference information kept in the app. They were not fetched as live API content.',
   weather_context_live:
-    'Weather from the guidance response is available as supporting context only.',
+    'A current seven-day weather forecast is available as separate supporting context',
   weather_context_unavailable:
     'Weather data was not available for this guidance response.',
   request_id_label: 'Request ID',
@@ -170,9 +170,9 @@ const en: TranslationMap = {
   weather_source_label: 'Weather source',
   weather_retrieved_label: 'Retrieved at',
   your_farm_guidance: 'Your Farm Guidance',
-  status_suitable: 'Suitable',
-  status_borderline: 'Borderline',
-  status_escalate: 'Escalate',
+  status_suitable: 'Likely suitable',
+  status_borderline: 'Further review recommended',
+  status_escalate: 'Expert review required',
   result_summary_suitable:
     'Based on the information provided, planting mung bean may be an option to consider after the major rice harvest.',
   result_summary_borderline:
@@ -314,11 +314,17 @@ const en: TranslationMap = {
   display_soil_no: 'No soil information',
   concern_field_type: 'Upland field conditions require additional review',
   concern_previous_crop: 'Previous crop requires additional rotation caution',
+  concern_previous_mung_bean:
+    'Previous mung bean creates additional rotation caution',
   concern_planting_month_edge:
     'Planting month is near the edge of the prototype window',
   concern_water_source_limited: 'Water supply may be limited or unreliable',
   concern_drainage_moderate: 'Drainage is moderate',
   concern_soil_knowledge: 'Soil information is unavailable',
+  rule_planting_month_outside:
+    'The planned planting month is outside the suitable or borderline prototype window',
+  rule_drainage_poor:
+    'Poor or waterlogged drainage requires expert review before planting mung bean',
   why_suitable:
     'No blocking or borderline condition was found under the prototype rules.',
   why_borderline_fallback:
@@ -328,9 +334,26 @@ const en: TranslationMap = {
   fallback_headline_suitable:
     'The field in {district}, {province} is preliminarily suitable for mung bean',
   fallback_headline_borderline:
-    'The field in {district}, {province} needs additional review before planting mung bean',
+    'Further field review is recommended before deciding to plant mung bean',
   fallback_headline_escalate:
     'The field in {district}, {province} should be reviewed with local agricultural support',
+  headline_escalate_planting_month:
+    'The planned planting month is outside the prototype window; expert review is required',
+  headline_escalate_drainage:
+    'Poor drainage requires expert review before planting mung bean',
+  fallback_step_review_answers: 'Review the farm information you entered',
+  fallback_step_consult_office:
+    'Consult the listed agricultural office for local professional advice',
+  fallback_step_collect_missing:
+    'Collect the missing field information identified by the prototype rules',
+  fallback_step_weather_context_only:
+    'View current weather only as present-day context, not as a planting-month forecast',
+  summary_confidence_high: 'High',
+  summary_confidence_medium: 'Medium',
+  summary_confidence_low: 'Low',
+  summary_expert_required: 'Expert support is required',
+  summary_expert_not_required: 'Expert support is not required by this result',
+  summary_matched_condition: 'Primary condition',
   source_prototype_title: 'Prototype rule basis',
   source_prototype_body:
     'The assessment uses project-defined demonstration rules that still require validation by agricultural experts.',
@@ -340,13 +363,15 @@ const en: TranslationMap = {
   technical_details: 'Technical details',
   weather_technical_details: 'Technical weather details',
   more_details: 'More details',
-  call_office: 'Call',
-  email_office: 'Email',
-  visit_official_website: 'Visit official website',
+  call_office: 'Call office',
+  email_office: 'Send email',
+  visit_official_website: 'Open official website',
+  contact_verify_notice:
+    'Contact details may change. Please verify them on the official website before calling or visiting.',
   expert_phonthong_name: 'Phon Thong District Agricultural Extension Office',
   expert_roi_et_general_title: 'Roi Et Provincial Agricultural Extension Office',
   expert_roi_et_general_body:
-    'District-specific contact details are shown only for Phon Thong. For other districts, use the provincial agricultural office website.',
+    'When a district office page does not list a verified phone, email, or address, the provincial agricultural office is also shown.',
 }
 
 const th: TranslationMap = {
@@ -393,7 +418,7 @@ const th: TranslationMap = {
     'ระบบนี้ใช้ได้เฉพาะจังหวัดร้อยเอ็ด ไม่ครอบคลุมทั้งประเทศ',
   field_type_question: 'แปลงนี้เป็นแบบไหน?',
   field_lowland: 'นาลุ่ม',
-  field_upland: 'ที่ดอน / ไร่',
+  field_upland: 'ที่ดอน',
   field_other: 'อื่นๆ',
   field_unsure: 'ไม่แน่ใจ',
   previous_crop_question: 'พืชที่ปลูกก่อนหน้านี้คืออะไร?',
@@ -420,7 +445,7 @@ const th: TranslationMap = {
   month_11: 'พฤศจิกายน',
   month_12: 'ธันวาคม',
   water_question: 'น้ำหรือความชื้นในแปลงเป็นอย่างไร?',
-  water_irrigated: 'มีน้ำชลประทาน',
+  water_irrigated: 'มีระบบชลประทาน',
   water_residual: 'ใช้ความชื้นดินหลังเกี่ยวข้าว',
   water_rainfed: 'อาศัยน้ำฝน',
   water_limited: 'น้ำน้อยหรือไม่แน่นอน',
@@ -467,7 +492,7 @@ const th: TranslationMap = {
   live_analysis_badge: 'กำลังขอคำแนะนำแบบออนไลน์',
   demonstration_mode: 'โหมดสาธิต',
   prototype_analysis: 'การวิเคราะห์แบบต้นแบบ',
-  next_steps: 'สิ่งที่ควรทำต่อไป',
+  next_steps: 'ขั้นตอนต่อไปที่แนะนำ',
   ai_explanation_note:
     'ข้อความอธิบายอาจใช้ AI ช่วยเขียน แต่ไม่ได้เป็นตัวกำหนดผลสถานะจากกฎ',
   no_supporting_rules: 'ไม่มีรายละเอียดกฎสนับสนุนที่ส่งกลับมาสำหรับผลนี้',
@@ -475,7 +500,7 @@ const th: TranslationMap = {
   static_reference_note:
     'รายการต่อไปนี้เป็นข้อมูลอ้างอิงแบบคงที่ในแอป ไม่ได้ดึงมาแบบสดจากบริการคำแนะนำ',
   weather_context_live:
-    'มีข้อมูลอากาศจากผลการวิเคราะห์ไว้เป็นข้อมูลประกอบเท่านั้น',
+    'มีข้อมูลพยากรณ์อากาศ 7 วันปัจจุบันสำหรับดูประกอบแยกต่างหาก',
   weather_context_unavailable:
     'ไม่มีข้อมูลอากาศในผลการวิเคราะห์ครั้งนี้',
   request_id_label: 'รหัสคำขอ',
@@ -519,7 +544,7 @@ const th: TranslationMap = {
   your_farm_guidance: 'คำแนะนำสำหรับนาของคุณ',
   status_suitable: 'น่าจะเหมาะสม',
   status_borderline: 'ควรตรวจสอบเพิ่มเติม',
-  status_escalate: 'ควรปรึกษาเจ้าหน้าที่',
+  status_escalate: 'ควรปรึกษาผู้เชี่ยวชาญ',
   result_summary_suitable:
     'จากข้อมูลที่คุณให้ การปลูกถั่วเขียวหลังเกี่ยวข้าวนาปีอาจเป็นทางเลือกที่ควรพิจารณา',
   result_summary_borderline:
@@ -659,20 +684,43 @@ const th: TranslationMap = {
   display_soil_no: 'ยังไม่มีข้อมูลดิน',
   concern_field_type: 'สภาพแปลงที่ดอนต้องตรวจเพิ่มในพื้นที่',
   concern_previous_crop: 'พืชก่อนหน้าทำให้ต้องระวังเรื่องการปลูกซ้ำ',
-  concern_planting_month_edge: 'เดือนที่วางแผนปลูกอยู่ขอบช่วงที่ระบบใช้สาธิต',
+  concern_previous_mung_bean:
+    'การปลูกถั่วเขียวเป็นพืชก่อนหน้าทำให้ต้องพิจารณาการปลูกซ้ำเพิ่มเติม',
+  concern_planting_month_edge: 'เดือนที่วางแผนปลูกอยู่ช่วงก้ำกึ่งของกฎต้นแบบ',
   concern_water_source_limited: 'น้ำอาจน้อยหรือไม่แน่นอน',
-  concern_drainage_moderate: 'ระบายน้ำได้ปานกลาง',
+  concern_drainage_moderate: 'การระบายน้ำอยู่ในระดับปานกลาง',
   concern_soil_knowledge: 'ยังไม่มีข้อมูลดิน',
+  rule_planting_month_outside:
+    'เดือนที่วางแผนปลูกอยู่นอกช่วงเหมาะสมหรือช่วงก้ำกึ่งของกฎต้นแบบ',
+  rule_drainage_poor:
+    'การระบายน้ำไม่ดีหรือมีน้ำขัง ควรปรึกษาผู้เชี่ยวชาญก่อนปลูกถั่วเขียว',
   why_suitable:
     'ไม่พบเงื่อนไขที่ต้องระวังหรือส่งต่อ ตามกฎของระบบต้นแบบ',
   why_borderline_fallback: 'ยังมีเงื่อนไขที่ควรตรวจเพิ่มในพื้นที่',
-  why_escalate_fallback: 'ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
+  why_escalate_fallback: 'ควรปรึกษาผู้เชี่ยวชาญด้านการเกษตรในพื้นที่',
   fallback_headline_suitable:
-    'แปลงในอำเภอ{district} จังหวัด{province}มีความเหมาะสมเบื้องต้นสำหรับการปลูกถั่วเขียว',
+    'แปลงในอำเภอ{district} จังหวัด{province}มีความเหมาะสมเบื้องต้นสำหรับถั่วเขียว',
   fallback_headline_borderline:
-    'แปลงในอำเภอ{district} จังหวัด{province}ยังต้องตรวจเพิ่มก่อนปลูกถั่วเขียว',
+    'ควรตรวจสอบข้อมูลแปลงเพิ่มเติมก่อนตัดสินใจปลูกถั่วเขียว',
   fallback_headline_escalate:
-    'แปลงในอำเภอ{district} จังหวัด{province}ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
+    'แปลงในอำเภอ{district} จังหวัด{province}ควรปรึกษาผู้เชี่ยวชาญด้านการเกษตรในพื้นที่',
+  headline_escalate_planting_month:
+    'เดือนที่วางแผนปลูกอยู่นอกช่วงของกฎต้นแบบ ควรปรึกษาผู้เชี่ยวชาญ',
+  headline_escalate_drainage:
+    'การระบายน้ำไม่ดี ควรปรึกษาผู้เชี่ยวชาญก่อนปลูกถั่วเขียว',
+  fallback_step_review_answers: 'ทบทวนข้อมูลนาที่คุณกรอก',
+  fallback_step_consult_office:
+    'ปรึกษาสำนักงานเกษตรที่แสดงไว้เพื่อขอคำแนะนำในพื้นที่',
+  fallback_step_collect_missing:
+    'รวบรวมข้อมูลที่กฎต้นแบบระบุว่ายังขาด',
+  fallback_step_weather_context_only:
+    'ดูพยากรณ์อากาศปัจจุบันได้เพียงเป็นข้อมูลประกอบ ไม่ใช่พยากรณ์เดือนที่วางแผนปลูก',
+  summary_confidence_high: 'สูง',
+  summary_confidence_medium: 'ปานกลาง',
+  summary_confidence_low: 'ต่ำ',
+  summary_expert_required: 'ผลนี้ระบุว่าควรปรึกษาผู้เชี่ยวชาญ',
+  summary_expert_not_required: 'ผลนี้ไม่ได้ระบุว่าต้องปรึกษาผู้เชี่ยวชาญ',
+  summary_matched_condition: 'เงื่อนไขหลัก',
   source_prototype_title: 'ฐานของกฎต้นแบบ',
   source_prototype_body:
     'ผลการประเมินใช้กฎสาธิตของโครงการ ซึ่งยังต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญด้านการเกษตร',
@@ -682,13 +730,15 @@ const th: TranslationMap = {
   technical_details: 'รายละเอียดทางเทคนิค',
   weather_technical_details: 'รายละเอียดอากาศทางเทคนิค',
   more_details: 'ดูรายละเอียดเพิ่ม',
-  call_office: 'โทร',
-  email_office: 'อีเมล',
-  visit_official_website: 'เปิดเว็บไซต์ทางการ',
+  call_office: 'โทรติดต่อ',
+  email_office: 'ส่งอีเมล',
+  visit_official_website: 'เปิดเว็บไซต์สำนักงาน',
+  contact_verify_notice:
+    'ข้อมูลติดต่ออาจมีการเปลี่ยนแปลง โปรดตรวจสอบกับเว็บไซต์ทางการก่อนโทรหรือเดินทาง',
   expert_phonthong_name: 'สำนักงานเกษตรอำเภอโพนทอง',
   expert_roi_et_general_title: 'สำนักงานเกษตรจังหวัดร้อยเอ็ด',
   expert_roi_et_general_body:
-    'แสดงข้อมูลติดต่อเฉพาะอำเภอโพนทอง สำหรับอำเภออื่นให้ใช้เว็บไซต์สำนักงานเกษตรจังหวัด',
+    'หากหน้าเว็บสำนักงานเกษตรอำเภอไม่มีโทรศัพท์ อีเมล หรือที่อยู่ที่ยืนยันได้ ระบบจะแสดงสำนักงานเกษตรจังหวัดควบคู่ไปด้วย',
 }
 
 const dictionaries: Record<LanguageCode, TranslationMap> = { en, th }

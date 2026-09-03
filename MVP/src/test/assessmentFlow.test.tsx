@@ -102,11 +102,9 @@ describe('revised assessment journey', () => {
     expect(
       await screen.findByText('PROTOTYPE GUIDANCE — NOT LIVE AGRICULTURAL ADVICE'),
     ).toBeInTheDocument()
-    expect(
-      screen.getByText('Mung bean may be suitable after rice.'),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/preliminarily suitable for mung bean/i)).toBeInTheDocument()
     expect(screen.getByText(/^Mung bean$|^ถั่วเขียว$/i)).toBeInTheDocument()
-    expect(screen.getByText('Suitable')).toBeInTheDocument()
+    expect(screen.getAllByText('Likely suitable').length).toBeGreaterThan(0)
     expect(fetch).toHaveBeenCalledTimes(1)
     expect(classifySpy).not.toHaveBeenCalled()
     expect(prototypeSpy).not.toHaveBeenCalled()
@@ -209,7 +207,7 @@ describe('revised assessment journey', () => {
       screen.getByRole('button', { name: /get my guidance|ดูคำแนะนำ/i }),
     )
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(1)
 
@@ -221,7 +219,7 @@ describe('revised assessment journey', () => {
     render(<App />)
 
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(screen.getByText(/req-test-001/)).toBeInTheDocument()
     expect(fetch).not.toHaveBeenCalled()
@@ -284,7 +282,7 @@ describe('revised assessment journey', () => {
 
     await user.click(screen.getByRole('button', { name: /retry|ลองอีกครั้ง/i }))
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
     expect(fetchMock).toHaveBeenCalledTimes(2)
   })
@@ -299,7 +297,7 @@ describe('revised assessment journey', () => {
       screen.getByRole('button', { name: /get my guidance|ดูคำแนะนำ/i }),
     )
     expect(
-      await screen.findByText('Mung bean may be suitable after rice.'),
+      await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /weather snapshot|ดูสภาพอากาศ/i }))

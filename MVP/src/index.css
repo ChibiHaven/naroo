@@ -74,6 +74,18 @@
     outline-offset: 2px;
   }
 
+  li:empty {
+    display: none;
+  }
+
+  summary {
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

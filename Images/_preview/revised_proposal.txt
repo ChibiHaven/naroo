@@ -1,0 +1,263 @@
+
+GROUP 3  •  REVISED PROJECT PROPOSAL
+NaRoo
+AI Decision Support for Rice–Legume Rotation in Roi Et, Thailand
+A focused course MVP that combines trusted agronomic rules with AI-generated explanations
+Revised MVP decision:  Should a rice farmer in Roi Et plant mung bean after the major rice harvest under the farmer’s stated field, water, drainage, timing, and soil conditions?
+
+Name
+Student ID
+Syeda Suhaymah Ahmed
+ST127077
+Kanyapak Chaitip
+ST127315
+Anchaleephorn Suepjaiyot
+ST127350
+Mubruka Kalsam Nadee Khan
+ST127066
+Alexander Ludwig
+ST127286
+Marisa Chen
+ST126142
+
+Revision date: September 2026
+
+Executive Summary
+NaRoo is a mobile-first decision-support prototype for smallholder rice farmers in Roi Et Province. In response to the professor’s feedback, the project has been narrowed from a multi-crop, multi-province agricultural platform to one practical decision: whether planting mung bean after the major rice harvest is suitable for a farmer’s stated conditions. The MVP will not attempt to diagnose crops, prescribe exact chemical rates, predict yields or prices, or replace an agronomist.
+The prototype uses a hybrid design. A small, transparent rule set—reviewed against credible agronomic guidance—determines whether a scenario is Suitable, Borderline, or Escalate. An LLM is used only to interpret free-text inputs and explain the rule-based result in simple Thai or English. Every recommendation shows the inputs used, sources, uncertainty, key risks, and a referral path for cases that cannot be supported safely.
+Design continuity:  The existing 10-screen UI/UX is retained. Scope is narrowed through content and logic changes—not a redesign. Weather and price remain read-only supporting screens; automated alerts, live market prediction, SMS/voice, and a 500-farmer pilot move to the future roadmap.
+
+How the Proposal Responds to Feedback
+Professor’s feedback
+Revision made
+Scope is too broad
+One province (Roi Et), one primary user group (rice farmers), and one decision (post-rice mung bean suitability).
+Use trusted agronomic rules
+A deterministic decision layer controls the outcome; the LLM cannot override hard safety rules.
+Show sources and uncertainty
+The result screen includes source links, assumptions, confidence language, and last-updated dates.
+Refer difficult cases
+Borderline, conflicting, missing, or high-risk scenarios are referred to a verified district/provincial agricultural extension contact.
+Test several scenarios and obtain feedback
+A scenario test set plus feedback from at least three farmers, agronomy-informed stakeholders, or agricultural practitioners.
+Measure safety and usefulness
+Accuracy, clarity, usefulness, source support, and unsafe/unsupported advice rate are explicit evaluation measures.
+Address literacy and adoption
+Mobile-first forms, icons, short sentences, Thai-language option, assisted use, and policy-facing rollout considerations.
+Move 500-farmer pilot to roadmap
+The current course prototype uses scenario-based testing and 3+ external reviewers; a larger pilot is future work.
+
+1. Selected Sector / Industry
+Sector: AgricultureIndustry focus: Digital agricultural extension and decision support for rainfed smallholder rice systems in Roi Et Province, northeastern Thailand.
+2. Specific Problem and Evidence of Its Importance
+Smallholder farmers often make rotation decisions with incomplete, fragmented, or generic information. Digital agriculture can widen access to advice, but smallholders may still face barriers related to affordability, literacy, connectivity, local relevance, and trust (Gumbi et al., 2023). The revised prototype therefore addresses a single decision where context matters: whether a rice field is suitable for a short-duration legume after the major rice season.
+The decision is relevant because a rice–legume rotation can potentially diversify production and support soil nitrogen management, yet suitability depends on planting window, residual moisture or irrigation, drainage, field type, soil information, and local conditions. Thailand-specific research has examined soybean within integrated rotation systems in the Northeast, reinforcing the relevance of locally tested rotation approaches while also showing why recommendations must remain conditional rather than universal (Taiyawong et al., 2025).
+Roi Et is selected to create a coherent local context and a realistic referral pathway. It falls within the area served by the Office of Agricultural Economics Region 4, and rice is a central crop in the region. This location replaces the earlier multi-province scope.
+3. Target Users and Stakeholders
+Primary user
+A smallholder rice farmer in Roi Et who is deciding what to do with a lowland paddy field after the major rice harvest.
+The farmer may have limited agronomic knowledge, uncertain soil information, intermittent connectivity, or low confidence using text-heavy digital services.
+Secondary stakeholders
+District and provincial agricultural extension officers, who can review rules and receive difficult cases.
+Farmer groups or cooperatives, which can support assisted use and gather feedback.
+Policymakers and public extension agencies interested in safe, scalable, and inclusive digital advisory delivery.
+4. Proposed Role of AI
+AI supports communication and interpretation; it is not the sole agronomic decision-maker. The MVP separates the trusted recommendation layer from the explanation layer:
+Component
+Role in the MVP
+Boundary
+Structured form
+Collects province/district, field type, previous crop, planting month, water source, drainage, area, soil knowledge, and goal.
+Required fields and “unsure” options reduce guessing.
+Rules engine
+Applies agronomist-reviewed thresholds and returns Suitable, Borderline, or Escalate.
+Hard rules cannot be changed by the LLM.
+LLM
+Converts the decision trace into simple Thai/English guidance and interprets limited free text.
+Must use only supplied rules, sources, and inputs; must not invent facts, chemical rates, or contacts.
+Weather API
+Shows a near-term snapshot relevant to establishment risk.
+Context only; no automated warning system in the course MVP.
+Price reference
+Lets a farmer compare an offer with clearly dated reference values.
+No price prediction, buyer matching, or fairness guarantee.
+Human referral
+Routes uncertain or risky cases to a verified extension contact.
+Contact information must be verified before demonstration or field use.
+
+5. Novelty and Value
+Hybrid safety architecture: trusted rules determine the recommendation; generative AI explains it accessibly.
+Decision transparency: users can inspect the assumptions, rule-based reasons, sources, risks, and last-updated dates behind an answer.
+Practical inclusion: icons, short forms, “unsure” choices, Thai-language output, and assisted use reduce barriers for farmers with lower digital or reading confidence.
+Focused value: the app helps a farmer make one seasonal choice more confidently instead of promising an end-to-end agricultural platform.
+6. Initial Implementation and Prototype Plan
+6.1 Prototype workflow
+The farmer opens NaRoo and selects Get Farm Guidance.
+The farmer completes the existing three-step Farm Information form.
+The system validates missing or conflicting inputs and lists explicit assumptions.
+The rules engine classifies the case as Suitable, Borderline, or Escalate.
+The LLM explains the result in plain Thai or English without changing the classification.
+The Guidance Result screen shows reasons, planting window, major risks, sources, uncertainty, and a human-referral action when required.
+The farmer may open the Weather Snapshot, Price Reference, Source Details, Assumptions, and Safety & Disclaimer screens.
+6.2 Illustrative decision logic
+Important:  The thresholds below are prototype logic for demonstration. They must be reviewed by an agronomist or extension officer before any real-world use.
+
+Outcome
+Illustrative conditions
+System behaviour
+Suitable
+Roi Et lowland paddy; previous crop is rice; timing fits the verified post-rice window; water and drainage are adequate; no hard-risk flag.
+Recommend considering mung bean; explain benefits, constraints, and next checks.
+Borderline
+One important factor is uncertain or marginal—for example soil information is unknown, water is limited, or planting timing is near the edge of the verified window.
+Give conditional guidance, state uncertainty, and recommend confirmation with an extension officer.
+Escalate
+Location is outside scope; field conditions conflict; serious waterlogging/drought concern; chemical-rate request; pest/disease diagnosis; or insufficient inputs for safe advice.
+Do not make a suitability claim. Explain the limitation and show a verified human-referral route.
+
+6.3 UI/UX alignment
+Existing screen
+How it is retained in the focused MVP
+1. Home
+Keep both entry points. “Get Farm Guidance” is primary; “Compare a Buyer Offer” remains a limited reference tool.
+2–4. Farm Information
+Keep the three-step flow and icons. Lock location scope to Roi Et; retain “unsure” responses; adjust crop choices to the rice-to-mung-bean decision.
+5. Guidance Result
+Keep the card layout. Replace generic “Suitable Option” with a clear Suitable/Borderline/Escalate status; show uncertainty and referral when applicable.
+6. Weather Snapshot
+Keep as a read-only seven-day snapshot with source and timestamp. Use only to explain immediate establishment risks.
+7. Price Reference
+Keep as a dated offer-comparison calculator. Label all values as references; do not claim a fair price or predict future prices.
+8. Source Details
+Keep the source title, organization, date, summary, and link. Use only verified sources.
+9. Assumptions
+Keep exactly as a transparency screen; allow the user to go back and change inputs.
+10. Safety & Disclaimer
+Keep the acknowledgement. Add a clear extension referral and explain that the tool does not replace professional advice.
+
+7. Data, Tools, and Resources Required
+Category
+Course-MVP requirement
+Agronomic knowledge
+A small, cited rule base drawn from Thai government/extension material and relevant Thailand-specific research; review by an agronomy-informed stakeholder where feasible.
+Weather
+Open-Meteo Forecast API for a free, no-key, non-commercial classroom prototype; attribution displayed in the UI.
+Market reference
+Manually entered or periodically updated, dated OAE/local cooperative reference values for demonstration; no real-time market feed required.
+AI and automation
+An LLM free tier or trial for controlled explanations; n8n for form-to-rules-to-response workflow; deterministic validation and branching.
+Front end
+Existing mobile-first UI/UX implemented with a free-trial/no-code or lightweight web tool.
+Human resources
+At least three external reviewers in total, including farmers, agricultural practitioners, extension-linked stakeholders, or people with relevant field knowledge.
+Prototype data
+Synthetic farmer scenarios plus voluntary reviewer feedback. Avoid collecting unnecessary personal data.
+
+8. Key Risks, Responsible-AI Considerations, and Controls
+Risk
+Control
+Unsafe or unsupported advice
+Rules-first classification; restricted prompt; source requirement; prohibited-content checks; escalation on missing evidence.
+LLM hallucination
+LLM receives only structured inputs, decision trace, and approved text; output checked for unsupported claims before display.
+False certainty
+Suitable/Borderline/Escalate labels, explicit assumptions, key risks, source dates, and “change inputs” option.
+Over-reliance
+Safety acknowledgement and visible reminder that local conditions and professional advice take precedence.
+Literacy and language barriers
+Thai-language option, icons, short sentences, limited choices, “unsure” responses, and cooperative-assisted use.
+Connectivity and access
+Lightweight screens and saved results; SMS/voice fallback postponed until after the MVP.
+Privacy
+Collect only farm-decision inputs; avoid national ID, exact home address, financial credentials, and unrelated personal data.
+Stale weather or prices
+Display source and timestamp; label information as snapshot/reference; do not guarantee accuracy or future values.
+Unverified referral information
+Use a placeholder during development and publish a contact only after verifying it with the relevant Roi Et/district office.
+
+9. Measures Used to Evaluate Success
+The course prototype will be evaluated on decision quality and user comprehension—not yield or income changes, which cannot be credibly measured within the project period.
+Measure
+How measured
+Initial target
+Rule accuracy
+Expected vs. actual classification across prepared scenarios, checked by the team and an agronomy-informed reviewer.
+≥ 90% after correction cycle
+Unsafe/unsupported advice rate
+Outputs containing a recommendation that violates a hard rule or lacks approved support.
+0% in final test set
+Source traceability
+Recommendations with a visible, relevant source and date.
+100%
+Clarity
+Reviewer rating of how easy the result is to understand (5-point scale).
+Average ≥ 4/5
+Usefulness
+Reviewer rating of whether the result helps the next decision (5-point scale).
+Average ≥ 4/5
+Uncertainty handling
+Borderline/escalation cases that state limits and provide the correct next step.
+100%
+Task completion
+Reviewers able to complete the form and locate result, assumptions, and source without assistance.
+At least 80%
+
+10. Testing Plan
+10.1 Scenario-based testing
+Scenario
+Expected outcome
+Purpose
+In-scope field, appropriate timing, adequate moisture, good drainage
+Suitable
+Tests the positive pathway and explanation quality.
+In-scope field but unknown soil and limited water
+Borderline
+Tests uncertainty language and conditional advice.
+Outside Roi Et, poor drainage/waterlogging, missing critical inputs, or chemical-rate request
+Escalate
+Tests safe refusal and human referral.
+Conflicting answers or free text that tries to override rules
+Escalate / validation error
+Tests prompt-injection resistance and rule precedence.
+Stale or unavailable weather/price data
+Guidance continues without claim; screen shows unavailable/stale status
+Tests graceful degradation.
+
+10.2 User/stakeholder feedback
+If feasible, at least three reviewers will complete one or more scenarios and rate clarity, usefulness, trust, ease of navigation, and whether the recommended next step is appropriate. Feedback will be summarized, and the team will document which changes were made or deferred.
+11. Adoption and Policy Considerations
+Use trusted intermediaries—farmer groups, cooperatives, and local extension staff—to introduce the tool and support first-time use.
+Offer Thai as the default language for field testing; use plain terminology, visual cues, and confirmation screens.
+Design for assisted use on a shared device rather than assuming every farmer owns a smartphone or has continuous data access.
+For policymakers, position NaRoo as an extension-support tool with an auditable rule base, not as a replacement for public agricultural officers.
+Before any public deployment, establish content ownership, update schedules, contact verification, incident reporting, and approval of agronomic rules.
+12. Scope Boundaries and Future Roadmap
+Included in course MVP
+Future roadmap—not claimed in this prototype
+Roi Et only; rice farmer; one post-rice rotation decision; structured form; rule-based status; AI explanation; source and assumption screens; weather snapshot; dated price reference; scenario tests; 3+ reviewers.
+Additional provinces and crops; automatic severe-weather alerts; SMS/voice; soil sensors or image diagnosis; exact fertilizer/chemical prescriptions; live price feeds; buyer matching; outcome evaluation; 500-farmer pilot.
+
+13. Proposed Deliverables
+Clickable mobile-first prototype using the existing 10-screen visual design.
+n8n workflow connecting form inputs, validation, rules, LLM explanation, and result routing.
+Documented agronomic rule set with sources, assumptions, prohibited outputs, and escalation conditions.
+Scenario test sheet and evaluation summary, including feedback from at least three external reviewers if feasible.
+Short final presentation explaining the narrowed problem, responsible-AI design, results, limitations, and roadmap.
+
+Appendix A. Existing UI/UX Base and Required Content Updates
+The visual hierarchy, navigation, three-step form, guidance card, optional evidence checks, and disclaimer are retained. Only the content configuration and safety states need to change for the revised scope.
+
+Figure 1. Existing NaRoo prototype screens supplied by Group 3.
+Minimum UI copy changes
+Use Roi Et as the prototype location and identify the district when available.
+Change the result example from a generic soybean option to the specific post-rice mung bean decision, unless the approved agronomic rule base ultimately selects another legume.
+Add Borderline and Escalate visual states alongside Suitable.
+Add “Why this status?”, “What we are unsure about,” and “Talk to an extension officer” to relevant results.
+Keep source, timestamp, assumptions, and disclaimer visible and accessible.
+
+References
+Gumbi, N., Gumbi, L., & Twinomurinzi, H. (2023). Towards sustainable digital agriculture for smallholder farmers: A systematic literature review. Sustainability, 15(16), 12530. https://doi.org/10.3390/su151612530
+Office of Agricultural Economics. (2022). Agricultural statistics of Thailand 2021. Ministry of Agriculture and Cooperatives. https://www.oae.go.th/
+Open-Meteo. (n.d.). Weather Forecast API. Retrieved September 3, 2026, from https://open-meteo.com/en/docs
+Taiyawong, A., Monkham, T., Sanitchon, J., Choenkwan, S., Srisawangwong, S., Khodphuwiang, J., Reewarabundit, S., & Chankaew, S. (2025). Yield stability of soybean variety Morkhor 60 in integrated rotation systems of Northeastern Thailand. Plants, 14(16), 2503. https://doi.org/10.3390/plants14162503
+Note: Before field use, the final agronomic thresholds, planting windows, and human-referral details must be validated against current Thai Department of Agriculture/Rice Department guidance and confirmed by an appropriately qualified local expert.

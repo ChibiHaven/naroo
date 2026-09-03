@@ -1,0 +1,104 @@
+AI Farming Advisor
+Rice, Maize and Legume Farmers in Thailand
+Agent Specification — Input Data, Responsibilities, Outputs
+This document specifies what the AI agent needs as input, what it is responsible for doing, and what it must return. It is written as an implementation brief for the n8n build.
+Architecture note. The proposal describes three quite different functions — agronomic advisory, rotation planning, and price transparency. These should not sit inside a single agent with one large prompt. Use a router agent that dispatches to specialised sub-workflows. Otherwise the agent will call the soil database on a price question and invent fertiliser rates.
+1. Required Input Data
+1.1 From the farmer — onboarding (stored once in the database)
+This is the farmer profile injected into the prompt on every request.
+Field
+Why it is needed
+GPS pin or Province / Amphoe / Tambon
+Weather, soil series and regional prices. Province alone is too coarse.
+Area in rai (not hectares)
+Farmers think in rai. Every recommendation must be expressed in kg per rai.
+Number and location of plots
+Rotation is planned per plot, not per farm.
+Current crop and variety
+Hom Mali 105 and RD41 have entirely different maturity windows and fertiliser profiles.
+Planting date
+Determines the growth stage, which underpins every timing recommendation.
+Irrigated vs. rainfed
+The single most important parameter. Decides whether a second season or a legume rotation is possible at all.
+Previous crops, last 2–3 seasons
+Without this history, rotation planning is guesswork.
+Last yield (kg/rai) and fertiliser used
+Baseline for KPI measurement and for calibrating recommendations.
+Seed capital and risk appetite
+A legume rotation requires up-front spend. Without this field the agent recommends things the farmer cannot afford.
+Preferred channel and language (Central Thai / Isaan / Northern Thai)
+Controls output format: in-app text, voice, or SMS.
+1.2 From the farmer — per request
+Free-text or voice message. Voice is not optional for this user group.
+Photo of the plant, for pest, disease or nutrient-deficiency diagnosis.
+Observations: growth stage, water level in the field, severity of infestation.
+For selling questions: quantity, grain moisture content, and the price the trader is actually offering.
+Moisture content is the critical field for the price use case. Paddy rice in Thailand is priced on moisture, so comparing an offer against a reference price without it produces a worthless answer and erodes trust.
+1.3 External sources
+Weather
+Thai Meteorological Department public web service at data.tmd.go.th/api. Provides current conditions plus five-day forecasts for temperature, rainfall and wind, and one year of historical records. TMD operates 118 stations nationwide, 21 of them agromet stations — check how close the nearest one is to the pilot districts.
+Open-Meteo as fallback: free, no API key, usable immediately from an n8n HTTP Request node. Recommended starting point for the MVP, with TMD added later.
+Prices
+OAE Open Data (mis-app.oae.go.th/service/opendata): daily agricultural prices, weekly farmgate prices actually received by farmers, and production cost data. The weekly farmgate series is your benchmark; the cost data additionally enables a gross-margin calculation.
+MOC Open Data (data.moc.go.th) from the Department of Internal Trade. Note the call order: the product code must be retrieved from the products API before price data can be pulled — two chained nodes in n8n.
+NABC Agricultural Data Service API (agriapi.nabc.go.th) for price and production indices.
+Soil and suitability
+Land Development Department publishes soil groups, land use, soil suitability for crop cultivation, problem soils and economic-crop zoning as GIS layers, plus a 1:25,000 soil series map. The suitability layers for rice and field crops are the data foundation of the rotation planner.
+SoilGrids (ISRIC) as a global fallback for pH and texture.
+Agronomic knowledge base (RAG vector store)
+DOAE extension bulletins, Rice Department variety catalogues, DOA fertiliser and crop-protection recommendations. This must live in a vector store — the agent must never derive fertiliser rates from the model’s general knowledge.
+2. What the Agent Does
+The agent is not a knowledge store. It is a translator that turns raw data into a decision the farmer can act on.
+Classify intent — advisory, price, rotation, diagnosis, or alert.
+Load the farmer profile and inject it into context: location, crop, planting date, irrigation status.
+Compute the growth stage from planting date and variety. Almost every recommendation hangs on this axis.
+Call the relevant tools and reconcile the results.
+Translate into a concrete action in plain language, with a number and a time window — or escalate.
+Guardrails
+These belong explicitly in the system message:
+No price forecasts. This is a liability risk and is already flagged in section 8 of the proposal.
+No crop-protection dosages without a retrieved citation from the vector store.
+No recommendation below the confidence threshold — route to the cooperative’s extension officer instead.
+Never override local knowledge. Present recommendations as options with reasoning, not as instructions.
+Two trigger types in n8n
+Reactive: Chat / LINE trigger to the router agent. In Thailand the channel is LINE, not WhatsApp — use the LINE Messaging API with a webhook.
+Proactive: Schedule trigger daily at 05:00, iterate all profiles, call the weather API, evaluate rules, and only invoke the agent to phrase a message when a rule fires. Weather alerts must not depend on the farmer asking.
+3. Output
+Structured JSON internally, rendered natural language externally. The JSON is what drives the app UI, SMS truncation, voice output, and KPI logging.
+{
+"intent": "sell_decision",
+"headline": "Wait 3–5 more days before selling",
+"action": "Do not sell today. Dry down to 15% moisture.",
+"numbers": {
+"offer_baht_kg": 8.20,
+"reference_farmgate": 9.10,
+"difference_pct": -9.9
+},
+"reasoning_short": "The trader price is 10% below the OAE weekly
+average for your province.",
+"confidence": 0.82,
+"sources": ["OAE farmgate week 34/2026"],
+"escalate": false,
+"sms_version": "ราคาที่เสนอ 8.20 ต่ำกว่าราคาอ้างอิง 9.10 บาท/กก. แนะนำรอ",
+"next_check": "2026-08-28"
+}
+What the farmer actually wants: a decision, not data
+Use case
+Wrong output
+Right output
+Price
+"The market price is 9.10 THB/kg."
+"The offer is 10% below the reference price. Wait 3–5 days, check again on 28 Aug."
+Fertiliser
+"Rice needs nitrogen."
+"25 kg of 16-20-0 per rai, within the next 7 days, before Thursday’s rain."
+Rotation
+"Soybean is a good preceding crop."
+"After the November rice harvest: mung bean on plot 2. Seed ~450 THB/rai, harvest in February, saves roughly 12 kg N/rai next season."
+Diagnosis
+"It could be a fungus."
+"Likely rice blast. The photo shows typical lesions. Forwarded to the extension officer, reply expected today."
+Every response should carry four elements and no more: an action, a number, a time window, and one sentence of reasoning. For voice and SMS channels, the sms_version field applies, capped at roughly 160 characters.
+4. Recommended Starting Point
+Begin the MVP with price transparency. OAE data is available immediately, the workflow requires no vector store or image pipeline, and the result is measurable for the farmer directly in baht — which makes it the cleanest use case for the pilot KPIs in section 9 of the proposal.
+Once that loop is validated with the cooperative, add weather alerts (same data path, proactive trigger), then the agronomic advisory with RAG, and finally the rotation planner, which depends on the largest number of inputs being populated.

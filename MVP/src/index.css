@@ -1,18 +1,53 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-brand-primary: #08733b;
-  --color-brand-dark: #075c30;
-  --color-brand-light: #f1f7ec;
-  --color-brand-surface: #ffffff;
-  --color-brand-text: #132019;
-  --color-brand-muted: #647168;
-  --color-brand-border: #dce4dc;
-  --color-brand-success: #3d9b45;
-  --color-brand-warning: #f2ad16;
-  --color-brand-error: #c94242;
-  --color-brand-page: #f6f6f1;
-  --font-sans: 'Segoe UI', 'Prompt', 'Noto Sans Thai', 'Sarabun', Tahoma, sans-serif;
+  /* ── Primary greens (from reference image) ── */
+  --color-brand-primary: #1B6B2E;
+  --color-brand-dark: #145223;
+  --color-brand-darker: #0D3B18;
+  --color-brand-light: #E8F5E9;
+  --color-brand-lighter: #F1F8E9;
+
+  /* ── Surfaces ── */
+  --color-brand-surface: #FFFFFF;
+  --color-brand-page: #F5F5F0;
+  --color-brand-cream: #FFF8E7;
+
+  /* ── Text ── */
+  --color-brand-text: #1A2E1A;
+  --color-brand-muted: #5F7060;
+
+  /* ── Borders ── */
+  --color-brand-border: #D5DDD5;
+  --color-brand-border-light: #E8EDE8;
+
+  /* ── Status ── */
+  --color-brand-success: #2E7D32;
+  --color-brand-warning: #F9A825;
+  --color-brand-error: #C62828;
+
+  /* ── Status backgrounds ── */
+  --color-status-suitable-bg: #E8F5E9;
+  --color-status-suitable-border: #A5D6A7;
+  --color-status-suitable-text: #1B5E20;
+  --color-status-borderline-bg: #FFF8E1;
+  --color-status-borderline-border: #FFE082;
+  --color-status-borderline-text: #F57F17;
+  --color-status-escalate-bg: #FFEBEE;
+  --color-status-escalate-border: #EF9A9A;
+  --color-status-escalate-text: #B71C1C;
+
+  /* ── Typography ── */
+  --font-sans: 'Prompt', 'Noto Sans Thai', 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
+
+  /* ── Spacing tokens ── */
+  --spacing-page-x: 20px;
+  --spacing-section-gap: 24px;
+
+  /* ── Layout ── */
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-pill: 9999px;
 }
 
 @layer base {
@@ -20,6 +55,8 @@
     font-family: var(--font-sans);
     color: var(--color-brand-text);
     background: var(--color-brand-page);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -33,7 +70,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid #08733b;
+    outline: 3px solid var(--color-brand-primary);
     outline-offset: 2px;
   }
 

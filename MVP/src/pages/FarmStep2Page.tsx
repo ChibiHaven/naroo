@@ -49,11 +49,11 @@ function FarmStep2Form() {
     label: string
     icon: ReactNode
   }> = [
-    { value: 'irrigated', label: translate('water_irrigated'), icon: <Droplets className="h-4 w-4" /> },
-    { value: 'residual_moisture', label: translate('water_residual'), icon: <Waves className="h-4 w-4" /> },
-    { value: 'rainfed', label: translate('water_rainfed'), icon: <CloudRain className="h-4 w-4" /> },
-    { value: 'limited', label: translate('water_limited'), icon: <Waves className="h-4 w-4" /> },
-    { value: 'unsure', label: translate('water_unsure'), icon: <HelpCircle className="h-4 w-4" /> },
+    { value: 'irrigated', label: translate('water_irrigated'), icon: <Droplets className="h-5 w-5" /> },
+    { value: 'residual_moisture', label: translate('water_residual'), icon: <Waves className="h-5 w-5" /> },
+    { value: 'rainfed', label: translate('water_rainfed'), icon: <CloudRain className="h-5 w-5" /> },
+    { value: 'limited', label: translate('water_limited'), icon: <Waves className="h-5 w-5" /> },
+    { value: 'unsure', label: translate('water_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
   ]
 
   const drainageOptions: Array<{
@@ -61,10 +61,10 @@ function FarmStep2Form() {
     label: string
     icon: ReactNode
   }> = [
-    { value: 'good', label: translate('drainage_good'), icon: <Droplets className="h-4 w-4" /> },
-    { value: 'moderate', label: translate('drainage_moderate'), icon: <Waves className="h-4 w-4" /> },
-    { value: 'poor', label: translate('drainage_poor'), icon: <CloudRain className="h-4 w-4" /> },
-    { value: 'unsure', label: translate('drainage_unsure'), icon: <HelpCircle className="h-4 w-4" /> },
+    { value: 'good', label: translate('drainage_good'), icon: <Droplets className="h-5 w-5" /> },
+    { value: 'moderate', label: translate('drainage_moderate'), icon: <Waves className="h-5 w-5" /> },
+    { value: 'poor', label: translate('drainage_poor'), icon: <CloudRain className="h-5 w-5" /> },
+    { value: 'unsure', label: translate('drainage_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
   ]
 
   return (
@@ -81,21 +81,22 @@ function FarmStep2Form() {
         label={translate('step_of', { current: 2, total: 3 })}
       />
       <main className="flex flex-1 flex-col px-5 py-5">
-        <h2 className="text-2xl font-bold text-brand-text">
+        <h2 className="text-xl font-bold text-brand-text">
           {translate('step2_heading')}
         </h2>
 
         <div className="mt-6 space-y-6">
+          {/* Planting month */}
           <div>
             <label
               htmlFor="plantingMonth"
-              className="mb-2 block text-sm font-semibold"
+              className="mb-2 block text-sm font-bold text-brand-text"
             >
               {translate('planting_month_question')}
             </label>
             <select
               id="plantingMonth"
-              className="touch-target w-full rounded-2xl border border-brand-border bg-white px-4 py-3"
+              className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border bg-white px-4 py-3 text-sm transition focus:border-brand-primary"
               value={input.plantingMonth ?? ''}
               aria-invalid={Boolean(errors.plantingMonth)}
               onChange={(event) =>
@@ -123,11 +124,12 @@ function FarmStep2Form() {
             />
           </div>
 
+          {/* Water source */}
           <fieldset>
-            <legend className="mb-3 text-sm font-semibold">
+            <legend className="mb-3 text-sm font-bold text-brand-text">
               {translate('water_question')}
             </legend>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3">
               {waterOptions.map((option) => (
                 <SelectionCard
                   key={option.value}
@@ -148,8 +150,9 @@ function FarmStep2Form() {
             />
           </fieldset>
 
+          {/* Drainage */}
           <fieldset>
-            <legend className="mb-3 text-sm font-semibold">
+            <legend className="mb-3 text-sm font-bold text-brand-text">
               {translate('drainage_question')}
             </legend>
             <div className="grid grid-cols-2 gap-3">

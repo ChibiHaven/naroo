@@ -21,10 +21,10 @@ export function SelectionCard({
 }: SelectionCardProps) {
   return (
     <label
-      className={`touch-target flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-4 text-center transition ${
+      className={`touch-target flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-[var(--radius-card)] border-2 px-3 py-3.5 text-center transition-all ${
         selected
           ? 'border-brand-primary bg-brand-light shadow-sm'
-          : 'border-brand-border bg-white hover:border-brand-primary/40'
+          : 'border-brand-border bg-white hover:border-brand-primary/40 hover:shadow-sm'
       }`}
     >
       <input
@@ -37,7 +37,7 @@ export function SelectionCard({
       />
       {icon ? (
         <span
-          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+          className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors ${
             selected
               ? 'bg-brand-primary text-white'
               : 'bg-brand-light text-brand-primary'
@@ -47,9 +47,9 @@ export function SelectionCard({
           {icon}
         </span>
       ) : null}
-      <span className="text-sm font-semibold text-brand-text">{label}</span>
+      <span className="text-sm font-semibold leading-tight text-brand-text">{label}</span>
       {description ? (
-        <span className="text-xs text-brand-muted">{description}</span>
+        <span className="text-xs leading-snug text-brand-muted">{description}</span>
       ) : null}
     </label>
   )

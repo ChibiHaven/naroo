@@ -15,15 +15,15 @@ interface ChoiceListProps {
 
 export function ChoiceList({ name, options, value, onChange }: ChoiceListProps) {
   return (
-    <div className="space-y-3" role="radiogroup">
+    <div className="space-y-2.5" role="radiogroup">
       {options.map((option) => {
         const selected = value === option.value
         return (
           <label
             key={option.value}
-            className={`touch-target flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition ${
+            className={`touch-target flex cursor-pointer items-center gap-3 rounded-[var(--radius-card)] border-2 px-4 py-3 transition-all ${
               selected
-                ? 'border-brand-primary bg-brand-light'
+                ? 'border-brand-primary bg-brand-light shadow-sm'
                 : 'border-brand-border bg-white hover:border-brand-primary/40'
             }`}
           >
@@ -37,7 +37,7 @@ export function ChoiceList({ name, options, value, onChange }: ChoiceListProps) 
             />
             {option.icon ? (
               <span
-                className={`flex h-9 w-9 items-center justify-center rounded-full ${
+                className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                   selected
                     ? 'bg-brand-primary text-white'
                     : 'bg-brand-light text-brand-primary'

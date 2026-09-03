@@ -5,11 +5,11 @@ export function PrototypeBanner() {
   const { translate } = useAssessment()
   return (
     <div
-      className="flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+      className="flex items-start gap-3 rounded-[var(--radius-card)] border border-status-borderline-border bg-status-borderline-bg px-4 py-3 text-sm"
       role="status"
     >
-      <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-      <p className="font-semibold">{translate('prototype_banner')}</p>
+      <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-brand-warning" aria-hidden="true" />
+      <p className="font-semibold text-status-borderline-text">{translate('prototype_banner')}</p>
     </div>
   )
 }

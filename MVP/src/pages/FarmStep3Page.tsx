@@ -39,13 +39,13 @@ function SummaryRow({
   value: string
 }) {
   return (
-    <li className="flex items-start gap-3">
+    <li className="flex items-start gap-3 py-1">
       <span className="mt-0.5 text-brand-primary" aria-hidden="true">
         {icon}
       </span>
-      <div>
+      <div className="min-w-0 flex-1">
         <p className="text-xs text-brand-muted">{label}</p>
-        <p className="font-medium">{value}</p>
+        <p className="text-sm font-semibold text-brand-text">{value}</p>
       </div>
     </li>
   )
@@ -102,13 +102,14 @@ function FarmStep3Form() {
         label={translate('step_of', { current: 3, total: 3 })}
       />
       <main className="flex flex-1 flex-col px-5 py-5">
-        <h2 className="text-2xl font-bold text-brand-text">
+        <h2 className="text-xl font-bold text-brand-text">
           {translate('step3_heading')}
         </h2>
 
         <div className="mt-6 space-y-6">
+          {/* Farm area */}
           <div>
-            <label htmlFor="farm-area" className="mb-2 block text-sm font-semibold">
+            <label htmlFor="farm-area" className="mb-2 block text-sm font-bold text-brand-text">
               {translate('farm_area_question')}
             </label>
             <FarmAreaStepper
@@ -124,8 +125,9 @@ function FarmStep3Form() {
             />
           </div>
 
+          {/* Soil knowledge */}
           <fieldset>
-            <legend className="mb-3 text-sm font-semibold">
+            <legend className="mb-3 text-sm font-bold text-brand-text">
               {translate('soil_question')}
             </legend>
             <div className="grid grid-cols-3 gap-3">
@@ -161,13 +163,13 @@ function FarmStep3Form() {
 
           {input.soilKnowledge === 'yes' ? (
             <div>
-              <label htmlFor="soilType" className="mb-2 block text-sm font-semibold">
+              <label htmlFor="soilType" className="mb-2 block text-sm font-bold text-brand-text">
                 {translate('soil_type_optional')}
               </label>
               <input
                 id="soilType"
                 type="text"
-                className="touch-target w-full rounded-2xl border border-brand-border px-4 py-3"
+                className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border px-4 py-3 text-sm transition focus:border-brand-primary"
                 placeholder={translate('soil_type_placeholder')}
                 value={input.soilType ?? ''}
                 onChange={(event) => updateInput({ soilType: event.target.value })}
@@ -175,8 +177,9 @@ function FarmStep3Form() {
             </div>
           ) : null}
 
+          {/* Decision goal */}
           <div id="decisionGoal">
-            <p className="mb-3 text-sm font-semibold">{translate('goal_question')}</p>
+            <p className="mb-3 text-sm font-bold text-brand-text">{translate('goal_question')}</p>
             <ChoiceList
               name="decisionGoal"
               value={input.decisionGoal}
@@ -184,12 +187,12 @@ function FarmStep3Form() {
                 updateInput({ decisionGoal: value as DecisionGoal })
               }
               options={[
-                { value: 'improve_soil', label: translate('goal_improve_soil'), icon: <Leaf className="h-4 w-4" /> },
-                { value: 'use_productively', label: translate('goal_use_productively'), icon: <Sprout className="h-4 w-4" /> },
-                { value: 'add_crop', label: translate('goal_add_crop'), icon: <CalendarDays className="h-4 w-4" /> },
-                { value: 'learn_mung_bean', label: translate('goal_learn_mung_bean'), icon: <Sprout className="h-4 w-4" /> },
-                { value: 'other', label: translate('goal_other'), icon: <HelpCircle className="h-4 w-4" /> },
-                { value: 'unsure', label: translate('goal_unsure'), icon: <HelpCircle className="h-4 w-4" /> },
+                { value: 'improve_soil', label: translate('goal_improve_soil'), icon: <Leaf className="h-5 w-5" /> },
+                { value: 'use_productively', label: translate('goal_use_productively'), icon: <Sprout className="h-5 w-5" /> },
+                { value: 'add_crop', label: translate('goal_add_crop'), icon: <CalendarDays className="h-5 w-5" /> },
+                { value: 'learn_mung_bean', label: translate('goal_learn_mung_bean'), icon: <Sprout className="h-5 w-5" /> },
+                { value: 'other', label: translate('goal_other'), icon: <HelpCircle className="h-5 w-5" /> },
+                { value: 'unsure', label: translate('goal_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
               ]}
             />
             <FieldError
@@ -204,14 +207,14 @@ function FarmStep3Form() {
             <div>
               <label
                 htmlFor="decisionGoalOther"
-                className="mb-2 block text-sm font-semibold"
+                className="mb-2 block text-sm font-bold text-brand-text"
               >
                 {translate('please_specify')}
               </label>
               <input
                 id="decisionGoalOther"
                 type="text"
-                className="touch-target w-full rounded-2xl border border-brand-border px-4 py-3"
+                className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border px-4 py-3 text-sm transition focus:border-brand-primary"
                 value={input.decisionGoalOther ?? ''}
                 onChange={(event) =>
                   updateInput({ decisionGoalOther: event.target.value })
@@ -228,9 +231,10 @@ function FarmStep3Form() {
             </div>
           ) : null}
 
-          <section className="rounded-2xl border border-brand-border bg-brand-light/50 p-4">
+          {/* Summary card */}
+          <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-base font-semibold">{translate('farm_summary')}</h3>
+              <h3 className="text-base font-bold text-brand-text">{translate('farm_summary')}</h3>
               <Link
                 to="/assessment/step-1"
                 className="text-sm font-semibold text-brand-primary"
@@ -238,7 +242,7 @@ function FarmStep3Form() {
                 {translate('edit')}
               </Link>
             </div>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 text-sm">
               <SummaryRow icon={<MapPin className="h-4 w-4" />} label={translate('summary_province')} value={summary.province} />
               <SummaryRow icon={<MapPin className="h-4 w-4" />} label={translate('summary_district')} value={summary.district} />
               <SummaryRow icon={<LandPlot className="h-4 w-4" />} label={translate('summary_field_type')} value={summary.fieldType} />

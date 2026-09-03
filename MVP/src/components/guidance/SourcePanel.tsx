@@ -11,10 +11,10 @@ export function SourcePanel({ sources }: SourcePanelProps) {
   const hasConnected = sources.some((source) => source.connected)
 
   return (
-    <section className="rounded-2xl border border-brand-border bg-brand-light/60 p-4">
+    <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light/60 p-4">
       <div className="mb-3 flex items-center gap-2">
         <BookOpen className="h-5 w-5 text-brand-primary" aria-hidden="true" />
-        <h2 className="text-base font-semibold text-brand-text">
+        <h2 className="text-base font-bold text-brand-text">
           {translate('source_of_recommendation')}
         </h2>
       </div>
@@ -27,7 +27,7 @@ export function SourcePanel({ sources }: SourcePanelProps) {
           {sources.map((source) => (
             <li
               key={`${source.title}-${source.organization ?? 'org'}`}
-              className="rounded-xl bg-white p-3 text-sm"
+              className="rounded-xl bg-white p-3 text-sm shadow-sm"
             >
               <p className="font-semibold text-brand-text">{source.title}</p>
               {source.organization ? (

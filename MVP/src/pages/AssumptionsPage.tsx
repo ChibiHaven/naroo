@@ -19,36 +19,22 @@ export function AssumptionsPage() {
     <div className="flex min-h-full flex-col">
       <AppHeader title={translate('assumptions_title')} showBack variant="green" />
       <main className="flex flex-1 flex-col gap-4 px-5 py-5">
-        <p className="text-sm leading-6 text-brand-muted">
+        <p className="text-sm leading-relaxed text-brand-muted">
           {translate('assumptions_intro')}
         </p>
 
-        <section className="rounded-2xl border border-brand-border bg-white p-4">
-          <h2 className="mb-3 text-base font-semibold">
+        {/* Farm summary recap */}
+        <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
+          <h2 className="mb-3 text-base font-bold">
             {translate('farm_summary')}
           </h2>
-          <p className="mb-2 text-xs text-brand-muted">
-            {translate('farm_summary')}
-          </p>
-          <ul className="space-y-2 text-sm text-brand-text">
-            <li>
-              {translate('summary_field_type')}: {summary.fieldType}
-            </li>
-            <li>
-              {translate('summary_previous')}: {summary.previousCrop}
-            </li>
-            <li>
-              {translate('summary_month')}: {summary.plantingMonth}
-            </li>
-            <li>
-              {translate('summary_water')}: {summary.waterSource}
-            </li>
-            <li>
-              {translate('summary_drainage')}: {summary.drainageCondition}
-            </li>
-            <li>
-              {translate('summary_soil')}: {summary.soil}
-            </li>
+          <ul className="space-y-1.5 text-sm text-brand-text">
+            <li>{translate('summary_field_type')}: {summary.fieldType}</li>
+            <li>{translate('summary_previous')}: {summary.previousCrop}</li>
+            <li>{translate('summary_month')}: {summary.plantingMonth}</li>
+            <li>{translate('summary_water')}: {summary.waterSource}</li>
+            <li>{translate('summary_drainage')}: {summary.drainageCondition}</li>
+            <li>{translate('summary_soil')}: {summary.soil}</li>
           </ul>
           <SecondaryButton
             className="mt-4"
@@ -58,17 +44,18 @@ export function AssumptionsPage() {
           </SecondaryButton>
         </section>
 
+        {/* Assumptions list */}
         <ul className="space-y-3">
           {PROTOTYPE_ASSUMPTIONS.map((assumption) => (
             <li
               key={assumption.id}
-              className="rounded-2xl border border-amber-200 bg-amber-50 p-4"
+              className="rounded-[var(--radius-card)] border border-status-borderline-border bg-status-borderline-bg p-4"
             >
-              <p className="text-sm font-semibold text-amber-950">
+              <p className="text-sm font-bold text-status-borderline-text">
                 {translate(assumption.labelKey)}
                 {assumption.provisional ? ' (provisional)' : ''}
               </p>
-              <p className="mt-2 text-sm leading-6 text-amber-950/90">
+              <p className="mt-2 text-sm leading-relaxed text-status-borderline-text/80">
                 {translate(assumption.detailKey)}
               </p>
             </li>

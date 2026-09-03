@@ -46,19 +46,19 @@ export function FarmStep1Page() {
   }
 
   const fieldOptions: Array<{ value: FieldType; label: string; icon: ReactNode }> = [
-    { value: 'lowland_paddy', label: translate('field_lowland'), icon: <Wheat className="h-4 w-4" /> },
-    { value: 'upland', label: translate('field_upland'), icon: <Sprout className="h-4 w-4" /> },
-    { value: 'other', label: translate('field_other'), icon: <Leaf className="h-4 w-4" /> },
-    { value: 'unsure', label: translate('field_unsure'), icon: <HelpCircle className="h-4 w-4" /> },
+    { value: 'lowland_paddy', label: translate('field_lowland'), icon: <Wheat className="h-5 w-5" /> },
+    { value: 'upland', label: translate('field_upland'), icon: <Sprout className="h-5 w-5" /> },
+    { value: 'other', label: translate('field_other'), icon: <Leaf className="h-5 w-5" /> },
+    { value: 'unsure', label: translate('field_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
   ]
 
   const previousOptions: Array<{ value: PreviousCrop; label: string; icon: ReactNode }> = [
-    { value: 'rice', label: translate('previous_rice'), icon: <Wheat className="h-4 w-4" /> },
-    { value: 'mung_bean', label: translate('previous_mung_bean'), icon: <Sprout className="h-4 w-4" /> },
-    { value: 'another_legume', label: translate('previous_another_legume'), icon: <Leaf className="h-4 w-4" /> },
-    { value: 'other', label: translate('previous_other'), icon: <Leaf className="h-4 w-4" /> },
-    { value: 'none', label: translate('previous_none'), icon: <HelpCircle className="h-4 w-4" /> },
-    { value: 'unsure', label: translate('previous_unsure'), icon: <HelpCircle className="h-4 w-4" /> },
+    { value: 'rice', label: translate('previous_rice'), icon: <Wheat className="h-5 w-5" /> },
+    { value: 'mung_bean', label: translate('previous_mung_bean'), icon: <Sprout className="h-5 w-5" /> },
+    { value: 'another_legume', label: translate('previous_another_legume'), icon: <Leaf className="h-5 w-5" /> },
+    { value: 'other', label: translate('previous_other'), icon: <Leaf className="h-5 w-5" /> },
+    { value: 'none', label: translate('previous_none'), icon: <HelpCircle className="h-5 w-5" /> },
+    { value: 'unsure', label: translate('previous_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
   ]
 
   return (
@@ -66,17 +66,18 @@ export function FarmStep1Page() {
       <AppHeader title={translate('farm_information')} showBack backTo="/" variant="green" />
       <StepProgress current={1} total={3} label={translate('step_of', { current: 1, total: 3 })} />
       <main className="flex flex-1 flex-col px-5 py-5">
-        <h2 className="text-2xl font-bold text-brand-text">{translate('step1_heading')}</h2>
-        <p className="mt-2 text-sm text-brand-muted">{translate('step1_subheading')}</p>
+        <h2 className="text-xl font-bold text-brand-text">{translate('step1_heading')}</h2>
+        <p className="mt-1.5 text-sm text-brand-muted">{translate('step1_subheading')}</p>
 
         <div className="mt-6 space-y-5">
+          {/* Province */}
           <div>
-            <label htmlFor="province" className="mb-2 block text-sm font-semibold">
+            <label htmlFor="province" className="mb-2 block text-sm font-bold text-brand-text">
               {translate('province')}
             </label>
             <select
               id="province"
-              className="touch-target w-full rounded-2xl border border-brand-border bg-brand-light px-4 py-3"
+              className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border bg-brand-light px-4 py-3 text-sm font-medium"
               value={input.province}
               disabled
             >
@@ -86,13 +87,14 @@ export function FarmStep1Page() {
             </select>
           </div>
 
+          {/* District */}
           <div>
-            <label htmlFor="district" className="mb-2 block text-sm font-semibold">
+            <label htmlFor="district" className="mb-2 block text-sm font-bold text-brand-text">
               {translate('district')}
             </label>
             <select
               id="district"
-              className="touch-target w-full rounded-2xl border border-brand-border bg-white px-4 py-3"
+              className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border bg-white px-4 py-3 text-sm transition focus:border-brand-primary"
               value={input.district}
               aria-invalid={Boolean(errors.district)}
               aria-describedby={errors.district ? 'district-error' : 'district-note'}
@@ -105,18 +107,20 @@ export function FarmStep1Page() {
                 </option>
               ))}
             </select>
-            <p id="district-note" className="mt-2 text-xs text-brand-muted">
-              {translate('district_prototype_note')}
-            </p>
             <FieldError id="district-error" message={errors.district ? translate(errors.district) : undefined} />
           </div>
 
-          <aside className="rounded-2xl border border-brand-border bg-brand-light px-4 py-3 text-sm leading-6 text-brand-muted">
-            {translate('coverage_note')}
+          {/* Coverage note */}
+          <aside className="flex items-start gap-2 rounded-[var(--radius-card)] border border-brand-success/30 bg-brand-light px-4 py-3">
+            <span className="mt-0.5 text-brand-success">●</span>
+            <p className="text-sm leading-relaxed text-brand-muted">
+              {translate('coverage_note')}
+            </p>
           </aside>
 
+          {/* Field type */}
           <fieldset>
-            <legend className="mb-3 text-sm font-semibold">{translate('field_type_question')}</legend>
+            <legend className="mb-3 text-sm font-bold text-brand-text">{translate('field_type_question')}</legend>
             <div className="grid grid-cols-2 gap-3">
               {fieldOptions.map((option) => (
                 <SelectionCard
@@ -135,13 +139,13 @@ export function FarmStep1Page() {
 
           {input.fieldType === 'other' ? (
             <div>
-              <label htmlFor="fieldTypeOther" className="mb-2 block text-sm font-semibold">
+              <label htmlFor="fieldTypeOther" className="mb-2 block text-sm font-bold text-brand-text">
                 {translate('please_specify')}
               </label>
               <input
                 id="fieldTypeOther"
                 type="text"
-                className="touch-target w-full rounded-2xl border border-brand-border px-4 py-3"
+                className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border px-4 py-3 text-sm transition focus:border-brand-primary"
                 value={input.fieldTypeOther ?? ''}
                 onChange={(event) => updateInput({ fieldTypeOther: event.target.value })}
               />
@@ -152,8 +156,9 @@ export function FarmStep1Page() {
             </div>
           ) : null}
 
+          {/* Previous crop */}
           <fieldset>
-            <legend className="mb-3 text-sm font-semibold">{translate('previous_crop_question')}</legend>
+            <legend className="mb-3 text-sm font-bold text-brand-text">{translate('previous_crop_question')}</legend>
             <div className="grid grid-cols-2 gap-3">
               {previousOptions.map((option) => (
                 <SelectionCard
@@ -175,21 +180,19 @@ export function FarmStep1Page() {
 
           {input.previousCrop === 'other' ? (
             <div>
-              <label htmlFor="previousCropOther" className="mb-2 block text-sm font-semibold">
+              <label htmlFor="previousCropOther" className="mb-2 block text-sm font-bold text-brand-text">
                 {translate('please_specify')}
               </label>
               <input
                 id="previousCropOther"
                 type="text"
-                className="touch-target w-full rounded-2xl border border-brand-border px-4 py-3"
+                className="touch-target w-full rounded-[var(--radius-button)] border-2 border-brand-border px-4 py-3 text-sm transition focus:border-brand-primary"
                 value={input.previousCropOther ?? ''}
                 onChange={(event) => updateInput({ previousCropOther: event.target.value })}
               />
               <FieldError
                 id="previousCropOther-error"
-                message={
-                  errors.previousCropOther ? translate(errors.previousCropOther) : undefined
-                }
+                message={errors.previousCropOther ? translate(errors.previousCropOther) : undefined}
               />
             </div>
           ) : null}

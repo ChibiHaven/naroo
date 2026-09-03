@@ -14,7 +14,7 @@ export function PrimaryButton({
   return (
     <button
       type="button"
-      className={`touch-target inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-primary px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-brand-muted ${
+      className={`touch-target inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3.5 text-base font-bold text-white shadow-sm transition-colors hover:bg-brand-dark active:bg-brand-darker disabled:cursor-not-allowed disabled:opacity-50 ${
         fullWidth ? 'w-full' : ''
       } ${className}`}
       {...props}

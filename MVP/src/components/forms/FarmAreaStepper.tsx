@@ -18,10 +18,10 @@ export function FarmAreaStepper({
   const current = value ?? 0
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <button
         type="button"
-        className="touch-target inline-flex items-center justify-center rounded-2xl border border-brand-border bg-white text-brand-primary"
+        className="touch-target inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-button)] border-2 border-brand-border bg-white text-brand-primary transition hover:border-brand-primary hover:bg-brand-light"
         aria-label={translate('decrease_area')}
         onClick={() => onChange(Math.max(0, Number((current - 0.5).toFixed(1))) || null)}
       >
@@ -37,7 +37,7 @@ export function FarmAreaStepper({
           value={value ?? ''}
           aria-invalid={Boolean(errorId)}
           aria-describedby={describedBy}
-          className="w-full rounded-2xl border border-brand-border px-4 py-3 text-center text-lg font-semibold text-brand-text"
+          className="w-full rounded-[var(--radius-button)] border-2 border-brand-border px-4 py-3 text-center text-xl font-bold text-brand-text transition focus:border-brand-primary"
           onChange={(event) => {
             const next = event.target.value
             if (next === '') {
@@ -51,13 +51,13 @@ export function FarmAreaStepper({
       </div>
       <button
         type="button"
-        className="touch-target inline-flex items-center justify-center rounded-2xl border border-brand-border bg-white text-brand-primary"
+        className="touch-target inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-button)] border-2 border-brand-border bg-white text-brand-primary transition hover:border-brand-primary hover:bg-brand-light"
         aria-label={translate('increase_area')}
         onClick={() => onChange(Number((current + 0.5).toFixed(1)) || 0.5)}
       >
         <Plus className="h-5 w-5" />
       </button>
-      <span className="min-w-10 text-sm font-medium text-brand-muted">
+      <span className="min-w-10 text-base font-semibold text-brand-muted">
         {translate('rai')}
       </span>
     </div>

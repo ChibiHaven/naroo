@@ -27,7 +27,7 @@ export function SourceDetailsPage() {
       <AppHeader title={translate('sources_title')} showBack variant="green" />
       <main className="flex flex-1 flex-col gap-4 px-5 py-5">
         <SourcePanel sources={sources} />
-        <p className="text-sm leading-6 text-brand-muted">
+        <p className="text-sm leading-relaxed text-brand-muted">
           {translate('sources_placeholder')}
         </p>
         <SecondaryButton onClick={() => navigate(-1)}>

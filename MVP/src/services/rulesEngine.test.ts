@@ -12,7 +12,7 @@ function suitableInput() {
   input.district = 'selaphum'
   input.fieldType = 'lowland_paddy'
   input.previousCrop = 'rice'
-  input.plantingMonth = 11
+  input.plantingMonth = 12
   input.waterSource = 'residual_moisture'
   input.drainageCondition = 'good'
   input.farmAreaRai = 5

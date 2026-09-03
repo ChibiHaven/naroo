@@ -1,14 +1,17 @@
 import { BookOpen } from 'lucide-react'
 import type { GuidanceSource } from '@/types/guidance'
 import { useAssessment } from '@/context/AssessmentContext'
+import {
+  formatLocalizedDateTime,
+  openMeteoHref,
+} from '@/utils/displayLabels'
 
 interface SourcePanelProps {
   sources: GuidanceSource[]
 }
 
 export function SourcePanel({ sources }: SourcePanelProps) {
-  const { translate } = useAssessment()
-  const hasConnected = sources.some((source) => source.connected)
+  const { translate, language } = useAssessment()
 
   return (
     <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light/60 p-4">
@@ -18,45 +21,66 @@ export function SourcePanel({ sources }: SourcePanelProps) {
           {translate('source_of_recommendation')}
         </h2>
       </div>
-      {!hasConnected ? (
+      {sources.length === 0 ? (
         <p className="text-sm leading-6 text-brand-muted">
-          {translate('sources_placeholder')}
+          {translate('source_prototype_body')}
         </p>
       ) : (
         <ul className="space-y-3">
-          {sources.map((source) => (
-            <li
-              key={`${source.title}-${source.organization ?? 'org'}`}
-              className="rounded-xl bg-white p-3 text-sm shadow-sm"
-            >
-              <p className="font-semibold text-brand-text">{source.title}</p>
-              {source.organization ? (
-                <p className="text-brand-muted">{source.organization}</p>
-              ) : null}
-              {source.geographicScope ? (
-                <p className="text-brand-muted">{source.geographicScope}</p>
-              ) : null}
-              {source.referencePeriod ? (
-                <p className="text-brand-muted">{source.referencePeriod}</p>
-              ) : null}
-              {source.retrievedAt ? (
-                <p className="text-brand-muted">{source.retrievedAt}</p>
-              ) : null}
-              {source.url ? (
-                <a
-                  href={source.url}
-                  className="font-medium text-brand-primary underline"
-                  target="_blank"
-                  rel="noreferrer"
+          {sources.map((source) => {
+            if (source.kind === 'open_meteo') {
+              const href = openMeteoHref(source.url ?? '')
+              return (
+                <li
+                  key="open-meteo"
+                  className="rounded-xl bg-white p-3 text-sm shadow-sm"
                 >
-                  {source.url}
-                </a>
-              ) : null}
-              {source.limitation ? (
-                <p className="mt-1 text-brand-muted">{source.limitation}</p>
-              ) : null}
-            </li>
-          ))}
+                  <a
+                    href={href}
+                    className="font-semibold text-brand-primary underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {translate('source_open_meteo_title')}
+                  </a>
+                  <p className="mt-1 text-brand-muted">
+                    {translate('source_open_meteo_body')}
+                  </p>
+                  {source.geographicScope ? (
+                    <p className="mt-1 text-xs text-brand-muted">
+                      {source.geographicScope}
+                      {source.timezone ? ` · ${source.timezone}` : ''}
+                    </p>
+                  ) : null}
+                  {source.retrievedAt ? (
+                    <p className="text-xs text-brand-muted">
+                      {translate('weather_retrieved_label')}:{' '}
+                      {formatLocalizedDateTime(source.retrievedAt, language)}
+                    </p>
+                  ) : null}
+                  {source.limitation ? (
+                    <p className="mt-1 text-xs text-brand-muted">
+                      {translate('weather_unavailable_note')}
+                    </p>
+                  ) : null}
+                </li>
+              )
+            }
+
+            return (
+              <li
+                key="prototype-rules"
+                className="rounded-xl bg-white p-3 text-sm shadow-sm"
+              >
+                <p className="font-semibold text-brand-text">
+                  {translate('source_prototype_title')}
+                </p>
+                <p className="mt-1 text-brand-muted">
+                  {translate('source_prototype_body')}
+                </p>
+              </li>
+            )
+          })}
         </ul>
       )}
     </section>

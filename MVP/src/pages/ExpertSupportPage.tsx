@@ -1,34 +1,28 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Building2, Phone } from 'lucide-react'
+import { Building2, Mail, Phone } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
-import { PrimaryButton } from '@/components/common/PrimaryButton'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { useAssessment } from '@/context/AssessmentContext'
-import { placeholderSupportContactService } from '@/services/supportContactService'
-import type { SupportContactMethod } from '@/config/supportContacts'
+import {
+  PHON_THONG_OFFICE,
+  ROI_ET_PROVINCIAL_OFFICE_URL,
+} from '@/config/supportContacts'
 
 export function ExpertSupportPage() {
   const navigate = useNavigate()
-  const { translate, language, setCurrentStep } = useAssessment()
-  const [contacts, setContacts] = useState<SupportContactMethod[]>([])
+  const { translate, language, input, setCurrentStep } = useAssessment()
   const [acknowledged, setAcknowledged] = useState(false)
+  const isPhonThong = input.district === PHON_THONG_OFFICE.districtId
 
   useEffect(() => {
     setCurrentStep('expert')
-    void placeholderSupportContactService.listContacts().then(setContacts)
   }, [setCurrentStep])
-
-  const officer = contacts.find((contact) => contact.type === 'extension_officer')
-  const otherContacts = contacts.filter(
-    (contact) => contact.type !== 'extension_officer',
-  )
 
   return (
     <div className="flex min-h-full flex-col">
       <AppHeader title={translate('expert_support')} showBack variant="green" />
       <main className="flex flex-1 flex-col px-5 py-5">
-        {/* Banner image */}
         <div className="mb-5 overflow-hidden rounded-[var(--radius-card)]">
           <img
             src={`${import.meta.env.BASE_URL}expert-support-banner.png`}
@@ -44,8 +38,7 @@ export function ExpertSupportPage() {
           {translate('expert_intro')}
         </p>
 
-        {/* Extension officer card */}
-        {officer ? (
+        {isPhonThong ? (
           <section className="mt-5 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-sm">
             <div className="flex gap-4 p-4">
               <img
@@ -55,70 +48,69 @@ export function ExpertSupportPage() {
               />
               <div className="flex-1">
                 <h2 className="text-base font-bold">
-                  {language === 'th' ? officer.titleTh : officer.titleEn}
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-brand-muted">
                   {language === 'th'
-                    ? officer.descriptionTh
-                    : officer.descriptionEn}
+                    ? PHON_THONG_OFFICE.nameTh
+                    : PHON_THONG_OFFICE.nameEn}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-brand-text">
+                  {language === 'th'
+                    ? PHON_THONG_OFFICE.addressTh
+                    : PHON_THONG_OFFICE.addressEn}
+                </p>
+                <p className="mt-2 text-sm text-brand-muted">
+                  {translate('call_office')}: {PHON_THONG_OFFICE.phoneDisplay}
+                </p>
+                <p className="text-sm text-brand-muted">
+                  {translate('email_office')}: {PHON_THONG_OFFICE.email}
                 </p>
               </div>
             </div>
-            <div className="border-t border-brand-border px-4 py-3">
-              <PrimaryButton disabled>
-                {translate('find_local_support')}
-                <ArrowRight className="h-4 w-4" />
-              </PrimaryButton>
-              <p className="mt-2 text-center text-xs font-medium text-brand-warning">
-                {translate('contact_not_connected')}
-              </p>
+            <div className="space-y-2 border-t border-brand-border px-4 py-3">
+              <a
+                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
+                href={`tel:${PHON_THONG_OFFICE.phoneTel}`}
+              >
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                {translate('call_office')} {PHON_THONG_OFFICE.phoneDisplay}
+              </a>
+              <a
+                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
+                href={`mailto:${PHON_THONG_OFFICE.email}`}
+              >
+                <Mail className="h-4 w-4" aria-hidden="true" />
+                {translate('email_office')}
+              </a>
+              <a
+                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
+                href={PHON_THONG_OFFICE.website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Building2 className="h-4 w-4" aria-hidden="true" />
+                {translate('visit_official_website')}
+              </a>
             </div>
           </section>
-        ) : null}
+        ) : (
+          <section className="mt-5 rounded-[var(--radius-card)] border border-brand-border bg-white p-4 shadow-sm">
+            <h2 className="text-base font-bold">
+              {translate('expert_roi_et_general_title')}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+              {translate('expert_roi_et_general_body')}
+            </p>
+            <a
+              className="touch-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
+              href={ROI_ET_PROVINCIAL_OFFICE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Building2 className="h-4 w-4" aria-hidden="true" />
+              {translate('visit_official_website')}
+            </a>
+          </section>
+        )}
 
-        {/* Other contact methods */}
-        <section className="mt-6">
-          <h2 className="mb-3 text-base font-bold">
-            {translate('other_contact_methods')}
-          </h2>
-          <ul className="space-y-3">
-            {otherContacts.map((contact) => (
-              <li
-                key={contact.id}
-                className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light text-brand-primary">
-                    {contact.type === 'phone' ? (
-                      <Phone className="h-5 w-5" />
-                    ) : (
-                      <Building2 className="h-5 w-5" />
-                    )}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold">
-                      {language === 'th' ? contact.titleTh : contact.titleEn}
-                    </h3>
-                    <p className="mt-1 text-sm text-brand-muted">
-                      {language === 'th'
-                        ? contact.descriptionTh
-                        : contact.descriptionEn}
-                    </p>
-                    <button
-                      type="button"
-                      className="touch-target mt-3 rounded-[var(--radius-button)] border border-brand-border px-4 py-2 text-sm font-semibold text-brand-muted"
-                      disabled
-                    >
-                      {translate('not_yet_connected')}
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Disclaimer */}
         <aside className="mt-6 rounded-[var(--radius-card)] border border-brand-border bg-brand-cream px-4 py-4 text-sm leading-relaxed text-brand-muted">
           {translate('safety_disclaimer')}
         </aside>

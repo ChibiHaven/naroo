@@ -1,10 +1,10 @@
 import type { DecisionTrace, FarmGuidanceResult } from '@/types/guidance'
 
 const DISCONNECTED_SOURCE = {
-  title: 'Verified agricultural sources pending connection',
+  title: 'Prototype rule basis',
   connected: false as const,
   limitation:
-    'Verified agricultural sources have not yet been connected to this prototype.',
+    'The assessment uses project-defined demonstration rules that still require validation by agricultural experts.',
 }
 
 /**

@@ -23,10 +23,10 @@ export function HomePage() {
   ]
 
   const steps = [
-    { icon: <ClipboardList className="h-5 w-5" />, label: translate('how_1') },
-    { icon: <Search className="h-5 w-5" />, label: translate('how_2') },
-    { icon: <Sprout className="h-5 w-5" />, label: translate('how_3') },
-    { icon: <ShieldCheck className="h-5 w-5" />, label: translate('how_4') },
+    { icon: <ClipboardList className="h-5 w-5" aria-hidden="true" />, label: translate('how_1') },
+    { icon: <Search className="h-5 w-5" aria-hidden="true" />, label: translate('how_2') },
+    { icon: <Sprout className="h-5 w-5" aria-hidden="true" />, label: translate('how_3') },
+    { icon: <ShieldCheck className="h-5 w-5" aria-hidden="true" />, label: translate('how_4') },
   ]
 
   return (
@@ -63,7 +63,7 @@ export function HomePage() {
               }}
             >
               {translate('get_farm_guidance')}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </PrimaryButton>
           </div>
         </section>

@@ -56,9 +56,30 @@ export function RequireReadyForAnalysis({
 }
 
 export function RequireResult({ children }: { children: ReactNode }) {
-  const { result } = useAssessment()
+  const { result, input, languageRefreshPending } = useAssessment()
   if (!result) {
-    return <Navigate to="/" replace />
+    if (languageRefreshPending) {
+      return <Navigate to="/analyzing" replace />
+    }
+    const hasAnswers = Boolean(
+      input.district ||
+        input.fieldType ||
+        input.previousCrop ||
+        input.plantingMonth ||
+        input.waterSource ||
+        input.drainageCondition ||
+        input.farmAreaRai ||
+        input.decisionGoal,
+    )
+    if (!hasAnswers) {
+      return <Navigate to="/" replace />
+    }
+    const step = getFirstIncompleteStep(input)
+    const path =
+      step === 'step1' || step === 'step2' || step === 'step3'
+        ? stepPath[step]
+        : stepPath.step1
+    return <Navigate to={path} replace />
   }
   return children
 }

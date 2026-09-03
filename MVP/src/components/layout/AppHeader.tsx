@@ -55,7 +55,7 @@ export function AppHeader({
               aria-label={translate('back')}
               onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" aria-hidden="true" />
             </button>
           ) : isHome ? (
             <Link to="/" className="flex items-center gap-2">
@@ -91,7 +91,11 @@ export function AppHeader({
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
-          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {menuOpen ? (
+            <X className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          )}
         </button>
       </div>
 
@@ -112,7 +116,18 @@ export function AppHeader({
                   ? 'bg-brand-primary text-white'
                   : 'bg-brand-light text-brand-text hover:bg-brand-border-light'
               }`}
-              onClick={() => setLanguage('en')}
+              onClick={() => {
+                if (language === 'en') {
+                  return
+                }
+                const outcome = setLanguage('en')
+                if (outcome === 'cached' || outcome === 'needs-fetch') {
+                  setMenuOpen(false)
+                }
+                if (outcome === 'needs-fetch') {
+                  navigate('/analyzing')
+                }
+              }}
             >
               {translate('english')}
             </button>
@@ -123,7 +138,18 @@ export function AppHeader({
                   ? 'bg-brand-primary text-white'
                   : 'bg-brand-light text-brand-text hover:bg-brand-border-light'
               }`}
-              onClick={() => setLanguage('th')}
+              onClick={() => {
+                if (language === 'th') {
+                  return
+                }
+                const outcome = setLanguage('th')
+                if (outcome === 'cached' || outcome === 'needs-fetch') {
+                  setMenuOpen(false)
+                }
+                if (outcome === 'needs-fetch') {
+                  navigate('/analyzing')
+                }
+              }}
             >
               {translate('thai')}
             </button>

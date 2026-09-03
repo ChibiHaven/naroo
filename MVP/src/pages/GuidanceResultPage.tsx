@@ -5,8 +5,7 @@ import {
   ArrowRight,
   CheckCircle2,
   CircleAlert,
-  CircleHelp,
-  ShieldAlert,
+  ListChecks,
 } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { BottomActions } from '@/components/forms/BottomActions'
@@ -14,10 +13,17 @@ import { PrimaryButton } from '@/components/common/PrimaryButton'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { RequireResult } from '@/components/common/RouteGuards'
 import { PrototypeBanner } from '@/components/guidance/PrototypeBanner'
-import { SourcePanel } from '@/components/guidance/SourcePanel'
 import { useAssessment } from '@/context/AssessmentContext'
-import { getAssumptionById } from '@/config/prototypeAssumptions'
+import { statusLabelKey } from '@/types/liveGuidance'
 import type { GuidanceClassification } from '@/types/assessment'
+import {
+  cleanDisplayedText,
+  displayRuleLabel,
+  fallbackHeadline,
+  formatLocalizedDateTime,
+  headlineForDisplay,
+  whyStatusItems,
+} from '@/utils/displayLabels'
 
 function statusBg(status: GuidanceClassification) {
   switch (status) {
@@ -61,7 +67,8 @@ function statusImage(status: GuidanceClassification): string {
 
 function GuidanceResultContent() {
   const navigate = useNavigate()
-  const { result, translate, setCurrentStep, clearAll } = useAssessment()
+  const { result, translate, language, input, setCurrentStep, clearAll } =
+    useAssessment()
 
   useEffect(() => {
     setCurrentStep('guidance')
@@ -70,6 +77,36 @@ function GuidanceResultContent() {
   if (!result) {
     return null
   }
+
+  const { response } = result
+  const classification = response.classification
+  const statusKey = statusLabelKey(classification)
+  const cleanedHeadline = headlineForDisplay(
+    response.aiExplanation.headline,
+    language,
+    classification,
+    input.district,
+    input.province,
+  )
+  const cleanedSummary = cleanDisplayedText(
+    response.aiExplanation.summary,
+    language,
+  )
+  const cleanedNextSteps = response.aiExplanation.nextSteps
+    .map((step) => cleanDisplayedText(step, language))
+    .filter((step) => step.length > 0)
+  const whyItems = whyStatusItems(
+    language,
+    classification,
+    response.decisionTrace.rules,
+    result.borderlineReasons,
+    response.decisionTrace.matchedRuleId,
+  )
+  const weatherAvailable =
+    response.weather.mode === 'available' && response.weather.days.length > 0
+  const notableRules = response.decisionTrace.rules.filter(
+    (rule) => rule.result !== 'pass',
+  )
 
   return (
     <div className="flex min-h-full flex-col">
@@ -82,167 +119,112 @@ function GuidanceResultContent() {
       <main className="flex flex-1 flex-col gap-4 px-5 py-5">
         <PrototypeBanner />
 
-        {/* Main status card */}
         <section
-          className={`overflow-hidden rounded-[var(--radius-card)] border-2 ${statusBg(result.classification)}`}
-          aria-label={translate(result.headlineKey)}
+          className={`overflow-hidden rounded-[var(--radius-card)] border-2 ${statusBg(classification)}`}
+          aria-label={translate(statusKey)}
         >
           <div className="flex items-start gap-4 px-5 pt-5">
-            <StatusIcon status={result.classification} />
+            <StatusIcon status={classification} />
             <div className="flex-1">
-              <p className={`text-2xl font-bold ${statusTextColor(result.classification)}`}>
-                {translate(result.headlineKey)}
+              <p className={`text-2xl font-bold ${statusTextColor(classification)}`}>
+                {translate(statusKey)}
               </p>
               <p className="mt-1 text-sm font-medium text-brand-muted">
                 {translate('crop_mung_bean')}
               </p>
+              <h2 className="mt-3 text-lg font-bold text-brand-text">
+                {cleanedHeadline ||
+                  fallbackHeadline(
+                    language,
+                    classification,
+                    input.district,
+                    input.province,
+                  )}
+              </h2>
             </div>
           </div>
 
-          {/* Crop illustration */}
           <div className="flex justify-center py-3">
             <img
-              src={statusImage(result.classification)}
+              src={statusImage(classification)}
               alt=""
               className="h-28 w-auto object-contain"
             />
           </div>
 
           <p className="px-5 pb-5 text-sm leading-relaxed text-brand-text">
-            {translate(result.summaryKey)}
+            {cleanedSummary}
           </p>
         </section>
 
-        {/* Supporting conditions */}
-        <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
-          <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-            <CheckCircle2 className="h-5 w-5 text-brand-success" />
-            {translate('why_status')}
-          </h2>
-          <ul className="space-y-2">
-            {result.supportingConditions.length > 0 ? (
-              result.supportingConditions.map((key) => (
-                <li key={key} className="flex gap-2 text-sm leading-relaxed">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-success" />
-                  <span>{translate(key)}</span>
-                </li>
-              ))
-            ) : (
-              <li className="text-sm text-brand-muted">
-                {translate('result_summary_escalate')}
-              </li>
-            )}
-          </ul>
-        </section>
-
-        {/* Risks */}
-        {result.risks.length > 0 ? (
-          <section className="rounded-[var(--radius-card)] border border-status-borderline-border bg-status-borderline-bg p-4">
-            <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-status-borderline-text">
-              <AlertTriangle className="h-5 w-5" />
-              {translate('risks_concerns')}
-            </h2>
-            <ul className="space-y-2">
-              {result.risks.map((key) => (
-                <li key={key} className="text-sm leading-relaxed text-status-borderline-text">
-                  • {translate(key)}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Missing or uncertain */}
-        {result.missingOrUncertain.length > 0 ? (
+        {cleanedNextSteps.length > 0 ? (
           <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
             <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-              <CircleHelp className="h-5 w-5 text-brand-primary" />
-              {translate('missing_uncertain')}
+              <ListChecks className="h-5 w-5 text-brand-primary" aria-hidden="true" />
+              {translate('next_steps')}
             </h2>
             <ul className="space-y-2">
-              {result.missingOrUncertain.map((key) => (
-                <li key={key} className="text-sm leading-relaxed text-brand-muted">
-                  • {translate(key)}
+              {cleanedNextSteps.map((step, index) => (
+                <li
+                  key={`${index}-${step}`}
+                  className="text-sm leading-relaxed text-brand-text"
+                >
+                  • {step}
                 </li>
               ))}
             </ul>
+            {response.aiExplanation.generated ? (
+              <p className="mt-3 text-xs text-brand-muted">
+                {translate('ai_explanation_note')}
+              </p>
+            ) : null}
           </section>
         ) : null}
 
-        {/* Assumptions */}
-        <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light p-4">
-          <h2 className="mb-3 text-base font-bold">
-            {translate('assumptions_used')}
-          </h2>
-          <ul className="space-y-1.5 text-sm text-brand-muted">
-            {result.assumptionIds.map((id) => {
-              const assumption = getAssumptionById(id)
-              return (
-                <li key={id}>
-                  •{' '}
-                  {assumption
-                    ? translate(assumption.labelKey)
-                    : id}
-                </li>
-              )
-            })}
-          </ul>
-          <SecondaryButton
-            className="mt-4"
-            onClick={() => navigate('/assumptions')}
-          >
-            {translate('view_assumptions')}
-          </SecondaryButton>
-        </section>
-
-        {/* Confidence */}
         <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
-          <h2 className="mb-2 flex items-center gap-2 text-base font-bold">
-            <CircleHelp className="h-5 w-5 text-brand-primary" />
-            {translate('confidence_level')}
+          <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
+            {classification === 'suitable' ? (
+              <CheckCircle2 className="h-5 w-5 text-brand-success" aria-hidden="true" />
+            ) : (
+              <AlertTriangle className="h-5 w-5 text-brand-warning" aria-hidden="true" />
+            )}
+            {classification === 'borderline'
+              ? translate('risks_concerns')
+              : translate('why_status')}
           </h2>
-          <p className="text-sm leading-relaxed text-brand-muted">
-            {translate(result.confidenceLabelKey)}
-          </p>
-        </section>
-
-        {/* Weather context */}
-        <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
-          <h2 className="mb-2 text-base font-bold">
-            {translate('weather_context')}
-          </h2>
-          <p className="text-sm leading-relaxed text-brand-muted">
-            {translate(result.weatherContextKey)}
-          </p>
-          <SecondaryButton className="mt-4" onClick={() => navigate('/weather')}>
-            {translate('view_weather')}
-          </SecondaryButton>
-        </section>
-
-        {/* Limitations */}
-        <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
-          <h2 className="mb-2 flex items-center gap-2 text-base font-bold">
-            <ShieldAlert className="h-5 w-5 text-brand-primary" />
-            {translate('information_limitations')}
-          </h2>
-          <ul className="space-y-1.5">
-            {result.limitations.map((key) => (
-              <li key={key} className="text-sm leading-relaxed text-brand-muted">
-                • {translate(key)}
+          <ul className="space-y-2">
+            {whyItems.map((item) => (
+              <li key={item} className="flex gap-2 text-sm leading-relaxed">
+                <CheckCircle2
+                  className="mt-0.5 h-4 w-4 shrink-0 text-brand-success"
+                  aria-hidden="true"
+                />
+                <span>{item}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        {/* Sources */}
-        <SourcePanel sources={result.sources} />
-        <SecondaryButton onClick={() => navigate('/sources')}>
-          {translate('view_sources')}
-        </SecondaryButton>
+        <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
+          <h2 className="mb-2 text-base font-bold">
+            {translate('weather_context')}
+          </h2>
+          <p className="text-sm leading-relaxed text-brand-muted">
+            {weatherAvailable
+              ? translate('weather_context_live')
+              : translate('weather_context_unavailable')}
+          </p>
+          {weatherAvailable ? (
+            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+              {translate('weather_forecast_timing_note')}
+            </p>
+          ) : null}
+          <SecondaryButton className="mt-4" onClick={() => navigate('/weather')}>
+            {translate('view_weather')}
+          </SecondaryButton>
+        </section>
 
-        {/* Expert support */}
-        {(result.requiresExpertSupport ||
-          result.classification === 'escalate') && (
+        {(response.requiresExpertSupport || classification === 'escalate') && (
           <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light p-4">
             <h2 className="text-base font-bold">{translate('need_more_help')}</h2>
             <p className="mt-2 text-sm leading-relaxed text-brand-muted">
@@ -251,13 +233,64 @@ function GuidanceResultContent() {
             <div className="mt-4">
               <PrimaryButton onClick={() => navigate('/expert-support')}>
                 {translate('find_local_support')}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </PrimaryButton>
             </div>
           </section>
         )}
 
-        {/* Disclaimer */}
+        <details className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
+          <summary className="cursor-pointer text-sm font-bold text-brand-text">
+            {translate('more_details')}
+          </summary>
+          <div className="mt-3 space-y-3 text-sm text-brand-muted">
+            <p>
+              {translate('confidence_level')}:{' '}
+              {translate(
+                response.confidence === 'high'
+                  ? 'confidence_high'
+                  : response.confidence === 'medium'
+                    ? 'confidence_medium'
+                    : 'confidence_low',
+              )}
+            </p>
+            <SecondaryButton onClick={() => navigate('/assumptions')}>
+              {translate('view_assumptions')}
+            </SecondaryButton>
+            <SecondaryButton onClick={() => navigate('/sources')}>
+              {translate('view_sources')}
+            </SecondaryButton>
+            <p>
+              {translate('request_id_label')}: {response.meta.requestId}
+            </p>
+            <p>
+              {translate('processed_at_label')}:{' '}
+              {formatLocalizedDateTime(response.meta.processedAt, language)}
+            </p>
+            {notableRules.length > 0 ? (
+              <div>
+                <p className="font-semibold text-brand-text">
+                  {translate('technical_details')}
+                </p>
+                <ul className="mt-1 space-y-1">
+                  {notableRules.map((rule) => (
+                    <li key={rule.id}>
+                      {displayRuleLabel(rule.id, language, rule.description)}
+                      {rule.id ? ` (${rule.id})` : ''}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <p>{translate('static_reference_note')}</p>
+            <ul className="space-y-1">
+              {result.staticLimitationKeys.map((key) => (
+                <li key={key}>• {translate(key)}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+
         <p className="text-xs leading-relaxed text-brand-muted">
           {translate('safety_disclaimer')}
         </p>
@@ -266,8 +299,8 @@ function GuidanceResultContent() {
       <BottomActions>
         <PrimaryButton
           onClick={() => {
-            clearAll()
             navigate('/', { replace: true })
+            clearAll()
           }}
         >
           {translate('start_new_assessment')}

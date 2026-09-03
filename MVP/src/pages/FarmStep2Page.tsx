@@ -49,11 +49,11 @@ function FarmStep2Form() {
     label: string
     icon: ReactNode
   }> = [
-    { value: 'irrigated', label: translate('water_irrigated'), icon: <Droplets className="h-5 w-5" /> },
-    { value: 'residual_moisture', label: translate('water_residual'), icon: <Waves className="h-5 w-5" /> },
-    { value: 'rainfed', label: translate('water_rainfed'), icon: <CloudRain className="h-5 w-5" /> },
-    { value: 'limited', label: translate('water_limited'), icon: <Waves className="h-5 w-5" /> },
-    { value: 'unsure', label: translate('water_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
+    { value: 'irrigated', label: translate('water_irrigated'), icon: <Droplets className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'residual_moisture', label: translate('water_residual'), icon: <Waves className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'rainfed', label: translate('water_rainfed'), icon: <CloudRain className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'limited', label: translate('water_limited'), icon: <Waves className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'unsure', label: translate('water_unsure'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
   ]
 
   const drainageOptions: Array<{
@@ -61,10 +61,10 @@ function FarmStep2Form() {
     label: string
     icon: ReactNode
   }> = [
-    { value: 'good', label: translate('drainage_good'), icon: <Droplets className="h-5 w-5" /> },
-    { value: 'moderate', label: translate('drainage_moderate'), icon: <Waves className="h-5 w-5" /> },
-    { value: 'poor', label: translate('drainage_poor'), icon: <CloudRain className="h-5 w-5" /> },
-    { value: 'unsure', label: translate('drainage_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
+    { value: 'good', label: translate('drainage_good'), icon: <Droplets className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'moderate', label: translate('drainage_moderate'), icon: <Waves className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'poor', label: translate('drainage_poor'), icon: <CloudRain className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'unsure', label: translate('drainage_unsure'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
   ]
 
   return (
@@ -185,7 +185,7 @@ function FarmStep2Form() {
       <BottomActions>
         <PrimaryButton onClick={handleContinue}>
           {translate('continue')}
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/assessment/step-1')}>
           {translate('back')}

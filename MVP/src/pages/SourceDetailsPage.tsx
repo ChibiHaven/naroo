@@ -4,6 +4,15 @@ import { AppHeader } from '@/components/layout/AppHeader'
 import { SourcePanel } from '@/components/guidance/SourcePanel'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { useAssessment } from '@/context/AssessmentContext'
+import type { GuidanceSource } from '@/types/guidance'
+
+const STATIC_SOURCES: GuidanceSource[] = [
+  {
+    kind: 'prototype_rules',
+    title: 'Prototype rule basis',
+    connected: false,
+  },
+]
 
 export function SourceDetailsPage() {
   const navigate = useNavigate()
@@ -13,23 +22,11 @@ export function SourceDetailsPage() {
     setCurrentStep('sources')
   }, [setCurrentStep])
 
-  const sources = result?.sources ?? [
-    {
-      title: 'Verified agricultural sources pending connection',
-      connected: false,
-      limitation:
-        'Verified agricultural sources have not yet been connected to this prototype.',
-    },
-  ]
-
   return (
     <div className="flex min-h-full flex-col">
       <AppHeader title={translate('sources_title')} showBack variant="green" />
       <main className="flex flex-1 flex-col gap-4 px-5 py-5">
-        <SourcePanel sources={sources} />
-        <p className="text-sm leading-relaxed text-brand-muted">
-          {translate('sources_placeholder')}
-        </p>
+        <SourcePanel sources={result?.sources ?? STATIC_SOURCES} />
         <SecondaryButton onClick={() => navigate(-1)}>
           {translate('back')}
         </SecondaryButton>

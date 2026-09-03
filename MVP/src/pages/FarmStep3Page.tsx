@@ -187,12 +187,12 @@ function FarmStep3Form() {
                 updateInput({ decisionGoal: value as DecisionGoal })
               }
               options={[
-                { value: 'improve_soil', label: translate('goal_improve_soil'), icon: <Leaf className="h-5 w-5" /> },
-                { value: 'use_productively', label: translate('goal_use_productively'), icon: <Sprout className="h-5 w-5" /> },
-                { value: 'add_crop', label: translate('goal_add_crop'), icon: <CalendarDays className="h-5 w-5" /> },
-                { value: 'learn_mung_bean', label: translate('goal_learn_mung_bean'), icon: <Sprout className="h-5 w-5" /> },
-                { value: 'other', label: translate('goal_other'), icon: <HelpCircle className="h-5 w-5" /> },
-                { value: 'unsure', label: translate('goal_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
+                { value: 'improve_soil', label: translate('goal_improve_soil'), icon: <Leaf className="h-5 w-5" aria-hidden="true" /> },
+                { value: 'use_productively', label: translate('goal_use_productively'), icon: <Sprout className="h-5 w-5" aria-hidden="true" /> },
+                { value: 'add_crop', label: translate('goal_add_crop'), icon: <CalendarDays className="h-5 w-5" aria-hidden="true" /> },
+                { value: 'learn_mung_bean', label: translate('goal_learn_mung_bean'), icon: <Sprout className="h-5 w-5" aria-hidden="true" /> },
+                { value: 'other', label: translate('goal_other'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
+                { value: 'unsure', label: translate('goal_unsure'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
               ]}
             />
             <FieldError
@@ -243,16 +243,16 @@ function FarmStep3Form() {
               </Link>
             </div>
             <ul className="space-y-2 text-sm">
-              <SummaryRow icon={<MapPin className="h-4 w-4" />} label={translate('summary_province')} value={summary.province} />
-              <SummaryRow icon={<MapPin className="h-4 w-4" />} label={translate('summary_district')} value={summary.district} />
-              <SummaryRow icon={<LandPlot className="h-4 w-4" />} label={translate('summary_field_type')} value={summary.fieldType} />
-              <SummaryRow icon={<Leaf className="h-4 w-4" />} label={translate('summary_previous')} value={summary.previousCrop} />
-              <SummaryRow icon={<CalendarDays className="h-4 w-4" />} label={translate('summary_month')} value={summary.plantingMonth} />
-              <SummaryRow icon={<Droplets className="h-4 w-4" />} label={translate('summary_water')} value={summary.waterSource} />
-              <SummaryRow icon={<Droplets className="h-4 w-4" />} label={translate('summary_drainage')} value={summary.drainageCondition} />
-              <SummaryRow icon={<LandPlot className="h-4 w-4" />} label={translate('summary_area')} value={summary.farmArea} />
-              <SummaryRow icon={<LandPlot className="h-4 w-4" />} label={translate('summary_soil')} value={summary.soil} />
-              <SummaryRow icon={<Sprout className="h-4 w-4" />} label={translate('summary_goal')} value={summary.decisionGoal} />
+              <SummaryRow icon={<MapPin className="h-4 w-4" aria-hidden="true" />} label={translate('summary_province')} value={summary.province} />
+              <SummaryRow icon={<MapPin className="h-4 w-4" aria-hidden="true" />} label={translate('summary_district')} value={summary.district} />
+              <SummaryRow icon={<LandPlot className="h-4 w-4" aria-hidden="true" />} label={translate('summary_field_type')} value={summary.fieldType} />
+              <SummaryRow icon={<Leaf className="h-4 w-4" aria-hidden="true" />} label={translate('summary_previous')} value={summary.previousCrop} />
+              <SummaryRow icon={<CalendarDays className="h-4 w-4" aria-hidden="true" />} label={translate('summary_month')} value={summary.plantingMonth} />
+              <SummaryRow icon={<Droplets className="h-4 w-4" aria-hidden="true" />} label={translate('summary_water')} value={summary.waterSource} />
+              <SummaryRow icon={<Droplets className="h-4 w-4" aria-hidden="true" />} label={translate('summary_drainage')} value={summary.drainageCondition} />
+              <SummaryRow icon={<LandPlot className="h-4 w-4" aria-hidden="true" />} label={translate('summary_area')} value={summary.farmArea} />
+              <SummaryRow icon={<LandPlot className="h-4 w-4" aria-hidden="true" />} label={translate('summary_soil')} value={summary.soil} />
+              <SummaryRow icon={<Sprout className="h-4 w-4" aria-hidden="true" />} label={translate('summary_goal')} value={summary.decisionGoal} />
             </ul>
           </section>
         </div>
@@ -261,7 +261,7 @@ function FarmStep3Form() {
       <BottomActions>
         <PrimaryButton onClick={handleSubmit}>
           {translate('get_my_guidance')}
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/assessment/step-2')}>
           {translate('back')}

@@ -37,6 +37,8 @@ jobs:
 
       - name: Build
         working-directory: MVP
+        env:
+          VITE_N8N_WEBHOOK_URL: https://chibihaven.app.n8n.cloud/webhook/naroo-guidance
         run: npm run build
 
       - name: Add .nojekyll

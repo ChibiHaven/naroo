@@ -108,13 +108,67 @@ const en: TranslationMap = {
   analyzing_subtitle: 'Reviewing your answers...',
   analyzing_intro:
     'We are applying the prototype rules to the information you provided. This is demonstration mode, not a live AI or live database check.',
+  analyzing_intro_live:
+    'We are sending your answers to the guidance service for analysis. Classification comes from the server rules, not from the explanation text.',
   analyzing_step_1: 'Checking the information provided',
   analyzing_step_2: 'Checking field and water conditions',
-  analyzing_step_3: 'Applying the prototype rules',
+  analyzing_step_3: 'Applying the guidance rules',
   analyzing_step_4: 'Preparing your explanation',
   analyzing_wait: 'This may take a few seconds.',
+  analyzing_wait_live:
+    'This usually takes about 15–25 seconds and may take up to about one minute.',
+  live_analysis_badge: 'Live guidance request',
   demonstration_mode: 'Demonstration mode',
   prototype_analysis: 'Prototype analysis',
+  next_steps: 'Suggested next steps',
+  ai_explanation_note:
+    'The explanation text may be AI-assisted. It does not change the classification decided by the rules.',
+  no_supporting_rules: 'No supporting rule details were returned for this result.',
+  matched_rule_label: 'Primary matched rule',
+  static_reference_note:
+    'The following items are static prototype reference information kept in the app. They were not fetched as live API content.',
+  weather_context_live:
+    'Weather from the guidance response is available as supporting context only.',
+  weather_context_unavailable:
+    'Weather data was not available for this guidance response.',
+  request_id_label: 'Request ID',
+  retry_guidance: 'Retry',
+  error_guidance_title: 'Could not finish the analysis',
+  error_guidance_configuration:
+    'The guidance service address is not configured. Set VITE_N8N_WEBHOOK_URL and rebuild the app.',
+  error_guidance_validation:
+    'Some answers could not be accepted. Please review the details below and edit your information.',
+  error_guidance_timeout:
+    'The guidance service took too long to respond. Your answers are still saved. You can retry.',
+  error_guidance_network:
+    'The guidance request could not be completed. Check your connection and try again.',
+  error_guidance_server:
+    'The guidance service returned an error. Please try again in a moment.',
+  error_guidance_invalid_response:
+    'The guidance service returned an incomplete or invalid result. Please retry.',
+  edit_answers: 'Edit answers',
+  processed_at_label: 'Processed at',
+  confidence_high: 'High confidence for this returned scenario',
+  weather_live_badge: 'From guidance response',
+  weather_unavailable_badge: 'Weather unavailable',
+  weather_unavailable_title: 'Weather not available',
+  weather_unavailable_body:
+    'No usable daily weather forecast was returned with this guidance result.',
+  weather_unavailable_note:
+    'The app will not invent weather values or call a second weather service automatically.',
+  weather_location_roi_et: 'Roi Et area',
+  weather_forecast_days: '{days}-day forecast',
+  weather_temp_max: 'Max temperature',
+  weather_temp_min: 'Min temperature',
+  weather_precip_sum: 'Rainfall',
+  weather_precip_prob: 'Chance of rain',
+  weather_code_label: 'Weather code',
+  weather_interpretation_live:
+    'Weather is supporting context only and does not change the classification.',
+  weather_forecast_timing_note:
+    'This is the current seven-day forecast, not a forecast for the planned planting month, and it does not affect the rules-based classification.',
+  weather_source_label: 'Weather source',
+  weather_retrieved_label: 'Retrieved at',
   your_farm_guidance: 'Your Farm Guidance',
   status_suitable: 'Suitable',
   status_borderline: 'Borderline',
@@ -135,7 +189,7 @@ const en: TranslationMap = {
   weather_context: 'Weather context',
   source_of_recommendation: 'Source transparency',
   sources_placeholder:
-    'Verified agricultural sources have not yet been connected to this prototype.',
+    'The assessment uses project-defined demonstration rules that still require validation by agricultural experts.',
   view_weather: 'Weather Snapshot',
   view_sources: 'Source Details',
   view_assumptions: 'Assumptions',
@@ -175,13 +229,13 @@ const en: TranslationMap = {
     'The only post-rice crop assessed is mung bean. No substitute crop is recommended automatically.',
   assumption_window_label: 'Planting window (provisional)',
   assumption_window_detail:
-    'November–December are treated as the demonstration suitable window; October and January are treated as edge months. These months are provisional and require expert review.',
+    'December and January are treated as suitable in the demonstration rules. November and February are treated as borderline months. This is a provisional assumption requiring expert validation.',
   assumption_water_label: 'Water and drainage',
   assumption_water_detail:
     'Adequate moisture with good drainage supports consideration; poor/waterlogged drainage escalates; limited water increases caution.',
   assumption_weather_label: 'Weather role',
   assumption_weather_detail:
-    'Weather is demonstration context only and does not override the rules-engine classification.',
+    'Weather from the guidance response is supporting context only and does not override the rules-engine classification.',
   expert_support: 'Safety and Expert Support',
   expert_intro:
     'Professional advice is appropriate when information is missing, conditions are risky, or the prototype returns Escalate or Borderline.',
@@ -252,6 +306,47 @@ const en: TranslationMap = {
   home: 'Home',
   not_selected: 'Not selected',
   acknowledge_safety: 'I understand this is decision support only',
+  display_drainage_good: 'Good drainage',
+  display_drainage_moderate: 'Moderate drainage',
+  display_drainage_poor: 'Poor drainage',
+  display_drainage_unsure: 'Drainage is uncertain',
+  display_soil_yes: 'Soil information available',
+  display_soil_no: 'No soil information',
+  concern_field_type: 'Upland field conditions require additional review',
+  concern_previous_crop: 'Previous crop requires additional rotation caution',
+  concern_planting_month_edge:
+    'Planting month is near the edge of the prototype window',
+  concern_water_source_limited: 'Water supply may be limited or unreliable',
+  concern_drainage_moderate: 'Drainage is moderate',
+  concern_soil_knowledge: 'Soil information is unavailable',
+  why_suitable:
+    'No blocking or borderline condition was found under the prototype rules.',
+  why_borderline_fallback:
+    'One or more conditions need additional local review.',
+  why_escalate_fallback:
+    'Local professional verification is recommended for this field.',
+  fallback_headline_suitable:
+    'The field in {district}, {province} is preliminarily suitable for mung bean',
+  fallback_headline_borderline:
+    'The field in {district}, {province} needs additional review before planting mung bean',
+  fallback_headline_escalate:
+    'The field in {district}, {province} should be reviewed with local agricultural support',
+  source_prototype_title: 'Prototype rule basis',
+  source_prototype_body:
+    'The assessment uses project-defined demonstration rules that still require validation by agricultural experts.',
+  source_open_meteo_title: 'Open-Meteo',
+  source_open_meteo_body: 'Live 7-day weather source',
+  source_open_meteo_link: 'Open Open-Meteo',
+  technical_details: 'Technical details',
+  weather_technical_details: 'Technical weather details',
+  more_details: 'More details',
+  call_office: 'Call',
+  email_office: 'Email',
+  visit_official_website: 'Visit official website',
+  expert_phonthong_name: 'Phon Thong District Agricultural Extension Office',
+  expert_roi_et_general_title: 'Roi Et Provincial Agricultural Extension Office',
+  expert_roi_et_general_body:
+    'District-specific contact details are shown only for Phon Thong. For other districts, use the provincial agricultural office website.',
 }
 
 const th: TranslationMap = {
@@ -297,7 +392,7 @@ const th: TranslationMap = {
   coverage_note:
     'ระบบนี้ใช้ได้เฉพาะจังหวัดร้อยเอ็ด ไม่ครอบคลุมทั้งประเทศ',
   field_type_question: 'แปลงนี้เป็นแบบไหน?',
-  field_lowland: 'นาที่ลุ่ม',
+  field_lowland: 'นาลุ่ม',
   field_upland: 'ที่ดอน / ไร่',
   field_other: 'อื่นๆ',
   field_unsure: 'ไม่แน่ใจ',
@@ -360,16 +455,70 @@ const th: TranslationMap = {
   analyzing_subtitle: 'กำลังดูคำตอบของคุณ...',
   analyzing_intro:
     'ระบบกำลังนำข้อมูลที่คุณกรอกไปเทียบกับกฎของต้นแบบ นี่เป็นโหมดสาธิต ยังไม่ใช่การเรียกข้อมูลจริงจากหน่วยงาน',
+  analyzing_intro_live:
+    'ระบบกำลังส่งคำตอบของคุณไปวิเคราะห์ที่บริการคำแนะนำ ผลสถานะมาจากกฎบนเซิร์ฟเวอร์ ไม่ได้ถูกเปลี่ยนโดยข้อความอธิบาย',
   analyzing_step_1: 'กำลังตรวจข้อมูลที่กรอก',
   analyzing_step_2: 'กำลังดูสภาพแปลงและน้ำ',
-  analyzing_step_3: 'กำลังเทียบกับกฎของต้นแบบ',
+  analyzing_step_3: 'กำลังใช้กฎการให้คำแนะนำ',
   analyzing_step_4: 'กำลังจัดทำคำอธิบาย',
   analyzing_wait: 'อาจใช้เวลาสักครู่',
+  analyzing_wait_live:
+    'โดยทั่วไปใช้เวลาประมาณ 15–25 วินาที และอาจนานถึงประมาณหนึ่งนาที',
+  live_analysis_badge: 'กำลังขอคำแนะนำแบบออนไลน์',
   demonstration_mode: 'โหมดสาธิต',
   prototype_analysis: 'การวิเคราะห์แบบต้นแบบ',
+  next_steps: 'สิ่งที่ควรทำต่อไป',
+  ai_explanation_note:
+    'ข้อความอธิบายอาจใช้ AI ช่วยเขียน แต่ไม่ได้เป็นตัวกำหนดผลสถานะจากกฎ',
+  no_supporting_rules: 'ไม่มีรายละเอียดกฎสนับสนุนที่ส่งกลับมาสำหรับผลนี้',
+  matched_rule_label: 'กฎหลักที่ตรงเงื่อนไข',
+  static_reference_note:
+    'รายการต่อไปนี้เป็นข้อมูลอ้างอิงแบบคงที่ในแอป ไม่ได้ดึงมาแบบสดจากบริการคำแนะนำ',
+  weather_context_live:
+    'มีข้อมูลอากาศจากผลการวิเคราะห์ไว้เป็นข้อมูลประกอบเท่านั้น',
+  weather_context_unavailable:
+    'ไม่มีข้อมูลอากาศในผลการวิเคราะห์ครั้งนี้',
+  request_id_label: 'รหัสคำขอ',
+  retry_guidance: 'ลองอีกครั้ง',
+  error_guidance_title: 'วิเคราะห์ไม่สำเร็จ',
+  error_guidance_configuration:
+    'ยังไม่ได้ตั้งค่าที่อยู่บริการคำแนะนำ กรุณาตั้ง VITE_N8N_WEBHOOK_URL แล้วสร้างแอปใหม่',
+  error_guidance_validation:
+    'ข้อมูลบางส่วนยังไม่ถูกต้อง กรุณาดูรายละเอียดด้านล่างแล้วแก้ไขคำตอบ',
+  error_guidance_timeout:
+    'บริการคำแนะนำใช้เวลานานเกินไป คำตอบของคุณยังถูกเก็บไว้ สามารถลองใหม่ได้',
+  error_guidance_network:
+    'ส่งคำขอไม่สำเร็จ กรุณาตรวจการเชื่อมต่อแล้วลองใหม่',
+  error_guidance_server:
+    'บริการคำแนะนำมีปัญหาชั่วคราว กรุณาลองใหม่ภายหลัง',
+  error_guidance_invalid_response:
+    'บริการคำแนะนำส่งผลกลับมาไม่ครบหรือไม่ถูกต้อง กรุณาลองใหม่',
+  edit_answers: 'แก้ไขคำตอบ',
+  processed_at_label: 'ประมวลผลเมื่อ',
+  confidence_high: 'ความมั่นใจสูงสำหรับสถานการณ์ที่ได้รับกลับมา',
+  weather_live_badge: 'จากผลการวิเคราะห์',
+  weather_unavailable_badge: 'ไม่มีข้อมูลอากาศ',
+  weather_unavailable_title: 'ยังไม่มีข้อมูลอากาศ',
+  weather_unavailable_body:
+    'ผลการวิเคราะห์ครั้งนี้ไม่มีพยากรณ์อากาศรายวันที่ใช้งานได้',
+  weather_unavailable_note:
+    'แอปจะไม่สร้างตัวเลขอากาศเอง และจะไม่เรียกบริการอากาศอื่นโดยอัตโนมัติ',
+  weather_location_roi_et: 'พื้นที่ร้อยเอ็ด',
+  weather_forecast_days: 'พยากรณ์ {days} วัน',
+  weather_temp_max: 'อุณหภูมิสูงสุด',
+  weather_temp_min: 'อุณหภูมิต่ำสุด',
+  weather_precip_sum: 'ปริมาณฝน',
+  weather_precip_prob: 'โอกาสฝนตก',
+  weather_code_label: 'รหัสอากาศ',
+  weather_interpretation_live:
+    'สภาพอากาศเป็นข้อมูลประกอบเท่านั้น และไม่เปลี่ยนผลสถานะ',
+  weather_forecast_timing_note:
+    'ข้อมูลนี้เป็นพยากรณ์อากาศ 7 วันปัจจุบัน ไม่ใช่พยากรณ์สำหรับเดือนที่วางแผนปลูก และไม่มีผลต่อสถานะที่กำหนดโดยกฎต้นแบบ',
+  weather_source_label: 'แหล่งอากาศ',
+  weather_retrieved_label: 'ดึงข้อมูลเมื่อ',
   your_farm_guidance: 'คำแนะนำสำหรับนาของคุณ',
   status_suitable: 'น่าจะเหมาะสม',
-  status_borderline: 'ยังไม่ชัดเจน',
+  status_borderline: 'ควรตรวจสอบเพิ่มเติม',
   status_escalate: 'ควรปรึกษาเจ้าหน้าที่',
   result_summary_suitable:
     'จากข้อมูลที่คุณให้ การปลูกถั่วเขียวหลังเกี่ยวข้าวนาปีอาจเป็นทางเลือกที่ควรพิจารณา',
@@ -387,7 +536,7 @@ const th: TranslationMap = {
   weather_context: 'ข้อมูลสภาพอากาศประกอบ',
   source_of_recommendation: 'แหล่งข้อมูลที่ใช้',
   sources_placeholder:
-    'ยังไม่ได้เชื่อมต่อแหล่งข้อมูลเกษตรที่ยืนยันแล้วกับระบบนี้',
+    'ผลการประเมินใช้กฎสาธิตของโครงการ ซึ่งยังต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญด้านการเกษตร',
   view_weather: 'ดูสภาพอากาศ',
   view_sources: 'ดูแหล่งข้อมูล',
   view_assumptions: 'ดูข้อสมมติ',
@@ -427,13 +576,13 @@ const th: TranslationMap = {
     'ประเมินเฉพาะถั่วเขียวหลังนาข้าวเท่านั้น และจะไม่แนะนำพืชอื่นแทนให้อัตโนมัติ',
   assumption_window_label: 'ช่วงเวลาปลูก (ชั่วคราว)',
   assumption_window_detail:
-    'พฤศจิกายน–ธันวาคมถือเป็นช่วงที่น่าจะเหมาะสำหรับสาธิต ตุลาคมและมกราคมถือว่าอยู่ขอบๆ ช่วงเดือนเหล่านี้ยังเป็นค่าชั่วคราว ต้องให้ผู้เชี่ยวชาญทบทวนอีกครั้ง',
+    'เดือนธันวาคมและมกราคมถือเป็นช่วงที่เหมาะสมในกฎสาธิต ส่วนเดือนพฤศจิกายนและกุมภาพันธ์ถือเป็นช่วงก้ำกึ่ง ข้อมูลนี้เป็นสมมติฐานชั่วคราวและต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญ',
   assumption_water_label: 'น้ำและการระบายน้ำ',
   assumption_water_detail:
     'ถ้ามีความชื้นพอและระบายน้ำดี จะสนับสนุนการพิจารณาปลูก ถ้าระบายน้ำไม่ดีหรือมีน้ำขัง ระบบจะแนะนำให้ปรึกษาเจ้าหน้าที่ ถ้าน้ำน้อยควรระวังเป็นพิเศษ',
   assumption_weather_label: 'บทบาทของสภาพอากาศ',
   assumption_weather_detail:
-    'สภาพอากาศเป็นข้อมูลประกอบแบบสาธิตเท่านั้น และไม่สามารถเปลี่ยนผลจากกฎของระบบได้',
+    'สภาพอากาศจากผลการวิเคราะห์เป็นข้อมูลประกอบเท่านั้น และไม่สามารถเปลี่ยนผลจากกฎของระบบได้',
   expert_support: 'ความปลอดภัยและช่องทางปรึกษาเจ้าหน้าที่',
   expert_intro:
     'ควรปรึกษาเจ้าหน้าที่ เมื่อข้อมูลยังไม่ครบ สภาพนามีความเสี่ยง หรือผลออกมาว่ายังไม่ชัดเจน / ควรปรึกษาเจ้าหน้าที่',
@@ -462,7 +611,7 @@ const th: TranslationMap = {
   uncertain_field_type: 'ยังไม่แน่ใจเรื่องประเภทแปลง',
   uncertain_previous_crop: 'ยังไม่แน่ใจเรื่องพืชก่อนหน้า',
   uncertain_soil: 'ยังไม่แน่ใจเรื่องดิน',
-  support_lowland_paddy: 'แปลงเป็นนาที่ลุ่ม',
+  support_lowland_paddy: 'แปลงเป็นนาลุ่ม',
   support_previous_rice: 'พืชก่อนหน้าเป็นข้าว',
   support_no_previous_conflict: 'ไม่มีพืชก่อนหน้าที่ขัดแย้งชัดเจน',
   support_timing_window: 'เดือนที่วางแผนอยู่ในช่วงหลังนาข้าว (แบบสาธิต)',
@@ -474,7 +623,7 @@ const th: TranslationMap = {
   risk_limited_water: 'น้ำอาจน้อยหรือไม่แน่นอน',
   risk_moderate_drainage: 'ระบายน้ำได้แค่พอใช้',
   risk_outside_window: 'เดือนที่วางแผนอยู่นอกช่วงที่ระบบใช้สาธิต',
-  risk_field_type: 'ประเภทแปลงอาจไม่ตรงกับนาที่ลุ่มซึ่งเป็นกรณีหลัก',
+  risk_field_type: 'ประเภทแปลงอาจไม่ตรงกับนาลุ่มซึ่งเป็นกรณีหลัก',
   risk_previous_legume: 'เคยปลูกพืชตระกูลถั่วมาก่อน ควรระวังเรื่องการปลูกซ้ำ',
   risk_edge_timing: 'เดือนที่วางแผนอยู่ขอบๆ ช่วงที่ระบบใช้สาธิต',
   limitation_prototype_only: 'ผลนี้เป็นคำแนะนำจากระบบต้นแบบเท่านั้น',
@@ -502,6 +651,44 @@ const th: TranslationMap = {
   home: 'หน้าแรก',
   not_selected: 'ยังไม่ได้เลือก',
   acknowledge_safety: 'ฉันเข้าใจว่านี่เป็นเพียงเครื่องมือช่วยตัดสินใจเท่านั้น',
+  display_drainage_good: 'ระบายน้ำดี',
+  display_drainage_moderate: 'ระบายน้ำปานกลาง',
+  display_drainage_poor: 'ระบายน้ำไม่ดี',
+  display_drainage_unsure: 'ยังไม่แน่ใจเรื่องการระบายน้ำ',
+  display_soil_yes: 'มีข้อมูลดิน',
+  display_soil_no: 'ยังไม่มีข้อมูลดิน',
+  concern_field_type: 'สภาพแปลงที่ดอนต้องตรวจเพิ่มในพื้นที่',
+  concern_previous_crop: 'พืชก่อนหน้าทำให้ต้องระวังเรื่องการปลูกซ้ำ',
+  concern_planting_month_edge: 'เดือนที่วางแผนปลูกอยู่ขอบช่วงที่ระบบใช้สาธิต',
+  concern_water_source_limited: 'น้ำอาจน้อยหรือไม่แน่นอน',
+  concern_drainage_moderate: 'ระบายน้ำได้ปานกลาง',
+  concern_soil_knowledge: 'ยังไม่มีข้อมูลดิน',
+  why_suitable:
+    'ไม่พบเงื่อนไขที่ต้องระวังหรือส่งต่อ ตามกฎของระบบต้นแบบ',
+  why_borderline_fallback: 'ยังมีเงื่อนไขที่ควรตรวจเพิ่มในพื้นที่',
+  why_escalate_fallback: 'ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
+  fallback_headline_suitable:
+    'แปลงในอำเภอ{district} จังหวัด{province}มีความเหมาะสมเบื้องต้นสำหรับการปลูกถั่วเขียว',
+  fallback_headline_borderline:
+    'แปลงในอำเภอ{district} จังหวัด{province}ยังต้องตรวจเพิ่มก่อนปลูกถั่วเขียว',
+  fallback_headline_escalate:
+    'แปลงในอำเภอ{district} จังหวัด{province}ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรในพื้นที่',
+  source_prototype_title: 'ฐานของกฎต้นแบบ',
+  source_prototype_body:
+    'ผลการประเมินใช้กฎสาธิตของโครงการ ซึ่งยังต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญด้านการเกษตร',
+  source_open_meteo_title: 'Open-Meteo',
+  source_open_meteo_body: 'แหล่งพยากรณ์อากาศราย 7 วันแบบสด',
+  source_open_meteo_link: 'เปิด Open-Meteo',
+  technical_details: 'รายละเอียดทางเทคนิค',
+  weather_technical_details: 'รายละเอียดอากาศทางเทคนิค',
+  more_details: 'ดูรายละเอียดเพิ่ม',
+  call_office: 'โทร',
+  email_office: 'อีเมล',
+  visit_official_website: 'เปิดเว็บไซต์ทางการ',
+  expert_phonthong_name: 'สำนักงานเกษตรอำเภอโพนทอง',
+  expert_roi_et_general_title: 'สำนักงานเกษตรจังหวัดร้อยเอ็ด',
+  expert_roi_et_general_body:
+    'แสดงข้อมูลติดต่อเฉพาะอำเภอโพนทอง สำหรับอำเภออื่นให้ใช้เว็บไซต์สำนักงานเกษตรจังหวัด',
 }
 
 const dictionaries: Record<LanguageCode, TranslationMap> = { en, th }

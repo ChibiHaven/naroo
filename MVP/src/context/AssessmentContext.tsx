@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -15,10 +16,8 @@ import {
   type GuidanceClassification,
   type LanguageCode,
 } from '@/types/assessment'
-import type { FarmGuidanceResult } from '@/types/guidance'
-import { prototypeGuidanceService } from '@/services/prototypeGuidanceService'
-import { classifyFarmAssessment } from '@/services/rulesEngine'
-import { generateGuidanceExplanation } from '@/services/explanationGenerator'
+import type { LiveGuidanceResult } from '@/types/liveGuidance'
+import { n8nGuidanceService } from '@/services/n8nGuidanceService'
 import {
   clearAssessmentSession,
   createFreshSession,
@@ -27,22 +26,37 @@ import {
   saveAssessmentSession,
   saveLanguage,
 } from '@/utils/sessionStorage'
+import {
+  assessmentFingerprint,
+  clearLiveGuidanceResult,
+  hasAnyCachedResult,
+  loadLiveGuidanceResult,
+  saveLiveGuidanceResult,
+} from '@/utils/liveResultStorage'
 import { t } from '@/i18n/translations'
+
+export type LanguageSwitchOutcome =
+  | 'unchanged'
+  | 'cached'
+  | 'needs-fetch'
+  | 'language-only'
 
 interface AssessmentContextValue {
   language: LanguageCode
-  setLanguage: (language: LanguageCode) => void
+  setLanguage: (language: LanguageCode) => LanguageSwitchOutcome
   input: FarmAssessmentInput
   updateInput: (patch: Partial<FarmAssessmentInput>) => void
   currentStep: AssessmentStep
   setCurrentStep: (step: AssessmentStep) => void
-  result: FarmGuidanceResult | null
+  result: LiveGuidanceResult | null
   resultClassification: GuidanceClassification | null
-  setResultFromAnalysis: (result: FarmGuidanceResult) => void
-  analyze: () => Promise<FarmGuidanceResult>
+  setResultFromAnalysis: (result: LiveGuidanceResult) => void
+  analyze: () => Promise<LiveGuidanceResult>
   clearAll: () => void
   translate: (key: string, vars?: Record<string, string | number>) => string
   hasProgress: boolean
+  analysisInFlight: boolean
+  languageRefreshPending: boolean
 }
 
 const AssessmentContext = createContext<AssessmentContextValue | null>(null)
@@ -63,75 +77,149 @@ function hydrateSession(): AssessmentSessionState {
   }
 }
 
-function restoreResult(
-  classification: GuidanceClassification | null,
-  input: FarmAssessmentInput,
-): FarmGuidanceResult | null {
-  if (!classification) {
-    return null
-  }
-  // Always recompute from current rules; stored classification is a cache hint only.
-  void classification
-  return generateGuidanceExplanation(classifyFarmAssessment(input))
-}
-
 export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AssessmentSessionState>(() =>
     hydrateSession(),
   )
-  const [result, setResult] = useState<FarmGuidanceResult | null>(() => {
-    const stored = loadAssessmentSession()
-    if (!stored) {
-      return null
-    }
-    return restoreResult(stored.resultClassification, stored.input)
+  const [result, setResult] = useState<LiveGuidanceResult | null>(() => {
+    const initial = hydrateSession()
+    return loadLiveGuidanceResult(
+      assessmentFingerprint(initial.input),
+      initial.input.language,
+    )
   })
+  const [analysisInFlight, setAnalysisInFlight] = useState(false)
+  const [languageRefreshPending, setLanguageRefreshPending] = useState(false)
+  const requestSeqRef = useRef(0)
+  const languageRef = useRef(session.input.language)
+
+  useEffect(() => {
+    languageRef.current = session.input.language
+  }, [session.input.language])
 
   useEffect(() => {
     saveAssessmentSession(session)
     saveLanguage(session.input.language)
   }, [session])
 
-  const setLanguage = useCallback((language: LanguageCode) => {
+  const setLanguage = useCallback((language: LanguageCode): LanguageSwitchOutcome => {
+    if (session.input.language === language) {
+      return 'unchanged'
+    }
+
+    const fingerprint = assessmentFingerprint(session.input)
+    const cached = loadLiveGuidanceResult(fingerprint, language)
+
+    requestSeqRef.current += 1
     setSession((prev) => ({
       ...prev,
       input: { ...prev.input, language },
     }))
-  }, [])
+
+    if (cached) {
+      setResult(cached)
+      setLanguageRefreshPending(false)
+      setAnalysisInFlight(false)
+      return 'cached'
+    }
+
+    if (hasAnyCachedResult(fingerprint) || result) {
+      setResult(null)
+      setLanguageRefreshPending(true)
+      return 'needs-fetch'
+    }
+
+    return 'language-only'
+  }, [result, session.input])
 
   const updateInput = useCallback((patch: Partial<FarmAssessmentInput>) => {
-    setSession((prev) => ({
-      ...prev,
-      input: { ...prev.input, ...patch },
-      resultClassification: null,
-    }))
-    setResult(null)
-  }, [])
+    setSession((prev) => {
+      const nextInput = { ...prev.input, ...patch }
+      const changed =
+        assessmentFingerprint(prev.input) !== assessmentFingerprint(nextInput)
+      if (changed) {
+        clearLiveGuidanceResult()
+      }
+      return {
+        ...prev,
+        input: nextInput,
+        resultClassification: changed ? null : prev.resultClassification,
+      }
+    })
+    setResult((current) => {
+      const nextInput = { ...session.input, ...patch }
+      const changed =
+        assessmentFingerprint(session.input) !== assessmentFingerprint(nextInput)
+      return changed ? null : current
+    })
+  }, [session.input])
 
   const setCurrentStep = useCallback((step: AssessmentStep) => {
     setSession((prev) => ({ ...prev, currentStep: step }))
   }, [])
 
-  const setResultFromAnalysis = useCallback((next: FarmGuidanceResult) => {
+  const setResultFromAnalysis = useCallback((next: LiveGuidanceResult) => {
+    const fingerprint = assessmentFingerprint(session.input)
+    saveLiveGuidanceResult(next, fingerprint, session.input.language)
     setResult(next)
+    setLanguageRefreshPending(false)
     setSession((prev) => ({
       ...prev,
-      resultClassification: next.classification,
+      resultClassification: next.response.classification,
     }))
-  }, [])
+  }, [session.input])
 
   const analyze = useCallback(async () => {
-    const next = await prototypeGuidanceService.analyze(session.input)
-    setResultFromAnalysis(next)
-    return next
-  }, [session.input, setResultFromAnalysis])
+    const inputSnapshot = session.input
+    const fingerprint = assessmentFingerprint(inputSnapshot)
+    const language = inputSnapshot.language
+    const cached = loadLiveGuidanceResult(fingerprint, language)
+    if (cached) {
+      setResult(cached)
+      setLanguageRefreshPending(false)
+      setSession((prev) => ({
+        ...prev,
+        resultClassification: cached.response.classification,
+      }))
+      return cached
+    }
+
+    const requestId = ++requestSeqRef.current
+    setAnalysisInFlight(true)
+
+    try {
+      const next = await n8nGuidanceService.analyze(inputSnapshot)
+      saveLiveGuidanceResult(next, fingerprint, language)
+      if (requestId !== requestSeqRef.current) {
+        throw new Error('Stale analysis response ignored')
+      }
+      if (languageRef.current !== language) {
+        return next
+      }
+      setResult(next)
+      setLanguageRefreshPending(false)
+      setSession((prev) => ({
+        ...prev,
+        resultClassification: next.response.classification,
+      }))
+      return next
+    } finally {
+      if (requestId === requestSeqRef.current) {
+        setAnalysisInFlight(false)
+      }
+    }
+  }, [session.input])
 
   const clearAll = useCallback(() => {
+    requestSeqRef.current += 1
     clearAssessmentSession()
+    clearLiveGuidanceResult()
     const language = loadLanguage('en')
     const fresh = createFreshSession(language)
     setSession(fresh)
     setResult(null)
+    setAnalysisInFlight(false)
+    setLanguageRefreshPending(false)
   }, [])
 
   const translate = useCallback(
@@ -164,12 +252,15 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
       currentStep: session.currentStep,
       setCurrentStep,
       result,
-      resultClassification: session.resultClassification,
+      resultClassification:
+        result?.response.classification ?? session.resultClassification,
       setResultFromAnalysis,
       analyze,
       clearAll,
       translate,
       hasProgress,
+      analysisInFlight,
+      languageRefreshPending,
     }),
     [
       session,
@@ -182,6 +273,8 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
       clearAll,
       translate,
       hasProgress,
+      analysisInFlight,
+      languageRefreshPending,
     ],
   )
 

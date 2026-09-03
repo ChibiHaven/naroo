@@ -39,10 +39,10 @@ export const PROTOTYPE_ASSUMPTIONS: GuidanceAssumption[] = [
 ]
 
 /** Provisional suitable planting months (1–12). Demonstration only. */
-export const PROTOTYPE_SUITABLE_MONTHS = [11, 12] as const
+export const PROTOTYPE_SUITABLE_MONTHS = [12, 1] as const
 
 /** Provisional edge months treated as borderline. Demonstration only. */
-export const PROTOTYPE_EDGE_MONTHS = [10, 1] as const
+export const PROTOTYPE_EDGE_MONTHS = [11, 2] as const
 
 export function getAssumptionById(id: string): GuidanceAssumption | undefined {
   return PROTOTYPE_ASSUMPTIONS.find((item) => item.id === id)

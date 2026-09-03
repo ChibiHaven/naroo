@@ -46,19 +46,19 @@ export function FarmStep1Page() {
   }
 
   const fieldOptions: Array<{ value: FieldType; label: string; icon: ReactNode }> = [
-    { value: 'lowland_paddy', label: translate('field_lowland'), icon: <Wheat className="h-5 w-5" /> },
-    { value: 'upland', label: translate('field_upland'), icon: <Sprout className="h-5 w-5" /> },
-    { value: 'other', label: translate('field_other'), icon: <Leaf className="h-5 w-5" /> },
-    { value: 'unsure', label: translate('field_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
+    { value: 'lowland_paddy', label: translate('field_lowland'), icon: <Wheat className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'upland', label: translate('field_upland'), icon: <Sprout className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'other', label: translate('field_other'), icon: <Leaf className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'unsure', label: translate('field_unsure'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
   ]
 
   const previousOptions: Array<{ value: PreviousCrop; label: string; icon: ReactNode }> = [
-    { value: 'rice', label: translate('previous_rice'), icon: <Wheat className="h-5 w-5" /> },
-    { value: 'mung_bean', label: translate('previous_mung_bean'), icon: <Sprout className="h-5 w-5" /> },
-    { value: 'another_legume', label: translate('previous_another_legume'), icon: <Leaf className="h-5 w-5" /> },
-    { value: 'other', label: translate('previous_other'), icon: <Leaf className="h-5 w-5" /> },
-    { value: 'none', label: translate('previous_none'), icon: <HelpCircle className="h-5 w-5" /> },
-    { value: 'unsure', label: translate('previous_unsure'), icon: <HelpCircle className="h-5 w-5" /> },
+    { value: 'rice', label: translate('previous_rice'), icon: <Wheat className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'mung_bean', label: translate('previous_mung_bean'), icon: <Sprout className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'another_legume', label: translate('previous_another_legume'), icon: <Leaf className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'other', label: translate('previous_other'), icon: <Leaf className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'none', label: translate('previous_none'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
+    { value: 'unsure', label: translate('previous_unsure'), icon: <HelpCircle className="h-5 w-5" aria-hidden="true" /> },
   ]
 
   return (
@@ -201,7 +201,7 @@ export function FarmStep1Page() {
       <BottomActions>
         <PrimaryButton onClick={handleContinue}>
           {translate('continue')}
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/')}>{translate('back')}</SecondaryButton>
       </BottomActions>

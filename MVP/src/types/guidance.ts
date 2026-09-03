@@ -5,6 +5,7 @@ export type GuidanceDataMode = 'prototype' | 'live'
 export type ConfidenceLevel = 'low' | 'medium' | 'high'
 
 export interface GuidanceSource {
+  kind?: 'prototype_rules' | 'open_meteo'
   title: string
   organization?: string
   geographicScope?: string
@@ -12,6 +13,7 @@ export interface GuidanceSource {
   retrievedAt?: string
   url?: string
   limitation?: string
+  timezone?: string
   connected: boolean
 }
 

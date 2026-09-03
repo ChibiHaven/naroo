@@ -20,5 +20,10 @@ export default defineConfig({
     pool: 'threads',
     fileParallelism: false,
     testTimeout: 15000,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      'naroo/**',
+    ],
   },
 })

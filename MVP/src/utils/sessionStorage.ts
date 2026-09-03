@@ -198,6 +198,8 @@ export function saveAssessmentSession(state: AssessmentSessionState): void {
 export function clearAssessmentSession(): void {
   removeKey(ASSESSMENT_STORAGE_KEY)
   removeKey(LEGACY_ASSESSMENT_STORAGE_KEY)
+  removeKey('naroo.guidance.live.v1')
+  removeKey('naroo.guidance.live.v2')
 }
 
 export function loadLanguage(defaultLanguage: LanguageCode = 'en'): LanguageCode {

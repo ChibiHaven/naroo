@@ -1,36 +1,16 @@
 import type { FarmAssessmentInput } from '@/types/assessment'
-import type { FarmGuidanceResult } from '@/types/guidance'
-import { generateGuidanceExplanation } from '@/services/explanationGenerator'
-import { classifyFarmAssessment } from '@/services/rulesEngine'
-import type { GuidanceService } from '@/services/guidanceService'
+import type { LiveGuidanceResult } from '@/types/liveGuidance'
 
 /**
- * Local prototype guidance service.
- * Replaceable later by an n8n webhook implementation of GuidanceService.
+ * Legacy local prototype service.
+ * Kept in the repository for reference/tests history only.
+ * Production analysis must use N8nGuidanceService and must never call this.
  */
-export class PrototypeGuidanceService implements GuidanceService {
-  delayMs: number
-
-  constructor(delayMs = 1600) {
-    this.delayMs = delayMs
-  }
-
-  async analyze(input: FarmAssessmentInput): Promise<FarmGuidanceResult> {
-    const isTest = import.meta.env.MODE === 'test'
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const waitMs = isTest || prefersReducedMotion ? 0 : this.delayMs
-    if (waitMs > 0) {
-      await new Promise((resolve) => {
-        window.setTimeout(resolve, waitMs)
-      })
-    }
-
-    const trace = classifyFarmAssessment(input)
-    return generateGuidanceExplanation(trace)
+export class PrototypeGuidanceService {
+  async analyze(_input: FarmAssessmentInput): Promise<LiveGuidanceResult> {
+    throw new Error(
+      'PrototypeGuidanceService is disabled. Configure VITE_N8N_WEBHOOK_URL and use N8nGuidanceService.',
+    )
   }
 }
 

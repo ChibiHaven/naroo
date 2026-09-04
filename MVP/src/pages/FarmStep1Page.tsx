@@ -7,6 +7,7 @@ import { BottomActions } from '@/components/forms/BottomActions'
 import { FieldError } from '@/components/forms/FieldError'
 import { SelectionCard } from '@/components/forms/SelectionCard'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { useAssessment } from '@/context/AssessmentContext'
 import { DEFAULT_PROVINCE_ID, SUPPORTED_PROVINCES } from '@/config/locations'
@@ -201,7 +202,9 @@ export function FarmStep1Page() {
       <BottomActions>
         <PrimaryButton onClick={handleContinue}>
           {translate('continue')}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <DecorativeIcon>
+            <ArrowRight className="h-4 w-4" />
+          </DecorativeIcon>
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/')}>{translate('back')}</SecondaryButton>
       </BottomActions>

@@ -135,18 +135,85 @@ describe('structured guidance display', () => {
     expect(
       rejectStep('Walk the field locally', 'escalate', septemberEscalate.weather, 9),
     ).toBe(false)
+    expect(
+      rejectStep(
+        'เนื่องจากผลการประเมินเป็น ควรตรวจสอบเพิ่มเติม',
+        'borderline',
+        septemberEscalate.weather,
+        12,
+      ),
+    ).toBe(true)
   })
 
-  it('keeps acceptable AI next steps and drops unsafe ones', () => {
+  it('builds dynamic farmer next steps from the actual response fields', () => {
+    const input = {
+      ...completeAssessmentInput('en'),
+      district: 'pathum_rat',
+      previousCrop: 'mung_bean' as const,
+      plantingMonth: 9,
+      waterSource: 'rainfed' as const,
+      drainageCondition: 'moderate' as const,
+      soilKnowledge: 'yes' as const,
+      soilType: 'ดินร่วน',
+    }
     const { steps, usedAi } = nextStepsFromResponse(
       'en',
       septemberEscalate,
       12,
+      input,
     )
-    expect(usedAi).toBe(true)
-    expect(steps.some((step) => /walk the field/i.test(step))).toBe(true)
+    expect(usedAi).toBe(false)
+    expect(steps).toEqual([
+      t('en', 'next_step_consult_before_planting'),
+      t('en', 'next_step_explain_previous_crop', {
+        crop: t('en', 'previous_mung_bean'),
+      }),
+      t('en', 'next_step_confirm_moisture_drainage'),
+    ])
     expect(steps.join(' ')).not.toContain('province=')
+    expect(steps.join(' ').toLowerCase()).not.toContain('walk the field')
     expect(steps.join(' ').toLowerCase()).not.toContain('december planting')
+    expect(steps.join(' ')).not.toContain('Phon Thong')
+  })
+
+  it('uses Thai next-step wording from the selected crop and missing fields', () => {
+    const input = {
+      ...completeAssessmentInput('th'),
+      previousCrop: 'mung_bean' as const,
+      waterSource: 'residual_moisture' as const,
+      drainageCondition: 'moderate' as const,
+      soilKnowledge: 'no' as const,
+      soilType: '',
+    }
+    const { steps, usedAi } = nextStepsFromResponse(
+      'th',
+      {
+        ...septemberEscalate,
+        classification: 'borderline',
+        requiresExpertSupport: false,
+        language: 'th',
+        input: {
+          ...septemberEscalate.input,
+          previousCrop: 'mung_bean',
+          waterSource: 'residual_moisture',
+          drainageCondition: 'moderate',
+          soilKnowledge: 'no',
+        },
+      },
+      12,
+      input,
+    )
+    expect(usedAi).toBe(false)
+    expect(steps).toEqual([
+      t('th', 'next_step_consult_before_planting'),
+      t('th', 'next_step_explain_previous_crop', {
+        crop: t('th', 'previous_mung_bean'),
+      }),
+      t('th', 'next_step_collect_soil'),
+      t('th', 'next_step_confirm_moisture_drainage'),
+    ])
+    expect(steps.join(' ')).not.toContain('การเพิ่มพืชใหม่')
+    expect(steps.join(' ')).not.toContain('เนื่องจากผลการประเมินเป็น')
   })
 
   it('preserves user soil text in the structured summary', () => {
@@ -175,7 +242,14 @@ describe('structured guidance display', () => {
     ).toBe(true)
   })
 
-  it('falls back to structured actions when every AI step is rejected', () => {
+  it('uses structured next steps even when every AI step is rejected', () => {
+    const input = {
+      ...completeAssessmentInput('en'),
+      previousCrop: 'mung_bean' as const,
+      waterSource: 'rainfed' as const,
+      drainageCondition: 'moderate' as const,
+      soilKnowledge: 'yes' as const,
+    }
     const { steps, usedAi } = nextStepsFromResponse(
       'en',
       {
@@ -190,11 +264,11 @@ describe('structured guidance display', () => {
         },
       },
       9,
+      input,
     )
     expect(usedAi).toBe(false)
-    expect(steps).toContain(t('en', 'fallback_step_review_answers'))
-    expect(steps).toContain(t('en', 'fallback_step_consult_office'))
-    expect(steps).toContain(t('en', 'fallback_step_weather_context_only'))
+    expect(steps).toContain(t('en', 'next_step_consult_before_planting'))
     expect(steps.join(' ')).not.toContain('province=')
+    expect(steps.join(' ')).not.toContain(t('en', 'fallback_step_weather_context_only'))
   })
 })

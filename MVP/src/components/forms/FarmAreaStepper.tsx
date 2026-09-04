@@ -1,4 +1,5 @@
 import { Minus, Plus } from 'lucide-react'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { useAssessment } from '@/context/AssessmentContext'
 
 interface FarmAreaStepperProps {
@@ -25,7 +26,9 @@ export function FarmAreaStepper({
         aria-label={translate('decrease_area')}
         onClick={() => onChange(Math.max(0, Number((current - 0.5).toFixed(1))) || null)}
       >
-        <Minus className="h-5 w-5" />
+        <DecorativeIcon>
+          <Minus className="h-5 w-5" />
+        </DecorativeIcon>
       </button>
       <div className="relative flex-1">
         <input
@@ -55,7 +58,9 @@ export function FarmAreaStepper({
         aria-label={translate('increase_area')}
         onClick={() => onChange(Number((current + 0.5).toFixed(1)) || 0.5)}
       >
-        <Plus className="h-5 w-5" />
+        <DecorativeIcon>
+          <Plus className="h-5 w-5" />
+        </DecorativeIcon>
       </button>
       <span className="min-w-10 text-base font-semibold text-brand-muted">
         {translate('rai')}

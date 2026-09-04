@@ -11,6 +11,7 @@ import { AppHeader } from '@/components/layout/AppHeader'
 import { BottomActions } from '@/components/forms/BottomActions'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { RequireResult } from '@/components/common/RouteGuards'
 import { PrototypeBanner } from '@/components/guidance/PrototypeBanner'
 import { TypicalMonthlyWeather } from '@/components/guidance/TypicalMonthlyWeather'
@@ -54,12 +55,24 @@ function statusTextColor(status: GuidanceClassification) {
 function StatusIcon({ status }: { status: GuidanceClassification }) {
   const cls = `h-10 w-10 ${statusTextColor(status)}`
   if (status === 'suitable') {
-    return <CheckCircle2 className={cls} aria-hidden="true" />
+    return (
+      <DecorativeIcon>
+        <CheckCircle2 className={cls} />
+      </DecorativeIcon>
+    )
   }
   if (status === 'borderline') {
-    return <AlertTriangle className={cls} aria-hidden="true" />
+    return (
+      <DecorativeIcon>
+        <AlertTriangle className={cls} />
+      </DecorativeIcon>
+    )
   }
-  return <CircleAlert className={cls} aria-hidden="true" />
+  return (
+    <DecorativeIcon>
+      <CircleAlert className={cls} />
+    </DecorativeIcon>
+  )
 }
 
 function statusImage(status: GuidanceClassification): string {
@@ -95,6 +108,7 @@ function GuidanceResultContent() {
     language,
     response,
     plantingMonth,
+    input,
   )
   const whyItems = whyStatusItems(
     language,
@@ -165,11 +179,13 @@ function GuidanceResultContent() {
 
         <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
           <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-            <ListChecks className="h-5 w-5 text-brand-primary" aria-hidden="true" />
+            <DecorativeIcon>
+              <ListChecks className="h-5 w-5 text-brand-primary" />
+            </DecorativeIcon>
             {translate('next_steps')}
           </h2>
           {nextSteps.length > 0 ? (
-            <ul className="list-disc space-y-2 pl-5">
+            <ol className="list-decimal space-y-2 pl-5">
               {nextSteps
                 .map((step) => step.trim())
                 .filter((step) => step.length > 0 && !/^[-*•·.—–]+$/.test(step))
@@ -181,7 +197,7 @@ function GuidanceResultContent() {
                     {step}
                   </li>
                 ))}
-            </ul>
+            </ol>
           ) : null}
           {response.aiExplanation.generated && usedAiSteps ? (
             <p className="mt-3 text-xs text-brand-muted">
@@ -193,11 +209,13 @@ function GuidanceResultContent() {
         {whyItems.length > 0 ? (
           <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
             <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
-              {classification === 'suitable' ? (
-                <CheckCircle2 className="h-5 w-5 text-brand-success" aria-hidden="true" />
-              ) : (
-                <AlertTriangle className="h-5 w-5 text-brand-warning" aria-hidden="true" />
-              )}
+              <DecorativeIcon>
+                {classification === 'suitable' ? (
+                  <CheckCircle2 className="h-5 w-5 text-brand-success" />
+                ) : (
+                  <AlertTriangle className="h-5 w-5 text-brand-warning" />
+                )}
+              </DecorativeIcon>
               {classification === 'borderline'
                 ? translate('risks_concerns')
                 : translate('why_status')}
@@ -205,13 +223,12 @@ function GuidanceResultContent() {
             <ul className="space-y-2">
               {whyItems
                 .map((item) => item.trim())
-                .filter((item) => item.length > 0)
+                .filter((item) => item.length > 0 && !/^[-*•·.—–]+$/.test(item))
                 .map((item) => (
                   <li key={item} className="flex gap-2 text-sm leading-relaxed">
-                    <CheckCircle2
-                      className="mt-0.5 h-4 w-4 shrink-0 text-brand-success"
-                      aria-hidden="true"
-                    />
+                    <DecorativeIcon className="mt-0.5">
+                      <CheckCircle2 className="h-4 w-4 text-brand-success" />
+                    </DecorativeIcon>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -248,7 +265,9 @@ function GuidanceResultContent() {
             <div className="mt-4">
               <PrimaryButton onClick={() => navigate('/expert-support')}>
                 {translate('find_local_support')}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <DecorativeIcon>
+                  <ArrowRight className="h-4 w-4" />
+                </DecorativeIcon>
               </PrimaryButton>
             </div>
           </section>
@@ -308,7 +327,7 @@ function GuidanceResultContent() {
                 <ul className="list-disc space-y-1 pl-5">
                   {limitationItems
                     .map((item) => item.trim())
-                    .filter((item) => item.length > 0)
+                    .filter((item) => item.length > 0 && !/^[-*•·.—–]+$/.test(item))
                     .map((item) => (
                       <li key={item}>{item}</li>
                     ))}

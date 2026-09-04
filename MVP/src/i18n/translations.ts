@@ -74,7 +74,7 @@ const en: TranslationMap = {
   month_12: 'December',
   water_question: 'What is your main water or moisture condition?',
   water_irrigated: 'Irrigated',
-  water_residual: 'Residual soil moisture after rice',
+  water_residual: 'Residual soil moisture after rice harvest',
   water_rainfed: 'Rainfed',
   water_limited: 'Limited or unreliable water',
   water_unsure: "I'm not sure",
@@ -97,7 +97,7 @@ const en: TranslationMap = {
   goal_question: 'What is your main goal for this decision?',
   goal_improve_soil: 'Improve soil condition for the next rice crop',
   goal_use_productively: 'Use the field productively after rice',
-  goal_add_crop: 'Add another crop after the rice harvest',
+  goal_add_crop: 'Plant mung bean after the rice harvest',
   goal_learn_mung_bean: 'Learn whether mung bean may suit the field',
   goal_other: 'Other',
   goal_unsure: "I'm not sure",
@@ -122,13 +122,13 @@ const en: TranslationMap = {
   prototype_analysis: 'Prototype analysis',
   next_steps: 'Suggested next steps',
   ai_explanation_note:
-    'The explanation text may be AI-assisted. It does not change the classification decided by the rules.',
+    'The explanation may be drafted by AI, but the assessment result is determined by NaRoo’s rules.',
   no_supporting_rules: 'No supporting rule details were returned for this result.',
   matched_rule_label: 'Primary matched rule',
   static_reference_note:
     'The following items are static prototype reference information kept in the app. They were not fetched as live API content.',
   weather_context_live:
-    'A current seven-day weather forecast is provided as supporting information.',
+    'The forecast for the next seven days is provided as supporting information.',
   weather_context_unavailable:
     'Weather data was not available for this guidance response.',
   request_id_label: 'Request ID',
@@ -164,12 +164,12 @@ const en: TranslationMap = {
   weather_precip_prob: 'Chance of rain',
   weather_code_label: 'Weather code',
   weather_interpretation_live:
-    'Weather is supporting context only and does not change the classification.',
+    'Weather is supporting context only and does not change NaRoo’s rules-based assessment.',
   weather_forecast_timing_note:
-    'This forecast reflects current conditions, not the weather for the planned planting month, and it does not affect NaRoo\'s rules-based classification.',
+    'This forecast covers the next seven days. It is not a forecast for the planned planting month and does not affect NaRoo’s rules-based assessment.',
   weather_source_label: 'Weather source',
   weather_retrieved_label: 'Retrieved at',
-  your_farm_guidance: 'Your Farm Guidance',
+  your_farm_guidance: 'Your Assessment Result',
   status_suitable: 'Likely suitable',
   status_borderline: 'Further review recommended',
   status_escalate: 'Expert review required',
@@ -180,17 +180,17 @@ const en: TranslationMap = {
   result_summary_escalate:
     'Based on the information provided, this prototype cannot make a safe suitability claim. Local professional verification is recommended.',
   crop_mung_bean: 'Mung bean',
-  why_status: 'Why this status?',
+  why_status: 'Why this assessment result?',
   risks_concerns: 'Risks or concerns',
   missing_uncertain: 'Missing or uncertain information',
   assumptions_used: 'Assumptions used',
-  confidence_level: 'Data quality / confidence',
+  confidence_level: 'Information completeness',
   information_limitations: 'Limitations',
   weather_context: 'Weather context',
   source_of_recommendation: 'Source transparency',
   sources_placeholder:
     'The assessment uses project-defined demonstration rules that still require validation by agricultural experts.',
-  view_weather: 'Weather Snapshot',
+  view_weather: 'View 7-Day Forecast',
   view_sources: 'Source Details',
   view_assumptions: 'Assumptions',
   need_more_help: 'Need more help?',
@@ -200,7 +200,7 @@ const en: TranslationMap = {
   start_new_assessment: 'Start New Assessment',
   edit_farm_information: 'Edit Farm Information',
   prototype_banner: 'PROTOTYPE GUIDANCE — NOT LIVE AGRICULTURAL ADVICE',
-  weather_title: 'Weather Snapshot',
+  weather_title: 'View 7-Day Forecast',
   weather_location_demo: 'Demonstration location: Roi Et (not live)',
   weather_period_demo: 'Demonstration near-term period for classroom use',
   weather_day_1: 'Day 1–2',
@@ -235,8 +235,8 @@ const en: TranslationMap = {
     'Adequate moisture with good drainage supports consideration; poor/waterlogged drainage escalates; limited water increases caution.',
   assumption_weather_label: 'Weather role',
   assumption_weather_detail:
-    'Weather from the guidance response is supporting context only and does not override the rules-engine classification.',
-  expert_support: 'Safety and Expert Support',
+    'Weather from the guidance response is supporting context only and does not override the rules-based assessment.',
+  expert_support: 'Expert Review',
   expert_intro:
     'Professional advice is appropriate when information is missing, conditions are risky, or the prototype returns Escalate or Borderline.',
   other_contact_methods: 'Other contact methods',
@@ -248,7 +248,7 @@ const en: TranslationMap = {
   summary_field_type: 'Field type',
   summary_previous: 'Previous crop',
   summary_month: 'Planned planting month',
-  summary_water: 'Water / moisture',
+  summary_water: 'Water source and soil moisture',
   summary_drainage: 'Drainage',
   summary_area: 'Farm size',
   summary_soil: 'Soil information',
@@ -347,11 +347,21 @@ const en: TranslationMap = {
   fallback_step_collect_missing:
     'Collect the missing field information identified by the prototype rules',
   fallback_step_weather_context_only:
-    'View current weather only as present-day context, not as a planting-month forecast',
+    'View the current seven-day forecast only as supporting information, not as a planting-month forecast',
+  next_step_consult_before_planting:
+    'Consult an agricultural extension officer or agronomist before planting.',
+  next_step_explain_previous_crop:
+    'Explain that {crop} was the previous crop so the risk of repeated planting can be assessed.',
+  next_step_collect_soil:
+    'Obtain soil information through field inspection or soil analysis.',
+  next_step_confirm_moisture_drainage:
+    'Confirm that residual soil moisture and drainage are suitable for planting.',
+  next_step_confirm_residual_moisture:
+    'Confirm that residual soil moisture left after harvest is sufficient for planting.',
   summary_confidence_high: 'High',
   summary_confidence_medium: 'Medium',
   summary_confidence_low: 'Low',
-  summary_expert_required: 'Expert support is required',
+  summary_expert_required: 'Consult an agricultural extension officer or agronomist before deciding.',
   summary_expert_not_required: 'Expert support is not required by this result',
   summary_matched_condition: 'Primary condition',
   source_prototype_title: 'Prototype rule basis',
@@ -370,7 +380,7 @@ const en: TranslationMap = {
     'Contact details may change. Please verify them on the official website before calling or visiting.',
   typical_weather_heading: 'Typical weather in {month}',
   typical_weather_disclaimer:
-    'Based on typical seasonal conditions in Roi Et. Actual weather may vary.',
+    'This describes typical seasonal conditions in Roi Et. It is not a forecast and does not affect NaRoo’s rules-based assessment.',
   typical_weather_1:
     'Usually cool and dry, with low rainfall and limited natural soil moisture.',
   typical_weather_2: 'Usually dry and gradually warmer, with little rainfall.',
@@ -471,7 +481,7 @@ const th: TranslationMap = {
   month_12: 'ธันวาคม',
   water_question: 'น้ำหรือความชื้นในแปลงเป็นอย่างไร?',
   water_irrigated: 'มีระบบชลประทาน',
-  water_residual: 'ใช้ความชื้นดินหลังเกี่ยวข้าว',
+  water_residual: 'อาศัยความชื้นในดินที่เหลือหลังเก็บเกี่ยวข้าว',
   water_rainfed: 'อาศัยน้ำฝน',
   water_limited: 'น้ำน้อยหรือไม่แน่นอน',
   water_unsure: 'ไม่แน่ใจ',
@@ -494,7 +504,7 @@ const th: TranslationMap = {
   goal_question: 'คุณอยากรู้เรื่องอะไรเป็นหลัก?',
   goal_improve_soil: 'อยากปรับดินให้พร้อมปลูกข้าวฤดูหน้า',
   goal_use_productively: 'อยากใช้พื้นที่หลังเกี่ยวข้าวให้เกิดประโยชน์',
-  goal_add_crop: 'อยากปลูกพืชเพิ่มหลังเกี่ยวข้าว',
+  goal_add_crop: 'อยากปลูกถั่วเขียวหลังเกี่ยวข้าว',
   goal_learn_mung_bean: 'อยากรู้ว่าถั่วเขียวเหมาะกับแปลงนี้ไหม',
   goal_other: 'อื่นๆ',
   goal_unsure: 'ไม่แน่ใจ',
@@ -519,13 +529,13 @@ const th: TranslationMap = {
   prototype_analysis: 'การวิเคราะห์แบบต้นแบบ',
   next_steps: 'ขั้นตอนต่อไปที่แนะนำ',
   ai_explanation_note:
-    'ข้อความอธิบายอาจใช้ AI ช่วยเขียน แต่ไม่ได้เป็นตัวกำหนดผลสถานะจากกฎ',
+    'ข้อความอธิบายอาจเรียบเรียงโดย AI แต่ผลการประเมินกำหนดโดยกฎของ NaRoo',
   no_supporting_rules: 'ไม่มีรายละเอียดกฎสนับสนุนที่ส่งกลับมาสำหรับผลนี้',
   matched_rule_label: 'กฎหลักที่ตรงเงื่อนไข',
   static_reference_note:
     'รายการต่อไปนี้เป็นข้อมูลอ้างอิงแบบคงที่ในแอป ไม่ได้ดึงมาแบบสดจากบริการคำแนะนำ',
   weather_context_live:
-    'พยากรณ์อากาศ 7 วันปัจจุบันแสดงไว้เป็นข้อมูลประกอบ',
+    'พยากรณ์อากาศ 7 วันข้างหน้าแสดงไว้เป็นข้อมูลประกอบ',
   weather_context_unavailable:
     'ไม่มีข้อมูลอากาศในผลการวิเคราะห์ครั้งนี้',
   request_id_label: 'รหัสคำขอ',
@@ -561,12 +571,12 @@ const th: TranslationMap = {
   weather_precip_prob: 'โอกาสฝนตก',
   weather_code_label: 'รหัสอากาศ',
   weather_interpretation_live:
-    'สภาพอากาศเป็นข้อมูลประกอบเท่านั้น และไม่เปลี่ยนผลสถานะ',
+    'สภาพอากาศเป็นข้อมูลประกอบเท่านั้น และไม่มีผลต่อผลการประเมินตามกฎของ NaRoo',
   weather_forecast_timing_note:
-    'ข้อมูลนี้สะท้อนสภาพอากาศปัจจุบัน ไม่ใช่สภาพอากาศของเดือนที่วางแผนปลูก และไม่มีผลต่อการจัดประเภทตามกฎของ NaRoo',
+    'พยากรณ์นี้ครอบคลุมสภาพอากาศในช่วง 7 วันข้างหน้า ไม่ใช่พยากรณ์สำหรับเดือนที่วางแผนปลูก และไม่มีผลต่อผลการประเมินตามกฎของ NaRoo',
   weather_source_label: 'แหล่งอากาศ',
   weather_retrieved_label: 'ดึงข้อมูลเมื่อ',
-  your_farm_guidance: 'คำแนะนำสำหรับนาของคุณ',
+  your_farm_guidance: 'ผลการประเมินสำหรับแปลงของคุณ',
   status_suitable: 'น่าจะเหมาะสม',
   status_borderline: 'ควรตรวจสอบเพิ่มเติม',
   status_escalate: 'ควรปรึกษาผู้เชี่ยวชาญ',
@@ -581,13 +591,13 @@ const th: TranslationMap = {
   risks_concerns: 'จุดที่ควรระวัง',
   missing_uncertain: 'ข้อมูลที่ยังขาดหรือยังไม่แน่ใจ',
   assumptions_used: 'ข้อสมมติที่ใช้',
-  confidence_level: 'ความมั่นใจของผล',
+  confidence_level: 'ความครบถ้วนของข้อมูล',
   information_limitations: 'ข้อจำกัด',
   weather_context: 'บริบทสภาพอากาศ',
   source_of_recommendation: 'แหล่งข้อมูลที่ใช้',
   sources_placeholder:
     'ผลการประเมินใช้กฎสาธิตของโครงการ ซึ่งยังต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญด้านการเกษตร',
-  view_weather: 'ดูสภาพอากาศ',
+  view_weather: 'ดูพยากรณ์อากาศ 7 วัน',
   view_sources: 'ดูแหล่งข้อมูล',
   view_assumptions: 'ดูข้อสมมติ',
   need_more_help: 'ต้องการความช่วยเหลือเพิ่มไหม?',
@@ -597,7 +607,7 @@ const th: TranslationMap = {
   start_new_assessment: 'เริ่มประเมินใหม่',
   edit_farm_information: 'แก้ไขข้อมูลนา',
   prototype_banner: 'คำแนะนำจากระบบต้นแบบ — ยังไม่ใช่คำแนะนำเกษตรจริง',
-  weather_title: 'สภาพอากาศ',
+  weather_title: 'พยากรณ์อากาศ 7 วัน',
   weather_location_demo: 'พื้นที่สาธิต: จังหวัดร้อยเอ็ด (ยังไม่ใช่ข้อมูลจริง)',
   weather_period_demo: 'ช่วงเวลาใกล้เคียงแบบสาธิต ใช้ประกอบการดูผลเท่านั้น',
   weather_day_1: 'วันที่ 1–2',
@@ -632,8 +642,8 @@ const th: TranslationMap = {
     'ถ้ามีความชื้นพอและระบายน้ำดี จะสนับสนุนการพิจารณาปลูก ถ้าระบายน้ำไม่ดีหรือมีน้ำขัง ระบบจะแนะนำให้ปรึกษาเจ้าหน้าที่ ถ้าน้ำน้อยควรระวังเป็นพิเศษ',
   assumption_weather_label: 'บทบาทของสภาพอากาศ',
   assumption_weather_detail:
-    'สภาพอากาศจากผลการวิเคราะห์เป็นข้อมูลประกอบเท่านั้น และไม่สามารถเปลี่ยนผลจากกฎของระบบได้',
-  expert_support: 'ความปลอดภัยและช่องทางปรึกษาเจ้าหน้าที่',
+    'สภาพอากาศจากผลการวิเคราะห์เป็นข้อมูลประกอบเท่านั้น และไม่มีผลต่อผลการประเมินตามกฎของ NaRoo',
+  expert_support: 'การปรึกษาผู้เชี่ยวชาญ',
   expert_intro:
     'ควรปรึกษาเจ้าหน้าที่ เมื่อข้อมูลยังไม่ครบ สภาพนามีความเสี่ยง หรือผลออกมาว่ายังไม่ชัดเจน / ควรปรึกษาเจ้าหน้าที่',
   other_contact_methods: 'ช่องทางติดต่ออื่น',
@@ -642,9 +652,9 @@ const th: TranslationMap = {
   summary_province: 'จังหวัด',
   summary_district: 'อำเภอ',
   summary_field_type: 'ประเภทแปลง',
-  summary_previous: 'พืชก่อนหน้า',
+  summary_previous: 'พืชที่ปลูกก่อนหน้า',
   summary_month: 'เดือนที่วางแผนปลูก',
-  summary_water: 'น้ำ / ความชื้น',
+  summary_water: 'แหล่งน้ำและความชื้นในดิน',
   summary_drainage: 'การระบายน้ำ',
   summary_area: 'ขนาดแปลง',
   summary_soil: 'ข้อมูลดิน',
@@ -653,17 +663,17 @@ const th: TranslationMap = {
   soil_unknown: 'ไม่ได้ระบุ',
   missing_location: 'ที่ตั้งนา',
   missing_field_type: 'ประเภทแปลง',
-  missing_previous_crop: 'พืชก่อนหน้า',
+  missing_previous_crop: 'พืชที่ปลูกก่อนหน้า',
   missing_planting_month: 'เดือนที่วางแผนปลูก',
   missing_water: 'สภาพน้ำ',
   missing_drainage: 'การระบายน้ำ',
   missing_area: 'ขนาดแปลง',
   uncertain_field_type: 'ยังไม่แน่ใจเรื่องประเภทแปลง',
-  uncertain_previous_crop: 'ยังไม่แน่ใจเรื่องพืชก่อนหน้า',
+  uncertain_previous_crop: 'ยังไม่แน่ใจเรื่องพืชที่ปลูกก่อนหน้า',
   uncertain_soil: 'ยังไม่แน่ใจเรื่องดิน',
   support_lowland_paddy: 'แปลงเป็นนาลุ่ม',
-  support_previous_rice: 'พืชก่อนหน้าเป็นข้าว',
-  support_no_previous_conflict: 'ไม่มีพืชก่อนหน้าที่ขัดแย้งชัดเจน',
+  support_previous_rice: 'พืชที่ปลูกก่อนหน้าเป็นข้าว',
+  support_no_previous_conflict: 'ไม่มีพืชที่ปลูกก่อนหน้าที่ขัดแย้งชัดเจน',
   support_timing_window: 'เดือนที่วางแผนอยู่ในช่วงหลังนาข้าว (แบบสาธิต)',
   support_water: 'มีน้ำหรือความชื้นพอใช้ได้',
   support_drainage: 'ระบายน้ำได้ดี',
@@ -708,9 +718,9 @@ const th: TranslationMap = {
   display_soil_yes: 'มีข้อมูลดิน',
   display_soil_no: 'ยังไม่มีข้อมูลดิน',
   concern_field_type: 'สภาพแปลงที่ดอนต้องตรวจเพิ่มในพื้นที่',
-  concern_previous_crop: 'พืชก่อนหน้าทำให้ต้องระวังเรื่องการปลูกซ้ำ',
+  concern_previous_crop: 'พืชที่ปลูกก่อนหน้าทำให้ต้องระวังเรื่องการปลูกซ้ำ',
   concern_previous_mung_bean:
-    'การปลูกถั่วเขียวเป็นพืชก่อนหน้าทำให้ต้องพิจารณาการปลูกซ้ำเพิ่มเติม',
+    'การปลูกถั่วเขียวเป็นพืชที่ปลูกก่อนหน้าทำให้ต้องพิจารณาการปลูกซ้ำเพิ่มเติม',
   concern_planting_month_edge: 'เดือนที่วางแผนปลูกอยู่ช่วงก้ำกึ่งของกฎต้นแบบ',
   concern_water_source_limited: 'น้ำอาจน้อยหรือไม่แน่นอน',
   concern_drainage_moderate: 'การระบายน้ำอยู่ในระดับปานกลาง',
@@ -739,11 +749,21 @@ const th: TranslationMap = {
   fallback_step_collect_missing:
     'รวบรวมข้อมูลที่กฎต้นแบบระบุว่ายังขาด',
   fallback_step_weather_context_only:
-    'ดูพยากรณ์อากาศปัจจุบันได้เพียงเป็นข้อมูลประกอบ ไม่ใช่พยากรณ์เดือนที่วางแผนปลูก',
+    'ดูพยากรณ์อากาศ 7 วันข้างหน้าได้เพียงเป็นข้อมูลประกอบ ไม่ใช่พยากรณ์เดือนที่วางแผนปลูก',
+  next_step_consult_before_planting:
+    'ปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรหรือผู้เชี่ยวชาญก่อนตัดสินใจปลูก',
+  next_step_explain_previous_crop:
+    'แจ้งว่าพืชที่ปลูกก่อนหน้าคือ{crop} เพื่อประเมินความเสี่ยงจากการปลูกซ้ำ',
+  next_step_collect_soil:
+    'จัดเตรียมข้อมูลดินหรือขอรับการตรวจวิเคราะห์ดิน',
+  next_step_confirm_moisture_drainage:
+    'ตรวจสอบว่าความชื้นในดินและการระบายน้ำเหมาะสมกับการปลูกหรือไม่',
+  next_step_confirm_residual_moisture:
+    'ตรวจสอบว่าความชื้นในดินที่เหลือหลังเก็บเกี่ยวเพียงพอสำหรับการปลูกหรือไม่',
   summary_confidence_high: 'สูง',
   summary_confidence_medium: 'ปานกลาง',
   summary_confidence_low: 'ต่ำ',
-  summary_expert_required: 'ผลนี้ระบุว่าควรปรึกษาผู้เชี่ยวชาญ',
+  summary_expert_required: 'ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตรหรือผู้เชี่ยวชาญก่อนตัดสินใจ',
   summary_expert_not_required: 'ผลนี้ไม่ได้ระบุว่าต้องปรึกษาผู้เชี่ยวชาญ',
   summary_matched_condition: 'เงื่อนไขหลัก',
   source_prototype_title: 'ฐานของกฎต้นแบบ',
@@ -762,7 +782,7 @@ const th: TranslationMap = {
     'ข้อมูลติดต่ออาจมีการเปลี่ยนแปลง โปรดตรวจสอบกับเว็บไซต์ทางการก่อนโทรหรือเดินทาง',
   typical_weather_heading: 'สภาพอากาศโดยทั่วไปในเดือน{month}',
   typical_weather_disclaimer:
-    'ข้อมูลนี้อ้างอิงจากสภาพอากาศตามฤดูกาลโดยทั่วไปในจังหวัดร้อยเอ็ด สภาพอากาศจริงอาจแตกต่างออกไป',
+    'ข้อมูลนี้อธิบายสภาพอากาศตามฤดูกาลโดยทั่วไปในจังหวัดร้อยเอ็ด ไม่ใช่พยากรณ์อากาศ และไม่มีผลต่อผลการประเมินตามกฎของ NaRoo',
   typical_weather_1:
     'โดยทั่วไปอากาศเย็นและแห้ง มีฝนน้อย และความชื้นตามธรรมชาติในดินค่อนข้างจำกัด',
   typical_weather_2: 'โดยทั่วไปอากาศแห้งและเริ่มอุ่นขึ้น โดยมีฝนตกเล็กน้อย',

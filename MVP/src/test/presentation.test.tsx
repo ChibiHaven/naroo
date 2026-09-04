@@ -34,8 +34,25 @@ function farmerFacingText(): string {
     return document.body.textContent ?? ''
   }
   const clone = main.cloneNode(true) as HTMLElement
-  clone.querySelectorAll('details').forEach((node) => node.remove())
+  clone.querySelectorAll('details, svg, [aria-hidden="true"]').forEach((node) => {
+    node.remove()
+  })
   return clone.textContent ?? ''
+}
+
+function assertNoSvgArtifacts() {
+  for (const svg of document.querySelectorAll('svg')) {
+    expect(svg.closest('[aria-hidden="true"]')).not.toBeNull()
+  }
+  const visible = farmerFacingText()
+  expect(visible).not.toMatch(/svg/i)
+  expect(visible).not.toMatch(/^\s*[-*•]\s*$/m)
+  for (const item of document.querySelectorAll('main li')) {
+    const text = item.textContent?.replace(/\s+/g, ' ').trim() ?? ''
+    expect(text).not.toBe('')
+    expect(text).not.toMatch(/^[-*•]$/)
+    expect(text).not.toMatch(/^svg/i)
+  }
 }
 
 function seedLiveResult(
@@ -108,7 +125,7 @@ describe('live result presentation', () => {
     expect(visible).not.toMatch(/roi_et|phon_thong|lowland_paddy|learn_mung_bean|R3_DRAINAGE_POOR/)
     expect(visible).toContain(t('en', 'why_suitable'))
     expect(visible).not.toContain('Lowland paddy field type')
-    expect(visible).not.toMatch(/\bsvg\b/i)
+    assertNoSvgArtifacts()
 
     const stored = JSON.parse(
       sessionStorage.getItem(LIVE_GUIDANCE_STORAGE_KEY) ?? '{}',
@@ -137,6 +154,8 @@ describe('live result presentation', () => {
     const visible = farmerFacingText()
     expect(visible).not.toMatch(/roi_et|phon_thong|lowland_paddy/)
     expect(visible).toContain(t('th', 'why_suitable'))
+    expect(visible).toContain(t('th', 'next_step_confirm_residual_moisture'))
+    assertNoSvgArtifacts()
   })
 
   it('does not show English borderline or lowland paddy in a Thai result', async () => {
@@ -714,14 +733,17 @@ describe('live result presentation', () => {
     expect(visible).not.toContain('ดินร่วง')
     expect(visible).not.toContain('province=')
     expect(visible).not.toMatch(/September \(September\)/)
-    expect(visible).toContain('Walk the field and speak with an officer')
+    expect(visible).toContain(t('en', 'next_step_consult_before_planting'))
+    expect(visible).toContain(
+      t('en', 'next_step_explain_previous_crop', {
+        crop: t('en', 'previous_mung_bean'),
+      }),
+    )
+    expect(visible).toContain(t('en', 'next_step_confirm_moisture_drainage'))
+    expect(visible).not.toContain('Walk the field and speak with an officer')
     expect(visible).not.toContain('plant in December')
     expect(visible).not.toContain('September is a borderline')
-    expect(document.body.textContent).not.toMatch(/\bsvg\b/i)
-    for (const item of document.querySelectorAll('main li')) {
-      expect(item.textContent?.trim()).not.toBe('')
-      expect(item.textContent?.trim()).not.toMatch(/^[-*•]$/)
-    }
+    assertNoSvgArtifacts()
 
     const stored = peekStoredResponse(assessmentFingerprint(input), 'en')
     expect(stored?.aiExplanation.headline).toContain('borderline')

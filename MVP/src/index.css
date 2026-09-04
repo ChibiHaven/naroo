@@ -78,6 +78,25 @@
     display: none;
   }
 
+  svg title,
+  svg desc {
+    display: none !important;
+  }
+
+  .decorative-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    user-select: none;
+  }
+
+  .decorative-icon svg {
+    display: block;
+    overflow: hidden;
+  }
+
   summary {
     list-style: none;
   }

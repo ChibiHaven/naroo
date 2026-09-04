@@ -4,6 +4,7 @@ import { CheckCircle2 } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { RequireReadyForAnalysis } from '@/components/common/RouteGuards'
 import { useAssessment } from '@/context/AssessmentContext'
 import {
@@ -232,12 +233,13 @@ function AnalyzingContent() {
                     : 'border-brand-border bg-white text-brand-muted'
                 }`}
               >
-                <CheckCircle2
-                  className={`h-5 w-5 shrink-0 ${
-                    done ? 'text-brand-success' : 'text-brand-border'
-                  }`}
-                  aria-hidden="true"
-                />
+                <DecorativeIcon>
+                  <CheckCircle2
+                    className={`h-5 w-5 ${
+                      done ? 'text-brand-success' : 'text-brand-border'
+                    }`}
+                  />
+                </DecorativeIcon>
                 {step}
               </li>
             )

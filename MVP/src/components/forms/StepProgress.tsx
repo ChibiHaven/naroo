@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 
 interface StepProgressProps {
   current: number
@@ -27,7 +28,13 @@ export function StepProgress({ current, total = 3, label }: StepProgressProps) {
                 }`}
                 aria-current={active ? 'step' : undefined}
               >
-                {completed ? <Check className="h-4 w-4" /> : step}
+                {completed ? (
+                  <DecorativeIcon>
+                    <Check className="h-4 w-4" />
+                  </DecorativeIcon>
+                ) : (
+                  step
+                )}
               </span>
               {step < total ? (
                 <span

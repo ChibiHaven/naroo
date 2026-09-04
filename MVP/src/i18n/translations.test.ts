@@ -10,13 +10,13 @@ describe('translations', () => {
     expect(t('en', 'status_borderline')).toBe('Further review recommended')
     expect(t('th', 'status_borderline')).toBe('ควรตรวจสอบเพิ่มเติม')
     expect(t('th', 'field_lowland')).toBe('นาลุ่ม')
-    expect(t('en', 'weather_context_live')).toContain('seven-day weather forecast')
-    expect(t('th', 'weather_context_live')).toContain('พยากรณ์อากาศ 7 วันปัจจุบัน')
+    expect(t('en', 'weather_context_live')).toContain('next seven days')
+    expect(t('th', 'weather_context_live')).toContain('พยากรณ์อากาศ 7 วันข้างหน้า')
     expect(t('en', 'weather_forecast_timing_note')).toContain(
-      'does not affect NaRoo\'s rules-based classification',
+      'does not affect NaRoo’s rules-based assessment',
     )
     expect(t('th', 'weather_forecast_timing_note')).toContain(
-      'ไม่มีผลต่อการจัดประเภทตามกฎของ NaRoo',
+      'ไม่มีผลต่อผลการประเมินตามกฎของ NaRoo',
     )
     expect(t('en', 'weather_context')).toBe('Weather context')
     expect(t('th', 'weather_context')).toBe('บริบทสภาพอากาศ')
@@ -56,6 +56,20 @@ describe('translations', () => {
     expect(t('th', 'email_office')).toBe('ส่งอีเมล')
     expect(t('en', 'visit_official_website')).toBe('Open official website')
     expect(t('th', 'visit_official_website')).toBe('เปิดเว็บไซต์สำนักงาน')
+    expect(t('en', 'confidence_level')).toBe('Information completeness')
+    expect(t('th', 'confidence_level')).toBe('ความครบถ้วนของข้อมูล')
+    expect(t('en', 'expert_support')).toBe('Expert Review')
+    expect(t('th', 'expert_support')).toBe('การปรึกษาผู้เชี่ยวชาญ')
+    expect(t('en', 'view_weather')).toBe('View 7-Day Forecast')
+    expect(t('th', 'view_weather')).toBe('ดูพยากรณ์อากาศ 7 วัน')
+    expect(t('en', 'your_farm_guidance')).toBe('Your Assessment Result')
+    expect(t('th', 'your_farm_guidance')).toBe('ผลการประเมินสำหรับแปลงของคุณ')
+    expect(t('en', 'summary_expert_required')).toContain('Consult an agricultural extension officer')
+    expect(t('th', 'summary_expert_required')).toContain('ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตร')
+    expect(t('en', 'water_residual')).toMatch(/residual soil moisture/i)
+    expect(t('th', 'water_residual')).toBe('อาศัยความชื้นในดินที่เหลือหลังเก็บเกี่ยวข้าว')
+    expect(t('th', 'summary_previous')).toBe('พืชที่ปลูกก่อนหน้า')
+    expect(t('th', 'summary_water')).toBe('แหล่งน้ำและความชื้นในดิน')
     expect(t('en', 'contact_verify_notice')).toContain('verify them on the official website')
     expect(t('th', 'contact_verify_notice')).toContain('โปรดตรวจสอบกับเว็บไซต์ทางการ')
   })

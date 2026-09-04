@@ -1,5 +1,6 @@
 import { BookOpen } from 'lucide-react'
 import type { GuidanceSource } from '@/types/guidance'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { useAssessment } from '@/context/AssessmentContext'
 import {
   formatLocalizedDateTime,
@@ -16,7 +17,9 @@ export function SourcePanel({ sources }: SourcePanelProps) {
   return (
     <section className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light/60 p-4">
       <div className="mb-3 flex items-center gap-2">
-        <BookOpen className="h-5 w-5 text-brand-primary" aria-hidden="true" />
+        <DecorativeIcon>
+          <BookOpen className="h-5 w-5 text-brand-primary" />
+        </DecorativeIcon>
         <h2 className="text-base font-bold text-brand-text">
           {translate('source_of_recommendation')}
         </h2>

@@ -329,14 +329,14 @@ function phraseReplacements(language: LanguageCode): Array<[string, string]> {
 
   for (const [code, key] of Object.entries(PREVIOUS_CROP_KEYS)) {
     const label = t(language, key)
-    prefixed(['พืชก่อนหน้า', 'previous crop', 'Previous crop'], code, label)
+    prefixed(['พืชที่ปลูกก่อนหน้า', 'พืชก่อนหน้า', 'previous crop', 'Previous crop'], code, label)
     pairs.push([`previousCrop: ${code}`, label])
     pairs.push([`previousCrop:${code}`, label])
   }
 
   for (const [code, key] of Object.entries(WATER_KEYS)) {
     const label = t(language, key)
-    prefixed(['แหล่งน้ำ', 'water source', 'Water source'], code, label)
+    prefixed(['แหล่งน้ำและความชื้นในดิน', 'แหล่งน้ำ', 'water source', 'Water source'], code, label)
     pairs.push([`waterSource: ${code}`, label])
     pairs.push([`waterSource:${code}`, label])
   }
@@ -438,6 +438,11 @@ function applyThaiProseCleanup(text: string): string {
       'ยังไม่มีข้อมูลดิน',
     ],
     ['ไม่มีข้อมูลความรู้เกี่ยวกับคุณสมบัติของดิน', 'ยังไม่มีข้อมูลดิน'],
+    ['ยืนยันสภาพแหล่งน้ำ (ความชื้นตกค้าง)', 'ตรวจสอบว่าความชื้นในดินที่เหลือหลังเก็บเกี่ยวเพียงพอสำหรับการปลูกหรือไม่'],
+    ['ยืนยันสภาพแหล่งน้ำ', 'ตรวจสอบว่าความชื้นในดินและการระบายน้ำเหมาะสมกับการปลูกหรือไม่'],
+    ['การเพิ่มพืชใหม่', 'การปลูกถั่วเขียวในรอบถัดไป'],
+    ['เนื่องจากผลการประเมินเป็น ควรตรวจสอบเพิ่มเติม', 'เนื่องจากยังมีข้อมูลสำคัญที่ต้องตรวจสอบก่อนตัดสินใจปลูก'],
+    ['เนื่องจากผลการประเมินเป็นควรตรวจสอบเพิ่มเติม', 'เนื่องจากยังมีข้อมูลสำคัญที่ต้องตรวจสอบก่อนตัดสินใจปลูก'],
     ['Lowland Paddy', 'นาลุ่ม'],
     ['Lowland paddy', 'นาลุ่ม'],
     ['lowland paddy', 'นาลุ่ม'],
@@ -463,9 +468,25 @@ function applyThaiProseCleanup(text: string): string {
   next = next.replace(/\bborderline\b/gi, 'ควรตรวจสอบเพิ่มเติม')
   next = next.replace(/\bsuitable\b/gi, 'น่าจะเหมาะสม')
   next = next.replace(/\bescalate\b/gi, 'ควรปรึกษาผู้เชี่ยวชาญ')
-  next = next.replace(/\bclassification\b/gi, 'ผลสถานะ')
+  next = next.replace(/\bclassification\b/gi, 'ผลการประเมิน')
+  next = next.replace(/\bresult status\b/gi, 'ผลการประเมิน')
   next = next.replace(/\bedge\b/gi, 'ช่วงก้ำกึ่ง')
   next = next.replace(/\bmoderate\b/gi, 'ปานกลาง')
+  return next
+}
+
+function applyEnglishProseCleanup(text: string): string {
+  const pairs: Array<[string, string]> = [
+    ['decision to add a crop', 'decision to plant mung bean'],
+    ['the decision to add a crop', 'the decision to plant mung bean'],
+    ['result status', 'assessment result'],
+  ]
+  let next = text
+  for (const [from, to] of pairs) {
+    if (next.toLowerCase().includes(from)) {
+      next = next.replace(new RegExp(from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), to)
+    }
+  }
   return next
 }
 
@@ -485,6 +506,8 @@ export function cleanDisplayedText(
   }
   if (language === 'th') {
     next = applyThaiProseCleanup(next)
+  } else {
+    next = applyEnglishProseCleanup(next)
   }
   return omitUnsafeTokens(next)
 }

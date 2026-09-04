@@ -13,6 +13,7 @@ import { BottomActions } from '@/components/forms/BottomActions'
 import { FieldError } from '@/components/forms/FieldError'
 import { SelectionCard } from '@/components/forms/SelectionCard'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { RequireStep1 } from '@/components/common/RouteGuards'
 import { useAssessment } from '@/context/AssessmentContext'
@@ -185,7 +186,9 @@ function FarmStep2Form() {
       <BottomActions>
         <PrimaryButton onClick={handleContinue}>
           {translate('continue')}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <DecorativeIcon>
+            <ArrowRight className="h-4 w-4" />
+          </DecorativeIcon>
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/assessment/step-1')}>
           {translate('back')}

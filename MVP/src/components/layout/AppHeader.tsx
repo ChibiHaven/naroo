@@ -1,6 +1,7 @@
 import { ArrowLeft, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { useAssessment } from '@/context/AssessmentContext'
 
 interface AppHeaderProps {
@@ -56,7 +57,9 @@ export function AppHeader({
               aria-label={translate('back')}
               onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
             >
-              <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+              <DecorativeIcon>
+                <ArrowLeft className="h-5 w-5" />
+              </DecorativeIcon>
             </button>
           ) : isHome ? (
             <Link to="/" className="flex items-center gap-2">
@@ -93,9 +96,13 @@ export function AppHeader({
           onClick={() => setMenuOpen((open) => !open)}
         >
           {menuOpen ? (
-            <X className="h-5 w-5" aria-hidden="true" />
+            <DecorativeIcon>
+              <X className="h-5 w-5" />
+            </DecorativeIcon>
           ) : (
-            <Menu className="h-5 w-5" aria-hidden="true" />
+            <DecorativeIcon>
+              <Menu className="h-5 w-5" />
+            </DecorativeIcon>
           )}
         </button>
       </div>

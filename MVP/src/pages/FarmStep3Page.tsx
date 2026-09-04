@@ -18,6 +18,7 @@ import { FieldError } from '@/components/forms/FieldError'
 import { SelectionCard } from '@/components/forms/SelectionCard'
 import { FarmAreaStepper } from '@/components/forms/FarmAreaStepper'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { RequireStep2 } from '@/components/common/RouteGuards'
 import { useAssessment } from '@/context/AssessmentContext'
@@ -261,7 +262,9 @@ function FarmStep3Form() {
       <BottomActions>
         <PrimaryButton onClick={handleSubmit}>
           {translate('get_my_guidance')}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <DecorativeIcon>
+            <ArrowRight className="h-4 w-4" />
+          </DecorativeIcon>
         </PrimaryButton>
         <SecondaryButton onClick={() => navigate('/assessment/step-2')}>
           {translate('back')}

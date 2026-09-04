@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Building2, Mail, Phone } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { useAssessment } from '@/context/AssessmentContext'
 import {
   ROI_ET_PROVINCIAL_OFFICE,
@@ -81,7 +82,9 @@ function OfficeCard({
             className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-brand-primary px-6 py-3 text-base font-bold text-white"
             href={normalizeTelHref(phone)}
           >
-            <Phone className="h-4 w-4" aria-hidden="true" />
+            <DecorativeIcon>
+              <Phone className="h-4 w-4" />
+            </DecorativeIcon>
             {callLabel}
           </a>
         ) : null}
@@ -90,7 +93,9 @@ function OfficeCard({
             className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-brand-border bg-white px-6 py-3 text-base font-semibold text-brand-primary"
             href={`mailto:${email}`}
           >
-            <Mail className="h-4 w-4" aria-hidden="true" />
+            <DecorativeIcon>
+              <Mail className="h-4 w-4" />
+            </DecorativeIcon>
             {emailLabel}
           </a>
         ) : null}
@@ -100,7 +105,9 @@ function OfficeCard({
           target="_blank"
           rel={EXTERNAL_REL}
         >
-          <Building2 className="h-4 w-4" aria-hidden="true" />
+          <DecorativeIcon>
+            <Building2 className="h-4 w-4" />
+          </DecorativeIcon>
           {websiteLabel}
         </a>
       </div>

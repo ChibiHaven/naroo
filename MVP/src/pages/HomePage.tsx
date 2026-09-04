@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { PrimaryButton } from '@/components/common/PrimaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { useAssessment } from '@/context/AssessmentContext'
 
 export function HomePage() {
@@ -23,10 +24,10 @@ export function HomePage() {
   ]
 
   const steps = [
-    { icon: <ClipboardList className="h-5 w-5" aria-hidden="true" />, label: translate('how_1') },
-    { icon: <Search className="h-5 w-5" aria-hidden="true" />, label: translate('how_2') },
-    { icon: <Sprout className="h-5 w-5" aria-hidden="true" />, label: translate('how_3') },
-    { icon: <ShieldCheck className="h-5 w-5" aria-hidden="true" />, label: translate('how_4') },
+    { icon: <ClipboardList className="h-5 w-5" />, label: translate('how_1') },
+    { icon: <Search className="h-5 w-5" />, label: translate('how_2') },
+    { icon: <Sprout className="h-5 w-5" />, label: translate('how_3') },
+    { icon: <ShieldCheck className="h-5 w-5" />, label: translate('how_4') },
   ]
 
   return (
@@ -63,7 +64,9 @@ export function HomePage() {
               }}
             >
               {translate('get_farm_guidance')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <DecorativeIcon>
+                <ArrowRight className="h-4 w-4" />
+              </DecorativeIcon>
             </PrimaryButton>
           </div>
         </section>
@@ -84,10 +87,9 @@ export function HomePage() {
                 key={item}
                 className="flex items-start gap-3 rounded-[var(--radius-card)] border border-brand-border bg-white px-4 py-3"
               >
-                <CheckCircle2
-                  className="mt-0.5 h-5 w-5 shrink-0 text-brand-success"
-                  aria-hidden="true"
-                />
+                <DecorativeIcon className="mt-0.5">
+                  <CheckCircle2 className="h-5 w-5 text-brand-success" />
+                </DecorativeIcon>
                 <span className="text-sm leading-relaxed text-brand-text">{item}</span>
               </li>
             ))}
@@ -106,7 +108,7 @@ export function HomePage() {
                 className="rounded-[var(--radius-card)] border border-brand-border bg-brand-light px-3 py-4"
               >
                 <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-brand-primary text-white">
-                  {step.icon}
+                  <DecorativeIcon>{step.icon}</DecorativeIcon>
                 </div>
                 <p className="text-xs font-bold text-brand-muted">
                   {index + 1}.

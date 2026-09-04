@@ -68,6 +68,26 @@ export function forecastCoversPlantingMonth(
   })
 }
 
+function stripListMarkers(text: string): string {
+  return text
+    .replace(/^\s*(?:[-*•·]+|\d+[.)])\s+/, '')
+    .replace(/\s*[-*•·]+\s*$/, '')
+    .trim()
+}
+
+function embedsStatusLabelInSentence(text: string): boolean {
+  return (
+    /เนื่องจากผลการประเมินเป็น/.test(text) ||
+    /ผลการประเมินเป็น\s*(น่าจะเหมาะสม|ควรตรวจสอบเพิ่มเติม|ควรปรึกษาผู้เชี่ยวชาญ)/.test(
+      text,
+    ) ||
+    /result status/i.test(text) ||
+    /(?:assessment result|classification) is\s*(likely suitable|further review|expert review|suitable|borderline|escalate)/i.test(
+      text,
+    )
+  )
+}
+
 function contradictsClassification(
   text: string,
   classification: NarooGuidanceResponse['classification'],
@@ -175,58 +195,96 @@ export function shouldRejectAiNextStep(
   if (WEATHER_CLAIM.test(text) && /plant|planting|ปลูก/i.test(text) && !weatherCovered) {
     return true
   }
+  if (embedsStatusLabelInSentence(text)) {
+    return true
+  }
   return false
+}
+
+const ROTATION_PREVIOUS_CROPS = new Set(['mung_bean', 'another_legume'])
+const WATER_NEEDS_CHECK = new Set([
+  'residual_moisture',
+  'rainfed',
+  'limited',
+  'unsure',
+])
+const DRAINAGE_NEEDS_CHECK = new Set(['moderate', 'poor', 'unsure'])
+const SOIL_MISSING = new Set(['no', 'unsure', ''])
+
+function farmerNextStepsFromFields(
+  language: LanguageCode,
+  response: NarooGuidanceResponse,
+  formInput: FarmAssessmentInput,
+): string[] {
+  const echoed = response.input
+  const previousCrop =
+    readString(echoed, 'previousCrop', formInput.previousCrop) ||
+    formInput.previousCrop
+  const waterSource =
+    readString(echoed, 'waterSource', formInput.waterSource) ||
+    formInput.waterSource
+  const drainage =
+    readString(echoed, 'drainageCondition', formInput.drainageCondition) ||
+    formInput.drainageCondition
+  const soilKnowledge =
+    readString(echoed, 'soilKnowledge', formInput.soilKnowledge) ||
+    formInput.soilKnowledge
+
+  const cropLabel = (code: string) =>
+    displayOptionLabel(code, language) ?? t(language, 'crop_mung_bean')
+
+  const steps: string[] = []
+
+  if (
+    response.requiresExpertSupport ||
+    response.classification === 'escalate' ||
+    response.classification === 'borderline'
+  ) {
+    steps.push(t(language, 'next_step_consult_before_planting'))
+  }
+
+  if (ROTATION_PREVIOUS_CROPS.has(previousCrop)) {
+    steps.push(
+      t(language, 'next_step_explain_previous_crop', {
+        crop: cropLabel(previousCrop),
+      }),
+    )
+  }
+
+  if (SOIL_MISSING.has(soilKnowledge)) {
+    steps.push(t(language, 'next_step_collect_soil'))
+  }
+
+  const waterNeeds = WATER_NEEDS_CHECK.has(waterSource)
+  const drainageNeeds = DRAINAGE_NEEDS_CHECK.has(drainage)
+  if (waterNeeds || drainageNeeds) {
+    if (waterSource === 'residual_moisture' && !drainageNeeds) {
+      steps.push(t(language, 'next_step_confirm_residual_moisture'))
+    } else {
+      steps.push(t(language, 'next_step_confirm_moisture_drainage'))
+    }
+  }
+
+  if (steps.length === 0) {
+    steps.push(t(language, 'fallback_step_review_answers'))
+  }
+
+  return steps
+    .map((step) => stripListMarkers(cleanDisplayedText(step, language)))
+    .filter((step) => !isBlankDisplay(step))
 }
 
 export function suggestedNextSteps(
   language: LanguageCode,
   response: NarooGuidanceResponse,
   plantingMonth: number | null,
+  formInput: FarmAssessmentInput,
 ): { steps: string[]; usedAi: boolean } {
-  const accepted: string[] = []
-  for (const raw of response.aiExplanation.nextSteps) {
-    if (
-      shouldRejectAiNextStep(
-        raw,
-        response.classification,
-        response.weather,
-        plantingMonth,
-      )
-    ) {
-      continue
-    }
-    const cleaned = cleanDisplayedText(raw, language)
-    if (
-      isBlankDisplay(cleaned) ||
-      SNAKE_CASE.test(cleaned) ||
-      RULE_ID.test(cleaned) ||
-      KEY_VALUE_DUMP.test(cleaned) ||
-      INTERNAL_FIELD_NAMES.test(cleaned)
-    ) {
-      continue
-    }
-    if (contradictsClassification(cleaned, response.classification)) {
-      continue
-    }
-    accepted.push(cleaned)
+  void plantingMonth
+  return {
+    steps: farmerNextStepsFromFields(language, response, formInput),
+    usedAi: false,
   }
-
-  if (accepted.length > 0) {
-    return { steps: accepted, usedAi: true }
-  }
-
-  const fallback = [t(language, 'fallback_step_review_answers')]
-  const missingCritical = response.decisionTrace.rules.some(
-    (rule) => rule.id === 'R2_CRITICAL_INFO' && rule.result === 'escalate',
-  )
-  if (missingCritical) {
-    fallback.push(t(language, 'fallback_step_collect_missing'))
-  }
-  if (response.requiresExpertSupport || response.classification === 'escalate') {
-    fallback.push(t(language, 'fallback_step_consult_office'))
-  }
-  fallback.push(t(language, 'fallback_step_weather_context_only'))
-  return { steps: fallback, usedAi: false }
 }
 
 export function structuredSummaryLines(

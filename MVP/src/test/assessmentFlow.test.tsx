@@ -300,7 +300,7 @@ describe('revised assessment journey', () => {
       await screen.findByText(/preliminarily suitable for mung bean/i),
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /weather snapshot|ดูสภาพอากาศ/i }))
+    await user.click(screen.getByRole('button', { name: /view 7-day forecast|ดูพยากรณ์อากาศ 7 วัน/i }))
     expect(await screen.findByText(/Open-Meteo/)).toBeInTheDocument()
     expect(screen.getAllByText(/September|ก\.ย\.|กันยายน/i).length).toBeGreaterThan(0)
     expect(screen.getByText(/weather code|รหัสอากาศ/i).closest('details')).not.toBeNull()
@@ -322,7 +322,7 @@ describe('revised assessment journey', () => {
       screen.getByRole('button', { name: /get my guidance|ดูคำแนะนำ/i }),
     )
     await user.click(
-      await screen.findByRole('button', { name: /weather snapshot|ดูสภาพอากาศ/i }),
+      await screen.findByRole('button', { name: /view 7-day forecast|ดูพยากรณ์อากาศ 7 วัน/i }),
     )
     expect(
       await screen.findByText(/weather unavailable|ไม่มีข้อมูลอากาศ/i),

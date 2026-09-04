@@ -131,5 +131,18 @@ describe('display labels', () => {
     expect(th).not.toMatch(/lowland paddy/i)
     expect(th).not.toContain('ไม่มีข้อมูลความรู้เกี่ยวกับคุณสมบัติของดิน')
     expect(cleanDisplayedText('Borderline field', 'en')).toContain('Borderline')
+    expect(
+      cleanDisplayedText('ยืนยันสภาพแหล่งน้ำ (ความชื้นตกค้าง)', 'th'),
+    ).toContain('ความชื้นในดินที่เหลือหลังเก็บเกี่ยว')
+    expect(cleanDisplayedText('การเพิ่มพืชใหม่', 'th')).toContain('การปลูกถั่วเขียวในรอบถัดไป')
+    expect(
+      cleanDisplayedText('เนื่องจากผลการประเมินเป็น ควรตรวจสอบเพิ่มเติม', 'th'),
+    ).toBe('เนื่องจากยังมีข้อมูลสำคัญที่ต้องตรวจสอบก่อนตัดสินใจปลูก')
+    expect(cleanDisplayedText('the decision to add a crop', 'en')).toContain(
+      'decision to plant mung bean',
+    )
+    expect(cleanDisplayedText('the result status is ready', 'en')).toContain(
+      'assessment result',
+    )
   })
 })

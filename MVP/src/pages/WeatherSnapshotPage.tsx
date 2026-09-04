@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { CloudSun } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
+import { DecorativeIcon } from '@/components/common/DecorativeIcon'
 import { RequireResult } from '@/components/common/RouteGuards'
 import { TypicalMonthlyWeather } from '@/components/guidance/TypicalMonthlyWeather'
 import { useAssessment } from '@/context/AssessmentContext'
@@ -62,7 +63,9 @@ function WeatherSnapshotContent() {
 
         <section className="overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-gradient-to-b from-sky-50 to-white">
           <div className="flex items-center gap-3 px-5 pt-5">
-            <CloudSun className="h-10 w-10 text-brand-primary" aria-hidden="true" />
+            <DecorativeIcon>
+              <CloudSun className="h-10 w-10 text-brand-primary" />
+            </DecorativeIcon>
             <div>
               <h1 className="text-xl font-bold">{translate('weather_title')}</h1>
               <p className="text-sm text-brand-muted">

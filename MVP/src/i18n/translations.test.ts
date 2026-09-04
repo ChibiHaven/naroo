@@ -10,8 +10,16 @@ describe('translations', () => {
     expect(t('en', 'status_borderline')).toBe('Further review recommended')
     expect(t('th', 'status_borderline')).toBe('ควรตรวจสอบเพิ่มเติม')
     expect(t('th', 'field_lowland')).toBe('นาลุ่ม')
-    expect(t('en', 'weather_forecast_timing_note')).toContain('seven-day forecast')
-    expect(t('th', 'weather_forecast_timing_note')).toContain('พยากรณ์อากาศ 7 วันปัจจุบัน')
+    expect(t('en', 'weather_context_live')).toContain('seven-day weather forecast')
+    expect(t('th', 'weather_context_live')).toContain('พยากรณ์อากาศ 7 วันปัจจุบัน')
+    expect(t('en', 'weather_forecast_timing_note')).toContain(
+      'does not affect NaRoo\'s rules-based classification',
+    )
+    expect(t('th', 'weather_forecast_timing_note')).toContain(
+      'ไม่มีผลต่อการจัดประเภทตามกฎของ NaRoo',
+    )
+    expect(t('en', 'weather_context')).toBe('Weather context')
+    expect(t('th', 'weather_context')).toBe('บริบทสภาพอากาศ')
     expect(t('en', 'status_escalate')).toBe('Expert review required')
     expect(t('en', 'prototype_banner')).toContain('PROTOTYPE GUIDANCE')
     expect(t('en', 'analyzing_wait_live')).toMatch(/one minute/i)

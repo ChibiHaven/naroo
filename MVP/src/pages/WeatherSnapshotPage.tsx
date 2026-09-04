@@ -4,11 +4,13 @@ import { CloudSun } from 'lucide-react'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { RequireResult } from '@/components/common/RouteGuards'
+import { TypicalMonthlyWeather } from '@/components/guidance/TypicalMonthlyWeather'
 import { useAssessment } from '@/context/AssessmentContext'
 import {
   formatLocalizedDate,
   formatLocalizedDateTime,
 } from '@/utils/displayLabels'
+import { plantingMonthValue } from '@/utils/structuredGuidanceDisplay'
 
 function formatNumber(
   value: number | null,
@@ -34,7 +36,7 @@ export function WeatherSnapshotPage() {
 
 function WeatherSnapshotContent() {
   const navigate = useNavigate()
-  const { translate, language, setCurrentStep, result } = useAssessment()
+  const { translate, language, setCurrentStep, result, input } = useAssessment()
 
   useEffect(() => {
     setCurrentStep('weather')
@@ -43,6 +45,10 @@ function WeatherSnapshotContent() {
   const weather = result?.response.weather
   const available =
     weather?.mode === 'available' && (weather.days?.length ?? 0) > 0
+  const plantingMonth = plantingMonthValue(
+    result?.response.input ?? {},
+    input.plantingMonth,
+  )
 
   return (
     <div className="flex min-h-full flex-col">
@@ -160,6 +166,16 @@ function WeatherSnapshotContent() {
             )}
           </div>
         </section>
+
+        {plantingMonth ? (
+          <section className="rounded-[var(--radius-card)] border border-brand-border bg-white p-4">
+            <TypicalMonthlyWeather
+              month={plantingMonth}
+              headingLevel="h2"
+              standalone
+            />
+          </section>
+        ) : null}
 
         <SecondaryButton onClick={() => navigate(-1)}>
           {translate('back')}

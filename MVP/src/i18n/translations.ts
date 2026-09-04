@@ -21,14 +21,14 @@ const en: TranslationMap = {
   get_farm_guidance: 'Get Farm Guidance',
   trust_statement:
     'This prototype uses transparent demonstration rules and your stated farm conditions. It does not replace local professional advice.',
-  what_can_we_help: 'What can this prototype help with?',
+  what_can_we_help: 'What can NaRoo help with?',
   help_item_1: 'Check whether mung bean after rice may be suitable',
   help_item_2: 'Understand which conditions affect the result',
   help_item_3: 'See uncertainty, assumptions, and next checks',
   help_item_4: 'Know when to ask an agricultural officer',
   how_it_works: 'How it works',
   how_1: 'Tell us about your farm',
-  how_2: 'We apply prototype rules',
+  how_2: 'How NaRoo makes recommendations',
   how_3: 'We explain the result',
   how_4: 'You make the final decision',
   safety_disclaimer:
@@ -43,7 +43,7 @@ const en: TranslationMap = {
   district_prototype_note:
     'District options are prototype data for Roi Et only and are not verified coverage claims.',
   coverage_note:
-    'This prototype supports Roi Et Province only. It does not claim nationwide agricultural coverage.',
+    'NaRoo currently supports Roi Et Province only and does not provide nationwide agricultural coverage.',
   field_type_question: 'What type of field is this?',
   field_lowland: 'Lowland paddy',
   field_upland: 'Upland',
@@ -128,7 +128,7 @@ const en: TranslationMap = {
   static_reference_note:
     'The following items are static prototype reference information kept in the app. They were not fetched as live API content.',
   weather_context_live:
-    'A current seven-day weather forecast is available as separate supporting context',
+    'A current seven-day weather forecast is provided as supporting information.',
   weather_context_unavailable:
     'Weather data was not available for this guidance response.',
   request_id_label: 'Request ID',
@@ -166,7 +166,7 @@ const en: TranslationMap = {
   weather_interpretation_live:
     'Weather is supporting context only and does not change the classification.',
   weather_forecast_timing_note:
-    'This is the current seven-day forecast, not a forecast for the planned planting month, and it does not affect the rules-based classification.',
+    'This forecast reflects current conditions, not the weather for the planned planting month, and it does not affect NaRoo\'s rules-based classification.',
   weather_source_label: 'Weather source',
   weather_retrieved_label: 'Retrieved at',
   your_farm_guidance: 'Your Farm Guidance',
@@ -368,6 +368,31 @@ const en: TranslationMap = {
   visit_official_website: 'Open official website',
   contact_verify_notice:
     'Contact details may change. Please verify them on the official website before calling or visiting.',
+  typical_weather_heading: 'Typical weather in {month}',
+  typical_weather_disclaimer:
+    'Based on typical seasonal conditions in Roi Et. Actual weather may vary.',
+  typical_weather_1:
+    'Usually cool and dry, with low rainfall and limited natural soil moisture.',
+  typical_weather_2: 'Usually dry and gradually warmer, with little rainfall.',
+  typical_weather_3:
+    'Usually hot and dry, although occasional summer storms may occur.',
+  typical_weather_4:
+    'Usually very hot, with an increasing chance of short thunderstorms.',
+  typical_weather_5:
+    'Usually hot and humid as the rainy season begins and rainfall becomes more frequent.',
+  typical_weather_6:
+    'Usually warm, humid, and rainy, with regular rainfall during the month.',
+  typical_weather_7:
+    'Usually humid and rainy, with frequent showers and increasing soil moisture.',
+  typical_weather_8:
+    'Usually very wet and humid, with frequent or heavy rainfall.',
+  typical_weather_9:
+    'Usually one of the wettest periods, with heavy rainfall and possible waterlogging.',
+  typical_weather_10:
+    'Rainfall usually begins to decrease as the rainy season approaches its end.',
+  typical_weather_11:
+    'Usually cooler and drier, with declining rainfall and soil moisture.',
+  typical_weather_12: 'Usually cool and dry, with little rainfall.',
   expert_phonthong_name: 'Phon Thong District Agricultural Extension Office',
   expert_roi_et_general_title: 'Roi Et Provincial Agricultural Extension Office',
   expert_roi_et_general_body:
@@ -393,14 +418,14 @@ const th: TranslationMap = {
   get_farm_guidance: 'รับคำแนะนำสำหรับนา',
   trust_statement:
     'ระบบนี้ใช้กฎสาธิตที่เปิดเผย และอาศัยข้อมูลสภาพนาที่คุณกรอกเอง ไม่ได้ทดแทนคำแนะนำจากเจ้าหน้าที่ในพื้นที่',
-  what_can_we_help: 'ระบบนี้ช่วยอะไรได้บ้าง?',
+  what_can_we_help: 'NaRoo ช่วยอะไรได้บ้าง?',
   help_item_1: 'ดูว่าปลูกถั่วเขียวหลังนาข้าวอาจเหมาะสมหรือไม่',
   help_item_2: 'เข้าใจว่าอะไรมีผลต่อผลคำแนะนำ',
   help_item_3: 'เห็นจุดที่ยังไม่แน่ใจ และสิ่งที่ควรตรวจเพิ่ม',
   help_item_4: 'รู้ว่าเมื่อไหร่ควรปรึกษาเจ้าหน้าที่ส่งเสริมการเกษตร',
   how_it_works: 'ทำงานอย่างไร',
   how_1: 'บอกข้อมูลนาของคุณ',
-  how_2: 'ระบบใช้กฎของต้นแบบตรวจข้อมูล',
+  how_2: 'วิธีที่ NaRoo จัดทำคำแนะนำ',
   how_3: 'ระบบอธิบายผลให้เข้าใจ',
   how_4: 'คุณเป็นผู้ตัดสินใจขั้นสุดท้าย',
   safety_disclaimer:
@@ -415,7 +440,7 @@ const th: TranslationMap = {
   district_prototype_note:
     'รายชื่ออำเภอใช้สำหรับสาธิตในจังหวัดร้อยเอ็ดเท่านั้น ยังไม่ใช่ข้อมูลที่ยืนยันครบทุกพื้นที่',
   coverage_note:
-    'ระบบนี้ใช้ได้เฉพาะจังหวัดร้อยเอ็ด ไม่ครอบคลุมทั้งประเทศ',
+    'ขณะนี้ NaRoo รองรับเฉพาะจังหวัดร้อยเอ็ด และไม่ได้ให้บริการครอบคลุมทั้งประเทศ',
   field_type_question: 'แปลงนี้เป็นแบบไหน?',
   field_lowland: 'นาลุ่ม',
   field_upland: 'ที่ดอน',
@@ -500,7 +525,7 @@ const th: TranslationMap = {
   static_reference_note:
     'รายการต่อไปนี้เป็นข้อมูลอ้างอิงแบบคงที่ในแอป ไม่ได้ดึงมาแบบสดจากบริการคำแนะนำ',
   weather_context_live:
-    'มีข้อมูลพยากรณ์อากาศ 7 วันปัจจุบันสำหรับดูประกอบแยกต่างหาก',
+    'พยากรณ์อากาศ 7 วันปัจจุบันแสดงไว้เป็นข้อมูลประกอบ',
   weather_context_unavailable:
     'ไม่มีข้อมูลอากาศในผลการวิเคราะห์ครั้งนี้',
   request_id_label: 'รหัสคำขอ',
@@ -538,7 +563,7 @@ const th: TranslationMap = {
   weather_interpretation_live:
     'สภาพอากาศเป็นข้อมูลประกอบเท่านั้น และไม่เปลี่ยนผลสถานะ',
   weather_forecast_timing_note:
-    'ข้อมูลนี้เป็นพยากรณ์อากาศ 7 วันปัจจุบัน ไม่ใช่พยากรณ์สำหรับเดือนที่วางแผนปลูก และไม่มีผลต่อสถานะที่กำหนดโดยกฎต้นแบบ',
+    'ข้อมูลนี้สะท้อนสภาพอากาศปัจจุบัน ไม่ใช่สภาพอากาศของเดือนที่วางแผนปลูก และไม่มีผลต่อการจัดประเภทตามกฎของ NaRoo',
   weather_source_label: 'แหล่งอากาศ',
   weather_retrieved_label: 'ดึงข้อมูลเมื่อ',
   your_farm_guidance: 'คำแนะนำสำหรับนาของคุณ',
@@ -558,7 +583,7 @@ const th: TranslationMap = {
   assumptions_used: 'ข้อสมมติที่ใช้',
   confidence_level: 'ความมั่นใจของผล',
   information_limitations: 'ข้อจำกัด',
-  weather_context: 'ข้อมูลสภาพอากาศประกอบ',
+  weather_context: 'บริบทสภาพอากาศ',
   source_of_recommendation: 'แหล่งข้อมูลที่ใช้',
   sources_placeholder:
     'ผลการประเมินใช้กฎสาธิตของโครงการ ซึ่งยังต้องได้รับการตรวจสอบโดยผู้เชี่ยวชาญด้านการเกษตร',
@@ -735,6 +760,30 @@ const th: TranslationMap = {
   visit_official_website: 'เปิดเว็บไซต์สำนักงาน',
   contact_verify_notice:
     'ข้อมูลติดต่ออาจมีการเปลี่ยนแปลง โปรดตรวจสอบกับเว็บไซต์ทางการก่อนโทรหรือเดินทาง',
+  typical_weather_heading: 'สภาพอากาศโดยทั่วไปในเดือน{month}',
+  typical_weather_disclaimer:
+    'ข้อมูลนี้อ้างอิงจากสภาพอากาศตามฤดูกาลโดยทั่วไปในจังหวัดร้อยเอ็ด สภาพอากาศจริงอาจแตกต่างออกไป',
+  typical_weather_1:
+    'โดยทั่วไปอากาศเย็นและแห้ง มีฝนน้อย และความชื้นตามธรรมชาติในดินค่อนข้างจำกัด',
+  typical_weather_2: 'โดยทั่วไปอากาศแห้งและเริ่มอุ่นขึ้น โดยมีฝนตกเล็กน้อย',
+  typical_weather_3:
+    'โดยทั่วไปอากาศร้อนและแห้ง แต่อาจมีพายุฤดูร้อนเกิดขึ้นเป็นครั้งคราว',
+  typical_weather_4:
+    'โดยทั่วไปอากาศร้อนจัด และมีโอกาสเกิดฝนฟ้าคะนองระยะสั้นเพิ่มขึ้น',
+  typical_weather_5:
+    'โดยทั่วไปอากาศร้อนชื้น เนื่องจากเริ่มเข้าสู่ฤดูฝนและมีฝนตกบ่อยขึ้น',
+  typical_weather_6:
+    'โดยทั่วไปอากาศอบอุ่น ชื้น และมีฝนตกอย่างสม่ำเสมอตลอดเดือน',
+  typical_weather_7:
+    'โดยทั่วไปอากาศชื้นและมีฝนตกบ่อย ทำให้ความชื้นในดินเพิ่มขึ้น',
+  typical_weather_8:
+    'โดยทั่วไปมีความชื้นสูงและฝนตกบ่อย โดยอาจมีฝนตกหนักในบางช่วง',
+  typical_weather_9:
+    'โดยทั่วไปเป็นหนึ่งในช่วงที่มีฝนตกมากที่สุด อาจมีฝนตกหนักและเกิดน้ำขังได้',
+  typical_weather_10: 'โดยทั่วไปปริมาณฝนเริ่มลดลงเมื่อฤดูฝนใกล้สิ้นสุด',
+  typical_weather_11:
+    'โดยทั่วไปอากาศเย็นและแห้งขึ้น โดยปริมาณฝนและความชื้นในดินเริ่มลดลง',
+  typical_weather_12: 'โดยทั่วไปอากาศเย็นและแห้ง โดยมีฝนตกน้อย',
   expert_phonthong_name: 'สำนักงานเกษตรอำเภอโพนทอง',
   expert_roi_et_general_title: 'สำนักงานเกษตรจังหวัดร้อยเอ็ด',
   expert_roi_et_general_body:

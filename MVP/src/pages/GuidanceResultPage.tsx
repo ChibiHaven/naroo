@@ -13,6 +13,7 @@ import { PrimaryButton } from '@/components/common/PrimaryButton'
 import { SecondaryButton } from '@/components/common/SecondaryButton'
 import { RequireResult } from '@/components/common/RouteGuards'
 import { PrototypeBanner } from '@/components/guidance/PrototypeBanner'
+import { TypicalMonthlyWeather } from '@/components/guidance/TypicalMonthlyWeather'
 import { useAssessment } from '@/context/AssessmentContext'
 import { statusLabelKey } from '@/types/liveGuidance'
 import type { GuidanceClassification } from '@/types/assessment'
@@ -232,6 +233,7 @@ function GuidanceResultContent() {
               {translate('weather_forecast_timing_note')}
             </p>
           ) : null}
+          <TypicalMonthlyWeather month={plantingMonth} />
           <SecondaryButton className="mt-4" onClick={() => navigate('/weather')}>
             {translate('view_weather')}
           </SecondaryButton>

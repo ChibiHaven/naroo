@@ -341,13 +341,6 @@ export function structuredSummaryLines(
         : t(language, 'summary_expert_not_required'),
   })
 
-  if (response.weather.mode === 'available' && response.weather.days.length > 0) {
-    lines.push({
-      label: t(language, 'weather_context'),
-      value: t(language, 'weather_context_live'),
-    })
-  }
-
   return lines.filter((line) => line.label.trim() && line.value.trim())
 }
 

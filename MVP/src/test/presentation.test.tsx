@@ -261,6 +261,15 @@ describe('live result presentation', () => {
     expect(
       screen.getByText(t('en', 'weather_forecast_timing_note')),
     ).toBeInTheDocument()
+    expect(
+      screen.getByText('Typical weather in November'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(t('en', 'typical_weather_11')),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(t('en', 'typical_weather_disclaimer')),
+    ).toBeInTheDocument()
   })
 
   it('shows the Open-Meteo URL once per source card', async () => {
@@ -595,6 +604,25 @@ describe('live result presentation', () => {
     expect(
       await screen.findByText(t('th', 'weather_forecast_timing_note')),
     ).toBeInTheDocument()
+    expect(screen.getByText('สภาพอากาศโดยทั่วไปในเดือนพฤศจิกายน')).toBeInTheDocument()
+    expect(
+      screen.getByText(t('th', 'typical_weather_11')),
+    ).toBeInTheDocument()
+  })
+
+  it('shows weather context sentences once and typical weather for the planting month', async () => {
+    seedLiveResult(narooGuidanceResponse())
+    window.location.hash = '#/guidance'
+    render(<App />)
+    expect(await screen.findByText(t('en', 'weather_context'))).toBeInTheDocument()
+    const visible = farmerFacingText()
+    const live = t('en', 'weather_context_live')
+    const timing = t('en', 'weather_forecast_timing_note')
+    expect(visible.split(live)).toHaveLength(2)
+    expect(visible.split(timing)).toHaveLength(2)
+    expect(screen.getByText('Typical weather in November')).toBeInTheDocument()
+    expect(screen.getByText(t('en', 'typical_weather_11'))).toBeInTheDocument()
+    expect(screen.getByText(t('en', 'typical_weather_disclaimer'))).toBeInTheDocument()
   })
 
   it('presents R5 September escalation from structured data, not AI prose', async () => {

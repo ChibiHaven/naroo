@@ -57,7 +57,7 @@ export function HomePage() {
 
           <div className="mt-5">
             <PrimaryButton
-              className="bg-white !text-brand-primary hover:bg-brand-cream"
+              className="bg-white !text-brand-primary hover:!text-white focus-visible:!text-white focus-visible:bg-brand-dark hover:[&_svg]:text-white focus-visible:[&_svg]:text-white"
               onClick={() => {
                 setCurrentStep('step1')
                 navigate('/assessment/step-1')
